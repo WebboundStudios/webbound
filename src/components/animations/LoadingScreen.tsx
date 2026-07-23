@@ -16,7 +16,6 @@ export const LoadingScreen: React.FC = () => {
     // Lock page scrolling during loading state
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
-    window.scrollTo(0, 0);
 
     const preventScroll = (e: Event) => {
       e.preventDefault();

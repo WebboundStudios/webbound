@@ -3,7 +3,8 @@
 import React, { useEffect, useRef } from 'react';
 import { PROCESS_STEPS } from '@/constants/data';
 import { TextReveal } from '@/components/animations/TextReveal';
-import { Clock, CheckCircle2 } from 'lucide-react';
+import { TextRoll } from '@/components/animations/TextRoll';
+import { Clock, CheckCircle2, ShieldCheck } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -66,26 +67,33 @@ export const Process: React.FC = () => {
   }, []);
 
   return (
-    <section id="process" data-theme-bg="#F5F3EE" className="relative py-32 px-6 md:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-200">
+    <section id="process" data-theme-bg="#F5F3EE" className="relative py-20 sm:py-32 px-4 sm:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-500">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col space-y-3 mb-20">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#6B7280]">
-            <span className="w-2 h-2 rounded-full bg-[#C5F52A]" />
-            <span>OUR METHODOLOGY</span>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-20">
+          <div className="flex flex-col space-y-3">
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#6B7280]">
+              <span className="w-2 h-2 rounded-full bg-[#C5F52A]" />
+              <span>RAPID 1–2 WEEK HANDOVER</span>
+            </div>
+            <TextReveal
+              as="h2"
+              className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight max-w-4xl"
+            >
+              Rapid Delivery In Days, Not Months.
+            </TextReveal>
           </div>
-          <TextReveal
-            as="h2"
-            className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight max-w-4xl"
-          >
-            A Rigorous Journey From Concept To Launch.
-          </TextReveal>
+
+          <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#0A0A0A] text-[#C5F52A] text-xs font-mono font-bold tracking-tight shadow-sm shrink-0 w-fit">
+            <ShieldCheck className="w-4 h-4 text-[#C5F52A]" />
+            <TextRoll center>1 YEAR FREE MAINTENANCE INCLUDED</TextRoll>
+          </div>
         </div>
 
         {/* Timeline Process Container */}
-        <div ref={timelineRef} className="relative ml-4 md:ml-8 space-y-16 pl-10 md:pl-16">
+        <div ref={timelineRef} className="relative ml-2 sm:ml-8 space-y-10 sm:space-y-16 pl-7 sm:pl-16">
           {/* Active Animated Solid Neon Line Track from Point 1 to Point 5 */}
-          <div className="absolute left-[15px] md:left-[23px] top-[18px] bottom-[18px] w-1 -translate-x-1/2 pointer-events-none z-0">
+          <div className="absolute left-[11px] sm:left-[23px] top-[14px] bottom-[14px] w-0.5 sm:w-1 -translate-x-1/2 pointer-events-none z-0">
             {/* Solid Background Base Track */}
             <div className="w-full h-full bg-[#0A0A0A]/10 rounded-full" />
 
@@ -96,7 +104,7 @@ export const Process: React.FC = () => {
               style={{ height: '0%' }}
             >
               {/* Traveling Glowing Line Head Tip */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-4 h-4 rounded-full bg-[#C5F52A] shadow-[0_0_20px_#C5F52A,0_0_40px_#C5F52A]" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#C5F52A] shadow-[0_0_20px_#C5F52A,0_0_40px_#C5F52A]" />
             </div>
           </div>
 
@@ -104,35 +112,35 @@ export const Process: React.FC = () => {
           {PROCESS_STEPS.map((stepItem) => (
             <div key={stepItem.step} className="relative group z-10">
               {/* Step Point Node (01 - 05) */}
-              <div className="process-step-node absolute -left-[45px] md:-left-[69px] top-0 w-9 h-9 rounded-full flex items-center justify-center text-xs font-mono font-bold transition-all duration-300 border border-[#0A0A0A]/12 shadow-xs bg-white text-[#6B7280]">
+              <div className="process-step-node absolute -left-[32px] sm:-left-[69px] top-0 w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-mono font-bold transition-all duration-300 border border-[#0A0A0A]/12 shadow-xs bg-white text-[#6B7280]">
                 {stepItem.step}
               </div>
 
               {/* Step Card */}
-              <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 space-y-6 shadow-sm hover:shadow-md">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#0A0A0A]/[0.06] pb-6">
+              <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 space-y-4 sm:space-y-6 shadow-xs hover:shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#0A0A0A]/[0.06] pb-4 sm:pb-6">
                   <div>
-                    <span className="text-xs font-mono uppercase tracking-widest text-[#6B7280] group-hover:text-[#0A0A0A] transition-colors block font-semibold">
+                    <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#6B7280] group-hover:text-[#0A0A0A] transition-colors block font-semibold">
                       {stepItem.subtitle}
                     </span>
-                    <h3 className="font-section-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] mt-1">
+                    <h3 className="font-section-heading text-xl sm:text-3xl font-bold text-[#0A0A0A] mt-0.5">
                       {stepItem.title}
                     </h3>
                   </div>
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F5F3EE] border border-[#0A0A0A]/[0.06] text-xs font-mono text-[#6B7280] w-fit">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F5F3EE] border border-[#0A0A0A]/[0.06] text-[11px] sm:text-xs font-mono text-[#6B7280] w-fit shrink-0">
                     <Clock className="w-3.5 h-3.5 text-[#0A0A0A]" />
                     <span>TIMELINE: {stepItem.duration}</span>
                   </div>
                 </div>
 
-                <p className="font-body-ui text-sm md:text-base text-[#6B7280] font-light leading-relaxed">
+                <p className="font-body-ui text-sm sm:text-base text-[#6B7280] font-light leading-relaxed">
                   {stepItem.description}
                 </p>
 
                 {/* Deliverables Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 pt-1 sm:pt-2">
                   {stepItem.details.map((detail, idx) => (
-                    <div key={idx} className="flex items-center gap-2.5 text-xs font-body-ui text-[#0A0A0A] p-3 rounded-xl bg-[#F5F3EE] border border-[#0A0A0A]/[0.04]">
+                    <div key={idx} className="flex items-center gap-2 text-xs font-body-ui text-[#0A0A0A] p-2.5 sm:p-3 rounded-xl bg-[#F5F3EE] border border-[#0A0A0A]/[0.04]">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#0A0A0A] shrink-0" />
                       <span>{detail}</span>
                     </div>

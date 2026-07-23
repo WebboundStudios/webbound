@@ -14,7 +14,7 @@ export const FAQ: React.FC = () => {
   };
 
   return (
-    <section id="faq" data-theme-bg="#F5F3EE" className="relative py-32 px-6 md:px-12 lg:px-20 text-[#0A0A0A] transition-colors duration-200">
+    <section id="faq" data-theme-bg="#F5F3EE" className="relative py-32 px-6 md:px-12 lg:px-20 text-[#0A0A0A] transition-colors duration-500">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { TextReveal } from '@/components/animations/TextReveal';
+import { TextRoll } from '@/components/animations/TextRoll';
 import { ContactForm } from '@/sections/Contact/ContactForm';
 import { Mail, MapPin } from 'lucide-react';
 import { SITE_CONFIG } from '@/constants/data';
@@ -37,7 +38,7 @@ export const CTA: React.FC = () => {
               <div className="flex items-center gap-3 text-sm text-[#9CA3AF]">
                 <Mail className="w-4 h-4 text-[#C5F52A]" />
                 <a href={`mailto:${SITE_CONFIG.email}`} className="text-white hover:text-[#C5F52A] transition-colors font-semibold">
-                  {SITE_CONFIG.email}
+                  <TextRoll>{SITE_CONFIG.email}</TextRoll>
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm text-[#9CA3AF]">

@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { NAV_LINKS, SITE_CONFIG } from '@/constants/data';
 import { ArrowUp } from 'lucide-react';
+import { TextRoll } from '@/components/animations/TextRoll';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -97,10 +98,9 @@ export const Footer: React.FC = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="font-body-ui text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors duration-300 w-fit relative group font-medium"
+                  className="font-body-ui text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors duration-300 w-fit font-medium"
                 >
-                  {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#C5F52A] group-hover:w-full transition-all duration-300" />
+                  <TextRoll center>{link.label}</TextRoll>
                 </a>
               ))}
             </div>
@@ -162,7 +162,7 @@ export const Footer: React.FC = () => {
 
         {/* Oversized Brand Typography — Curved-to-Flat Scrubbed Scroll Transformation */}
         <div ref={containerRef} className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-visible py-8 sm:py-12 select-none border-t border-[#0A0A0A]/[0.08]">
-          <div ref={svgWrapperRef} className="w-full flex items-center justify-center will-change-transform">
+          <div ref={svgWrapperRef} className="w-full flex items-center justify-center will-change-transform cursor-pointer group" data-cursor="Webbound">
             <svg
               className="w-full h-auto overflow-visible select-none"
               viewBox="0 0 1000 220"
@@ -171,7 +171,7 @@ export const Footer: React.FC = () => {
               <defs>
                 <path id="webbound-footer-curve" ref={pathRef} d="M -350 320 Q 500 -120 1350 320" />
               </defs>
-              <text className="font-hero-display font-black tracking-tighter fill-[#0A0A0A] select-none opacity-90" style={{ fontSize: '135px' }}>
+              <text className="font-hero-display font-black tracking-tighter fill-[#0A0A0A] select-none opacity-90 transition-transform duration-300 group-hover:scale-[1.02]" style={{ fontSize: '135px' }}>
                 <textPath href="#webbound-footer-curve" startOffset="50%" textAnchor="middle">
                   WEBBOUND<tspan fill="#C5F52A">.</tspan>
                 </textPath>

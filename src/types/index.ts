@@ -6,6 +6,8 @@ export interface ServiceItem {
   iconName: string;
   deliverables: string[];
   tags: string[];
+  priceRange?: string;
+  tierBadge?: string;
   accentColor?: string;
 }
 
@@ -22,6 +24,7 @@ export interface ProjectItem {
   tags: string[];
   link?: string;
   featured: boolean;
+  tier?: string;
 }
 
 export interface TestimonialItem {

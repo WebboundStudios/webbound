@@ -130,17 +130,21 @@ export const CustomCursor: React.FC = () => {
       {/* Outer Follower Ring */}
       <div
         ref={cursorRef}
-        className={`hidden lg:block pointer-events-none fixed top-0 left-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-200 ease-out ${
+        className={`hidden lg:flex items-center justify-center text-center pointer-events-none fixed top-0 left-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-200 ease-out ${
           isVisible ? 'opacity-100' : 'opacity-0'
         } ${
           isHovered
             ? cursorText
-              ? 'w-20 h-20 bg-[#C5F52A] border-transparent text-[#0A0A0A] flex items-center justify-center font-bold text-xs font-body-ui tracking-wider shadow-lg scale-105'
+              ? 'w-20 h-20 bg-[#C5F52A] border-transparent text-[#0A0A0A] shadow-xl scale-105'
               : 'w-12 h-12 bg-[#C5F52A]/20 border-[#C5F52A] scale-110'
             : `w-7 h-7 bg-transparent ${isDarkBg ? 'border-[#C5F52A]/70' : 'border-[#0A0A0A]/40'}`
         }`}
       >
-        {cursorText && <span className="uppercase tracking-widest text-[10px] select-none">{cursorText}</span>}
+        {cursorText && (
+          <span className="uppercase tracking-widest text-[10px] font-mono font-bold leading-none text-center select-none text-[#0A0A0A] block">
+            {cursorText}
+          </span>
+        )}
       </div>
 
       {/* Center Precise Dot */}

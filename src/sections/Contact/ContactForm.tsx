@@ -29,7 +29,7 @@ export const ContactForm: React.FC = () => {
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      budget: '₹1.5 Lakhs - ₹3 Lakhs',
+      budget: 'Type 1: Single-Page Static Site (₹8,000 – ₹9,000)',
     },
   });
 
@@ -68,7 +68,7 @@ export const ContactForm: React.FC = () => {
           Initiate Project Inquiry
         </h3>
         <p className="font-body-ui text-sm text-[#9CA3AF] mt-2 font-light">
-          Tell us about your brand vision, target launch timeline, and interactive requirements.
+          Tell me about your brand vision, target launch timeline, and package preference.
         </p>
       </div>
 
@@ -77,7 +77,7 @@ export const ContactForm: React.FC = () => {
           <CheckCircle2 className="w-12 h-12 text-[#C5F52A] mx-auto" />
           <h4 className="font-hero-display text-2xl font-bold text-white">Inquiry Received</h4>
           <p className="font-body-ui text-sm text-[#9CA3AF]">
-            Thank you for reaching out. A Webbound Studios partner will review your inquiry and contact you within 24 business hours.
+            Thank you for reaching out. I will review your inquiry and contact you within 24 hours.
           </p>
           <button
             onClick={() => setStatus('idle')}
@@ -135,16 +135,16 @@ export const ContactForm: React.FC = () => {
 
             <div className="space-y-2">
               <label className="text-xs font-mono uppercase text-[#9CA3AF] block">
-                ESTIMATED BUDGET (INR) *
+                PACKAGE & BUDGET TIER *
               </label>
               <select
                 {...register('budget')}
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] transition-all"
+                className="w-full pl-3.5 pr-9 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-xs sm:text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23C5F52A%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_12px_center] bg-no-repeat cursor-pointer"
               >
-                <option value="₹75,000 - ₹1.5 Lakhs">₹75,000 - ₹1.5 Lakhs</option>
-                <option value="₹1.5 Lakhs - ₹3 Lakhs">₹1.5 Lakhs - ₹3 Lakhs</option>
-                <option value="₹3 Lakhs - ₹5 Lakhs">₹3 Lakhs - ₹5 Lakhs</option>
-                <option value="₹5 Lakhs+">₹5 Lakhs+</option>
+                <option value="Type 1: Single-Page Static Site (₹8,000 – ₹9,000)">Type 1: Single Page (₹8K – ₹9K)</option>
+                <option value="Type 2: Single-Page Dynamic CMS Site (₹12,000 – ₹15,000)">Type 2: Single Page CMS (₹12K – ₹15K)</option>
+                <option value="Type 3: Multi-Page Dynamic CMS Platform (₹17,000 – ₹20,000)">Type 3: Multi Page CMS (₹17K – ₹20K)</option>
+                <option value="Type 4: Custom Full-Stack Web Application (Custom Quote)">Type 4: Full Stack App (Custom Quote)</option>
               </select>
             </div>
           </div>

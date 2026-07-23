@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Logo } from '@/components/common/Logo';
 import { MagneticButton } from '@/components/animations/MagneticButton';
+import { TextRoll } from '@/components/animations/TextRoll';
 import { NAV_LINKS } from '@/constants/data';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
@@ -71,7 +71,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* Bottom-Docked Floating Capsule Navbar (Anyflow / Osmo Style) */}
+      {/* Bottom-Docked Floating Capsule Navbar */}
       <nav
         className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
@@ -131,9 +131,12 @@ export const Navbar: React.FC = () => {
                 <span className="text-xs font-mono text-[#6B7280] group-hover:text-[#C5F52A] transition-colors w-8">
                   0{idx + 1}
                 </span>
-                <span className="font-hero-display text-3xl sm:text-5xl md:text-6xl font-bold text-white group-hover:text-[#C5F52A] transition-colors tracking-tight">
+                <TextRoll
+                  center
+                  className="font-hero-display text-3xl sm:text-5xl md:text-6xl font-bold text-white group-hover:text-[#C5F52A] transition-colors tracking-tight uppercase"
+                >
                   {link.label}
-                </span>
+                </TextRoll>
                 <ArrowUpRight className="w-6 h-6 text-[#6B7280] group-hover:text-[#C5F52A] ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300" />
               </a>
             ))}
@@ -144,7 +147,7 @@ export const Navbar: React.FC = () => {
             <div className="flex flex-col">
               <span className="text-xs text-[#6B7280] font-body-ui">Direct Contact</span>
               <a href="mailto:hello@webboundstudios.com" className="text-sm font-semibold text-white hover:text-[#C5F52A] transition-colors">
-                hello@webboundstudios.com
+                <TextRoll>hello@webboundstudios.com</TextRoll>
               </a>
             </div>
             <div className="flex items-center gap-3 text-xs font-mono text-[#6B7280]">

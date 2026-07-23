@@ -1,25 +1,83 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import React from 'react';
+import { cn } from '@/lib/utils';
 
-interface TextRollProps {
+const STAGGER = 0.035;
+
+export const TextRoll: React.FC<{
   children: string;
   className?: string;
-}
-
-export const TextRoll: React.FC<TextRollProps> = ({ children, className = '' }) => {
+  center?: boolean;
+}> = ({ children, className, center = false }) => {
   return (
-    <span
-      className={`relative inline-flex flex-col overflow-hidden h-[1.15em] select-none whitespace-nowrap group/roll cursor-pointer leading-none ${className}`}
+    <motion.span
+      initial="initial"
+      whileHover="hovered"
+      className={cn('relative block overflow-hidden cursor-pointer select-none', className)}
+      style={{
+        lineHeight: 0.85,
+      }}
     >
-      {/* Primary White Text Layer */}
-      <span className="block whitespace-nowrap transition-transform duration-300 ease-out group-hover/roll:-translate-y-full">
-        {children}
-      </span>
-      {/* Secondary Gold Text Layer (Hidden by overflow-hidden) */}
-      <span className="block whitespace-nowrap transition-transform duration-300 ease-out group-hover/roll:-translate-y-full text-[#D4AF37]">
-        {children}
-      </span>
-    </span>
+      <div className="flex items-center">
+        {children.split('').map((l, i) => {
+          const delay = center
+            ? STAGGER * Math.abs(i - (children.length - 1) / 2)
+            : STAGGER * i;
+
+          return (
+            <motion.span
+              variants={{
+                initial: {
+                  y: 0,
+                },
+                hovered: {
+                  y: '-100%',
+                },
+              }}
+              transition={{
+                duration: 0.3,
+                ease: [0.33, 1, 0.68, 1],
+                delay,
+              }}
+              className="inline-block"
+              key={i}
+            >
+              {l === ' ' ? '\u00A0' : l}
+            </motion.span>
+          );
+        })}
+      </div>
+      <div className="absolute inset-0 flex items-center">
+        {children.split('').map((l, i) => {
+          const delay = center
+            ? STAGGER * Math.abs(i - (children.length - 1) / 2)
+            : STAGGER * i;
+
+          return (
+            <motion.span
+              variants={{
+                initial: {
+                  y: '100%',
+                },
+                hovered: {
+                  y: 0,
+                },
+              }}
+              transition={{
+                duration: 0.3,
+                ease: [0.33, 1, 0.68, 1],
+                delay,
+              }}
+              className="inline-block"
+              key={i}
+            >
+              {l === ' ' ? '\u00A0' : l}
+            </motion.span>
+          );
+        })}
+      </div>
+    </motion.span>
   );
 };

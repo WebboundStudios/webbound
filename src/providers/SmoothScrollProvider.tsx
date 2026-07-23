@@ -57,9 +57,9 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     if (isLoading) {
       lenis.stop();
-      lenis.scrollTo(0, { immediate: true });
     } else {
       lenis.start();
+      ScrollTrigger.refresh();
     }
   }, [isLoading]);
 

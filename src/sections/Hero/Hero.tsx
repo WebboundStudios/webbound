@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { MagneticButton } from '@/components/animations/MagneticButton';
+import { TextRoll } from '@/components/animations/TextRoll';
 import { GSAPAnimatedSVG } from '@/components/animations/GSAPAnimatedSVG';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { SITE_CONFIG } from '@/constants/data';
@@ -71,7 +72,7 @@ export const Hero: React.FC = () => {
   }, []);
 
   return (
-    <section data-theme-bg="#F5F3EE" className="relative min-h-screen flex flex-col justify-between pt-24 pb-12 px-6 md:px-12 lg:px-20 overflow-hidden text-[#0A0A0A] transition-colors duration-200">
+    <section data-theme-bg="#F5F3EE" className="relative min-h-screen bg-[#F5F3EE] flex flex-col justify-between pt-24 pb-12 px-6 md:px-12 lg:px-20 overflow-hidden text-[#0A0A0A] transition-colors duration-300">
       {/* GSAP Animated Floating SVG Emblem Background Element */}
       <div className="absolute top-1/4 right-[5%] opacity-20 lg:opacity-40 pointer-events-none hidden sm:block">
         <GSAPAnimatedSVG className="w-80 h-80 lg:w-[480px] lg:h-[480px]" />
@@ -89,7 +90,7 @@ export const Hero: React.FC = () => {
             >
               <span className="w-2 h-2 rounded-full bg-[#C5F52A] animate-pulse" />
               <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#6B7280]">
-                INDEPENDENT CREATIVE ENGINEER
+                <TextRoll center>INDEPENDENT CREATIVE ENGINEER</TextRoll>
               </span>
             </div>
 
@@ -99,7 +100,11 @@ export const Hero: React.FC = () => {
               className="font-hero-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter text-[#0A0A0A] leading-[0.95] overflow-hidden"
               data-cursor="Explore"
             >
-              YOUR BRAND <span className="text-[#C5F52A]">DESERVES</span> MORE THAN A PRETTY SITE.
+              YOUR BRAND{' '}
+              <TextRoll center className="inline-block text-[#C5F52A]">
+                DESERVES
+              </TextRoll>{' '}
+              MORE THAN A PRETTY SITE.
             </h1>
           </div>
 
@@ -115,13 +120,13 @@ export const Hero: React.FC = () => {
             <div ref={ctaRef} className="flex flex-col sm:flex-row items-start gap-4">
               <a href="#contact">
                 <MagneticButton variant="primary" size="md">
-                  <span>LET&apos;S TALK</span>
+                  <TextRoll center>LET&apos;S TALK</TextRoll>
                   <ArrowUpRight className="w-4 h-4 ml-1" />
                 </MagneticButton>
               </a>
               <a href="#projects">
                 <MagneticButton variant="outline" size="md">
-                  <span>VIEW WORK</span>
+                  <TextRoll center>VIEW WORK</TextRoll>
                 </MagneticButton>
               </a>
             </div>

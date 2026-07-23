@@ -24,7 +24,7 @@ export const TechStack: React.FC = () => {
   const row2 = TECH_STACK.slice(5, 10);
 
   return (
-    <section id="tech" data-theme-bg="#F5F3EE" className="relative py-32 px-6 md:px-12 text-[#0A0A0A] overflow-hidden transition-colors duration-200">
+    <section id="tech" data-theme-bg="#F5F3EE" className="relative py-32 px-6 md:px-12 text-[#0A0A0A] overflow-hidden transition-colors duration-500">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">

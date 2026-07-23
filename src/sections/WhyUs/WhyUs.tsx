@@ -14,7 +14,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export const WhyUs: React.FC = () => {
   return (
-    <section data-theme-bg="#0A0A0A" className="relative py-32 px-6 md:px-12 lg:px-20 text-white transition-colors duration-200">
+    <section id="why-us" data-theme-bg="#0A0A0A" className="relative py-32 px-6 md:px-12 lg:px-20 text-white transition-colors duration-500">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">

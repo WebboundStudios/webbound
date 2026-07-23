@@ -7,7 +7,7 @@ import { ShieldCheck, Zap } from 'lucide-react';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" data-theme-bg="#F5F3EE" className="relative py-36 px-6 md:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-200">
+    <section id="about" data-theme-bg="#F5F3EE" className="relative py-36 px-6 md:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-500">
       {/* Decorative arcs */}
       <div className="absolute top-20 right-20 w-[400px] h-[400px] rounded-full border border-dashed border-[#0A0A0A]/[0.04] pointer-events-none" />
 
