@@ -24,10 +24,10 @@ export const TechStack: React.FC = () => {
   const row2 = TECH_STACK.slice(5, 10);
 
   return (
-    <section id="tech" data-theme-bg="#F5F3EE" className="relative py-32 px-6 md:px-12 text-[#0A0A0A] overflow-hidden transition-colors duration-500">
+    <section id="tech" data-theme-bg="#F5F3EE" className="relative py-16 sm:py-24 md:py-32 px-4 sm:px-6 md:px-12 text-[#0A0A0A] overflow-hidden transition-colors duration-500">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex flex-col space-y-3 mb-16 text-center items-center">
+        <div className="flex flex-col space-y-3 mb-8 sm:mb-16 text-center items-center">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#6B7280]">
             <span className="w-2 h-2 rounded-full bg-[#C5F52A]" />
             <span>BLEEDING-EDGE INFRASTRUCTURE</span>
@@ -41,15 +41,15 @@ export const TechStack: React.FC = () => {
         </div>
 
         {/* Marquee Rows */}
-        <div className="space-y-5">
+        <div className="space-y-3 sm:space-y-5">
           <InfiniteMarquee direction="left" speed="slow" fadeColor="light">
             {row1.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] transition-all duration-300 group min-w-[290px] shadow-sm select-none"
+                className="flex items-center gap-2.5 sm:gap-4 px-3.5 py-2.5 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] transition-all duration-300 group min-w-[200px] sm:min-w-[290px] shadow-sm select-none"
                 data-cursor="Tech"
               >
-                <div className="w-11 h-11 p-2 rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] transition-all duration-300 flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="w-8 h-8 sm:w-11 sm:h-11 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] transition-all duration-300 flex items-center justify-center shrink-0 shadow-2xs">
                   <img
                     src={techLogoMap[item.id]}
                     alt={`${item.name} logo`}
@@ -57,10 +57,10 @@ export const TechStack: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <h4 className="font-section-heading text-lg font-bold text-[#0A0A0A]">
+                  <h4 className="font-section-heading text-xs sm:text-lg font-bold text-[#0A0A0A]">
                     {item.name}
                   </h4>
-                  <p className="text-xs font-mono text-[#6B7280]">{item.level}</p>
+                  <p className="text-[10px] sm:text-xs font-mono text-[#6B7280]">{item.level}</p>
                 </div>
               </div>
             ))}
@@ -70,10 +70,10 @@ export const TechStack: React.FC = () => {
             {row2.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] transition-all duration-300 group min-w-[290px] shadow-sm select-none"
+                className="flex items-center gap-2.5 sm:gap-4 px-3.5 py-2.5 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] transition-all duration-300 group min-w-[200px] sm:min-w-[290px] shadow-sm select-none"
                 data-cursor="Tech"
               >
-                <div className="w-11 h-11 p-2 rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] transition-all duration-300 flex items-center justify-center shrink-0 shadow-2xs">
+                <div className="w-8 h-8 sm:w-11 sm:h-11 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] transition-all duration-300 flex items-center justify-center shrink-0 shadow-2xs">
                   <img
                     src={techLogoMap[item.id]}
                     alt={`${item.name} logo`}
@@ -81,10 +81,10 @@ export const TechStack: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <h4 className="font-section-heading text-lg font-bold text-[#0A0A0A]">
+                  <h4 className="font-section-heading text-xs sm:text-lg font-bold text-[#0A0A0A]">
                     {item.name}
                   </h4>
-                  <p className="text-xs font-mono text-[#6B7280]">{item.level}</p>
+                  <p className="text-[10px] sm:text-xs font-mono text-[#6B7280]">{item.level}</p>
                 </div>
               </div>
             ))}

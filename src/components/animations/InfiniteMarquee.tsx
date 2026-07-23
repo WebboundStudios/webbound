@@ -115,16 +115,16 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
       {fadeColor !== 'none' && (
         <>
           <div
-            className={`absolute top-0 bottom-0 left-0 w-24 sm:w-44 bg-gradient-to-r ${fadeGradientClass[fadeColor]} to-transparent z-10 pointer-events-none`}
+            className={`absolute top-0 bottom-0 left-0 w-10 sm:w-44 bg-gradient-to-r ${fadeGradientClass[fadeColor]} to-transparent z-10 pointer-events-none`}
           />
           <div
-            className={`absolute top-0 bottom-0 right-0 w-24 sm:w-44 bg-gradient-to-l ${fadeGradientClass[fadeColor]} to-transparent z-10 pointer-events-none`}
+            className={`absolute top-0 bottom-0 right-0 w-10 sm:w-44 bg-gradient-to-l ${fadeGradientClass[fadeColor]} to-transparent z-10 pointer-events-none`}
           />
         </>
       )}
 
       <motion.div
-        className="flex w-max space-x-6 will-change-transform"
+        className="flex w-max space-x-3 sm:space-x-6 will-change-transform"
         style={{ x: xTransform }}
       >
         {children}
