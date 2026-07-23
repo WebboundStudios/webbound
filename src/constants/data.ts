@@ -257,11 +257,12 @@ export const FAQS: FAQItem[] = [
 ];
 
 export const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
-  { label: 'Work', href: '#projects' },
-  { label: 'Process', href: '#process' },
-  { label: 'Tech Stack', href: '#tech' },
-  { label: 'Testimonials', href: '#testimonials' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'About', href: '/#about' },
+  { label: 'Services', href: '/#services' },
+  { label: 'Work', href: '/#projects' },
+  { label: 'Process', href: '/#process' },
+  { label: 'Tech Stack', href: '/#tech' },
+  { label: 'Motion Lab', href: '/animations' },
+  { label: 'Testimonials', href: '/#testimonials' },
+  { label: 'FAQ', href: '/#faq' },
 ];

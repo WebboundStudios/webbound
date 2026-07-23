@@ -106,11 +106,11 @@ export const Navbar: React.FC = () => {
       {menuOpen && (
         <div
           ref={menuOverlayRef}
-          className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-between p-8 md:p-16 pb-24"
+          className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-between p-6 sm:p-12 md:p-16 pb-28 sm:pb-36 overflow-y-auto max-h-screen scrollbar-none"
           style={{ clipPath: 'inset(100% 0 0 0)' }}
         >
           {/* Top Row */}
-          <div className="flex items-center justify-between max-w-7xl mx-auto w-full">
+          <div className="flex items-center justify-between max-w-7xl mx-auto w-full shrink-0 mb-6">
             <span className="text-xs font-mono uppercase tracking-widest text-[#6B7280]">
               NAVIGATION
             </span>
@@ -120,24 +120,24 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Center Menu Items */}
-          <div ref={menuItemsRef} className="flex flex-col items-start gap-2 my-auto max-w-4xl mx-auto w-full py-6">
+          <div ref={menuItemsRef} className="flex flex-col items-start gap-1 sm:gap-2 my-auto max-w-4xl mx-auto w-full py-4 shrink-0">
             {NAV_LINKS.map((link, idx) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={closeMenu}
-                className="menu-item group flex items-center gap-6 w-full py-3 md:py-4 border-b border-white/5 hover:border-[#C5F52A]/40 transition-colors"
+                className="menu-item group flex items-center gap-4 sm:gap-6 w-full py-2 sm:py-3 border-b border-white/5 hover:border-[#C5F52A]/40 transition-colors"
               >
-                <span className="text-xs font-mono text-[#6B7280] group-hover:text-[#C5F52A] transition-colors w-8">
+                <span className="text-xs font-mono text-[#6B7280] group-hover:text-[#C5F52A] transition-colors w-7 sm:w-8 shrink-0">
                   0{idx + 1}
                 </span>
                 <TextRoll
                   center
-                  className="font-hero-display text-3xl sm:text-5xl md:text-6xl font-bold text-white group-hover:text-[#C5F52A] transition-colors tracking-tight uppercase"
+                  className="font-hero-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white group-hover:text-[#C5F52A] transition-colors tracking-tight uppercase"
                 >
                   {link.label}
                 </TextRoll>
-                <ArrowUpRight className="w-6 h-6 text-[#6B7280] group-hover:text-[#C5F52A] ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#6B7280] group-hover:text-[#C5F52A] ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300 shrink-0" />
               </a>
             ))}
           </div>

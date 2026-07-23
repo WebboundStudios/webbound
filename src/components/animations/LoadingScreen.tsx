@@ -11,6 +11,12 @@ export const LoadingScreen: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Check if session has already completed preloader
+    if (typeof window !== 'undefined' && sessionStorage.getItem('webbound_has_loaded') === 'true') {
+      finishLoading();
+      return;
+    }
+
     if (!isLoading) return;
 
     // Lock page scrolling during loading state
@@ -50,6 +56,9 @@ export const LoadingScreen: React.FC = () => {
         ease: 'expo.inOut',
         delay: 2.5,
         onComplete: () => {
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('webbound_has_loaded', 'true');
+          }
           finishLoading();
         },
       });

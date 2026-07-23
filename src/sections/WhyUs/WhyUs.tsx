@@ -3,30 +3,24 @@
 import React from 'react';
 import { WHY_US } from '@/constants/data';
 import { TextReveal } from '@/components/animations/TextReveal';
-import { ScrollPathFollower } from '@/components/animations/ScrollPathFollower';
 import { Shield, Cpu, Gauge, Trophy } from 'lucide-react';
 
 const iconMap: Record<string, React.ReactNode> = {
-  '01': <Shield className="w-6 h-6 text-[#0A0A0A]" />,
-  '02': <Gauge className="w-6 h-6 text-[#0A0A0A]" />,
-  '03': <Trophy className="w-6 h-6 text-[#0A0A0A]" />,
-  '04': <Cpu className="w-6 h-6 text-[#0A0A0A]" />,
+  '01': <Shield className="w-5 h-5 text-[#0A0A0A]" />,
+  '02': <Gauge className="w-5 h-5 text-[#0A0A0A]" />,
+  '03': <Trophy className="w-5 h-5 text-[#0A0A0A]" />,
+  '04': <Cpu className="w-5 h-5 text-[#0A0A0A]" />,
 };
 
 export const WhyUs: React.FC = () => {
   return (
     <section id="why-us" data-theme-bg="#F5F3EE" className="relative bg-[#F5F3EE] py-28 sm:py-32 px-6 md:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-200">
-      {/* Background SVG Scroll Stroke Follower */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center opacity-30 pointer-events-none overflow-hidden">
-        <ScrollPathFollower className="w-[110%] md:w-[90%] -translate-y-12" strokeColor="#C5F52A" strokeWidth={16} />
-      </div>
-
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#6B7280]">
-            <span className="w-2 h-2 rounded-full bg-[#C5F52A]" />
-            <span>WHY WORK WITH ME</span>
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">06 /</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Why Work With Me</span>
           </div>
           <TextReveal
             as="h2"
@@ -41,32 +35,31 @@ export const WhyUs: React.FC = () => {
           {WHY_US.map((item) => (
             <div
               key={item.id}
-              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 space-y-6 flex flex-col justify-between h-full group shadow-xs hover:shadow-md"
+              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 space-y-5 flex flex-col justify-between h-full group shadow-xs hover:shadow-md"
             >
               <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="p-3 rounded-2xl bg-[#C5F52A]/20">
+                <div className="flex items-start justify-between mb-5">
+                  <div className="p-2.5 rounded-xl bg-[#F5F3EE] group-hover:bg-[#C5F52A]/20 transition-colors duration-300">
                     {iconMap[item.number]}
                   </div>
-                  <span className="font-mono text-3xl font-black text-[#0A0A0A]/10 group-hover:text-[#0A0A0A]/20 transition-colors">
+                  <span className="font-mono text-4xl font-black text-[#0A0A0A]/[0.06] group-hover:text-[#0A0A0A]/[0.10] transition-colors">
                     {item.number}
                   </span>
                 </div>
 
-                <h3 className="font-section-heading text-2xl font-bold text-[#0A0A0A] transition-colors duration-300">
+                <h3 className="font-section-heading text-xl font-bold text-[#0A0A0A] transition-colors duration-300">
                   {item.title}
                 </h3>
 
-                <p className="mt-3 font-body-ui text-sm text-[#6B7280] font-light leading-relaxed">
+                <p className="mt-2 font-body-ui text-sm text-[#6B7280] font-light leading-relaxed">
                   {item.description}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center justify-between text-xs font-mono">
-                <span className="text-[#0A0A0A] uppercase tracking-wider font-bold">
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06]">
+                <span className="font-mono text-[11px] uppercase tracking-wider text-[#0A0A0A] font-bold">
                   {item.highlight}
                 </span>
-                <span className="text-[#6B7280]">PERSONAL COMMITMENT</span>
               </div>
             </div>
           ))}

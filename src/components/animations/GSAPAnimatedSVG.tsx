@@ -1,9 +1,21 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
+const PARTICLE_COORDS = [
+  { cx: 160, cy: 100 },
+  { cx: 142.43, cy: 142.43 },
+  { cx: 100, cy: 160 },
+  { cx: 57.57, cy: 142.43 },
+  { cx: 40, cy: 100 },
+  { cx: 57.57, cy: 57.57 },
+  { cx: 100, cy: 40 },
+  { cx: 142.43, cy: 57.57 },
+];
+
 export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = '' }) => {
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<SVGSVGElement>(null);
   const frameRef = useRef<SVGRectElement>(null);
   const wPathRef = useRef<SVGPathElement>(null);
@@ -13,6 +25,11 @@ export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = 
   const particlesGroupRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const svg = containerRef.current;
     const wPath = wPathRef.current;
     const dot = dotRef.current;
@@ -156,7 +173,7 @@ export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = 
     }, svg);
 
     return () => ctx.revert();
-  }, []);
+  }, [mounted]);
 
   return (
     <svg
@@ -165,6 +182,7 @@ export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = 
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`w-64 h-64 md:w-96 md:h-96 ${className}`}
+      suppressHydrationWarning
     >
       <defs>
         <linearGradient id="webbound_logo_grad" x1="48" y1="68" x2="152" y2="132" gradientUnits="userSpaceOnUse">
@@ -200,15 +218,12 @@ export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = 
 
       {/* Disruption Floating Particles */}
       <g ref={particlesGroupRef}>
-        {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
-          const rad = (deg * Math.PI) / 180;
-          const cx = 100 + Math.cos(rad) * 60;
-          const cy = 100 + Math.sin(rad) * 60;
-          return <circle key={i} cx={cx} cy={cy} r="2.5" fill="#C5F52A" />;
-        })}
+        {PARTICLE_COORDS.map((pt, i) => (
+          <circle key={i} cx={pt.cx} cy={pt.cy} r="2.5" fill="#C5F52A" />
+        ))}
       </g>
 
-      {/* Glassmorphic Background Frame */}
+      {/* Wireframe Outline Background Frame */}
       <rect
         ref={frameRef}
         x="36"
@@ -216,10 +231,9 @@ export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = 
         width="128"
         height="128"
         rx="28"
-        fill="#FFFFFF"
-        fillOpacity="0.75"
+        fill="none"
         stroke="#0A0A0A"
-        strokeOpacity="0.12"
+        strokeOpacity="0.15"
         strokeWidth="1.5"
       />
 

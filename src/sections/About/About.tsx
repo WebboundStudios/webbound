@@ -3,26 +3,21 @@
 import React from 'react';
 import { TextReveal } from '@/components/animations/TextReveal';
 import { CounterAnimation } from '@/components/animations/CounterAnimation';
-import { ScrollPathFollower } from '@/components/animations/ScrollPathFollower';
 import { ShieldCheck, Zap } from 'lucide-react';
 
 export const About: React.FC = () => {
   return (
     <section id="about" data-theme-bg="#F5F3EE" className="relative py-36 px-6 md:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-500">
-      {/* Background SVG Scroll Path Follower */}
-      <div className="absolute top-0 right-0 bottom-0 left-0 z-0 opacity-20 pointer-events-none overflow-hidden flex items-center justify-center">
-        <ScrollPathFollower className="w-[120%] -rotate-6" strokeColor="#0A0A0A" strokeWidth={12} />
-      </div>
-
-      {/* Decorative arcs */}
+      {/* Decorative arc */}
       <div className="absolute top-20 right-20 w-[400px] h-[400px] rounded-full border border-dashed border-[#0A0A0A]/[0.04] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="flex flex-col space-y-3 mb-16">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#6B7280]">
-            <span className="w-2 h-2 rounded-full bg-[#C5F52A]" />
-            <span>WHO I AM</span>
+          {/* Numbered section marker */}
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">02 /</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Who I Am</span>
           </div>
           <TextReveal
             as="h2"
@@ -43,26 +38,16 @@ export const About: React.FC = () => {
               I bridge the gap between high-art creative direction and rigorous software engineering. By pairing fluid visual motion (GSAP, WebGL, Lenis) with Next.js 15 App Router performance, I deliver bespoke digital flagships that load instantly and leave a lasting impression.
             </p>
 
-            {/* Feature Highlights Grid */}
+            {/* Feature Highlights — left-border accent, no icon box */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-6">
-              <div className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A]/50 transition-colors">
-                <div className="p-2.5 rounded-xl bg-[#C5F52A]/15 text-[#0A0A0A]">
-                  <ShieldCheck className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">Uncompromised Quality</h4>
-                  <p className="text-xs text-[#6B7280] mt-1">Zero templates. Bespoke architecture built for long-term scalability.</p>
-                </div>
+              <div className="pl-4 border-l-2 border-[#C5F52A] space-y-1">
+                <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">Uncompromised Quality</h4>
+                <p className="text-xs text-[#6B7280]">Zero templates. Bespoke architecture built for long-term scalability.</p>
               </div>
 
-              <div className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A]/50 transition-colors">
-                <div className="p-2.5 rounded-xl bg-[#0A0A0A] text-[#C5F52A]">
-                  <Zap className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">GPU Motion Physics</h4>
-                  <p className="text-xs text-[#6B7280] mt-1">Liquid smooth 60fps scroll animations tailored for high-end feel.</p>
-                </div>
+              <div className="pl-4 border-l-2 border-[#0A0A0A] space-y-1">
+                <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">GPU Motion Physics</h4>
+                <p className="text-xs text-[#6B7280]">Liquid smooth 60fps scroll animations tailored for high-end feel.</p>
               </div>
             </div>
           </div>

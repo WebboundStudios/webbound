@@ -82,9 +82,9 @@ export const Footer: React.FC = () => {
             <p className="font-body-ui text-sm text-[#9CA3AF] font-light leading-relaxed max-w-sm">
               {SITE_CONFIG.description}
             </p>
-            <div className="flex items-center gap-3 text-xs font-mono text-white font-semibold">
-              <span className="w-2 h-2 rounded-full bg-[#C5F52A] animate-pulse" />
-              <span>ACCEPTING SELECT NEW FREELANCE PROJECTS FOR {currentYear}</span>
+            <div className="flex items-center gap-2.5 text-xs font-mono text-white/60 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C5F52A] shrink-0" />
+              <span suppressHydrationWarning>OPEN TO WORK — {currentYear}</span>
             </div>
           </div>
 
@@ -182,7 +182,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Copyright */}
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#9CA3AF]">
-          <span>
+          <span suppressHydrationWarning>
             © {currentYear} {SITE_CONFIG.name}. All Rights Reserved.
           </span>
           <span className="text-[#9CA3AF]">

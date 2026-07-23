@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { usePathname } from 'next/navigation';
 import { useLoadingStore } from '@/providers/LoadingProvider';
 
 if (typeof window !== 'undefined') {
@@ -13,6 +14,7 @@ if (typeof window !== 'undefined') {
 export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const lenisRef = useRef<Lenis | null>(null);
   const { isLoading } = useLoadingStore();
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check reduced motion preference
@@ -50,18 +52,22 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
   }, []);
 
-  // Control Lenis smooth scroll based on loading state
+  // Control Lenis smooth scroll based on loading state and active route
   useEffect(() => {
     const lenis = lenisRef.current;
     if (!lenis) return;
 
-    if (isLoading) {
+    if (pathname !== '/') {
+      // Non-homepage routes (e.g. /animations) don't use preloader, ensure Lenis is started
+      lenis.start();
+      ScrollTrigger.refresh();
+    } else if (isLoading) {
       lenis.stop();
     } else {
       lenis.start();
       ScrollTrigger.refresh();
     }
-  }, [isLoading]);
+  }, [isLoading, pathname]);
 
   return <>{children}</>;
 };

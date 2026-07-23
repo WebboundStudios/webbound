@@ -4,14 +4,14 @@ import React, { useState } from 'react';
 import { SERVICES } from '@/constants/data';
 import { TextReveal } from '@/components/animations/TextReveal';
 import { TextRoll } from '@/components/animations/TextRoll';
-import { Layout, Edit3, Layers, Database, ChevronRight, CheckCircle2, Tag } from 'lucide-react';
+import { Layout, Edit3, Layers, Database, ChevronRight } from 'lucide-react';
 import { useTilt } from '@/hooks/useTilt';
 
 const iconMap: Record<string, React.ReactNode> = {
-  Layout: <Layout className="w-7 h-7 text-[#0A0A0A]" />,
-  Edit3: <Edit3 className="w-7 h-7 text-[#0A0A0A]" />,
-  Layers: <Layers className="w-7 h-7 text-[#0A0A0A]" />,
-  Database: <Database className="w-7 h-7 text-[#0A0A0A]" />,
+  Layout: <Layout className="w-6 h-6 text-[#0A0A0A]" />,
+  Edit3: <Edit3 className="w-6 h-6 text-[#0A0A0A]" />,
+  Layers: <Layers className="w-6 h-6 text-[#0A0A0A]" />,
+  Database: <Database className="w-6 h-6 text-[#0A0A0A]" />,
 };
 
 interface ServiceCardProps {
@@ -28,36 +28,33 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, index, isExpanded, o
     <div
       ref={tiltRef}
       onClick={onToggle}
-      className={`relative p-7 sm:p-9 rounded-3xl bg-white border transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-xs hover:shadow-md ${
-        isExpanded ? 'border-[#C5F52A] ring-2 ring-[#C5F52A]/30' : 'border-[#0A0A0A]/[0.06] hover:border-[#C5F52A]'
+      className={`relative pl-7 pr-7 sm:pl-9 sm:pr-9 pt-7 pb-7 sm:pt-9 sm:pb-9 rounded-3xl bg-white border-l-4 border-t border-r border-b transition-all duration-300 cursor-pointer group flex flex-col justify-between shadow-xs hover:shadow-md ${
+        isExpanded
+          ? 'border-l-[#C5F52A] border-t-[#0A0A0A]/[0.06] border-r-[#0A0A0A]/[0.06] border-b-[#0A0A0A]/[0.06]'
+          : 'border-l-[#0A0A0A]/10 border-t-[#0A0A0A]/[0.06] border-r-[#0A0A0A]/[0.06] border-b-[#0A0A0A]/[0.06] hover:border-l-[#C5F52A]'
       }`}
       data-cursor="Expand"
     >
-      {/* Accent top line */}
-      <div
-        className={`absolute top-0 left-8 right-8 h-[2px] bg-[#C5F52A] transition-opacity duration-300 rounded-full ${
-          isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-        }`}
-      />
-
       <div>
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-          <div className="p-3.5 rounded-2xl bg-[#C5F52A]/15 group-hover:bg-[#C5F52A] transition-colors duration-300">
-            {iconMap[service.iconName] || <Layout className="w-7 h-7 text-[#0A0A0A]" />}
+        <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
+          <div className="p-3 rounded-xl bg-[#F5F3EE]">
+            {iconMap[service.iconName] || <Layout className="w-6 h-6 text-[#0A0A0A]" />}
           </div>
           {service.priceRange && (
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0A0A0A] text-[#C5F52A] text-xs font-mono font-bold tracking-tight shadow-xs">
-              <Tag className="w-3.5 h-3.5 text-[#C5F52A]" />
-              <span>{service.priceRange}</span>
-            </div>
+            <span className="font-mono text-[11px] text-[#6B7280] tracking-wider">{service.priceRange}</span>
           )}
         </div>
+
+        {/* Index marker */}
+        <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase block mb-2">
+          0{index + 1}
+        </span>
 
         {/* Title & Subtitle */}
         <h3 className="font-section-heading text-2xl sm:text-3xl font-bold text-[#0A0A0A] transition-colors duration-300">
           {service.title}
         </h3>
-        <p className="text-xs font-mono text-[#6B7280] uppercase tracking-wider mt-2 font-medium">
+        <p className="text-xs font-mono text-[#6B7280] uppercase tracking-wider mt-1.5">
           {service.subtitle}
         </p>
 
@@ -73,12 +70,12 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, index, isExpanded, o
           }`}
         >
           <span className="text-xs uppercase font-mono tracking-widest text-[#0A0A0A] mb-3 block font-bold">
-            KEY DELIVERABLES:
+            Deliverables
           </span>
-          <ul className="space-y-2">
+          <ul className="space-y-1.5">
             {service.deliverables.map((item, i) => (
-              <li key={i} className="flex items-center gap-2 text-xs font-body-ui text-[#6B7280]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#C5F52A] shrink-0" />
+              <li key={i} className="flex items-start gap-2 text-xs font-body-ui text-[#6B7280]">
+                <span className="text-[#C5F52A] font-mono shrink-0 mt-px">—</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -86,18 +83,18 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, index, isExpanded, o
         </div>
       </div>
 
-      {/* Footer info: tags & expandable trigger */}
+      {/* Footer */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 mt-6 border-t border-[#0A0A0A]/[0.06] text-xs font-mono">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {service.tags.map((tag, i) => (
-            <span key={i} className="px-2.5 py-1 rounded-full bg-[#F5F3EE] text-[#6B7280] text-[11px] sm:text-xs">
+            <span key={i} className="text-[#6B7280] text-[11px] after:content-[','] last:after:content-[''] after:ml-0.5">
               {tag}
             </span>
           ))}
         </div>
-        <div className="flex items-center gap-1 font-bold text-[#0A0A0A] shrink-0 self-start sm:self-auto group-hover:text-[#0A0A0A]">
-          <TextRoll center>{isExpanded ? 'Show Less' : 'Package Details'}</TextRoll>
-          <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} />
+        <div className="flex items-center gap-1 font-bold text-[#0A0A0A] shrink-0 self-start sm:self-auto">
+          <TextRoll center>{isExpanded ? 'Less' : 'Details'}</TextRoll>
+          <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} />
         </div>
       </div>
     </div>
@@ -116,9 +113,9 @@ export const Services: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col space-y-3 mb-16">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#6B7280]">
-            <span className="w-2 h-2 rounded-full bg-[#C5F52A]" />
-            <span>OFFERING PACKAGES & PRICING</span>
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">03 /</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Offering &amp; Pricing</span>
           </div>
           <TextReveal
             as="h2"
@@ -128,7 +125,6 @@ export const Services: React.FC = () => {
           </TextReveal>
         </div>
 
-        {/* 4 Tier Grid — items-start prevents adjacent grid items from stretching */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-start">
           {SERVICES.map((service, index) => (
             <ServiceCard
