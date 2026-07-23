@@ -47,7 +47,7 @@ export const ParallaxColumns: React.FC<{ className?: string }> = ({ className = 
   return (
     <div
       ref={galleryRef}
-      className={`relative flex h-[60vh] sm:h-[75vh] gap-[1.5vw] overflow-hidden bg-[#0A0A0A] p-[1.5vw] rounded-2xl select-none ${className}`}
+      className={`relative flex h-80 sm:h-[400px] md:h-[450px] gap-[1.5vw] overflow-hidden bg-[#0A0A0A] p-[1.5vw] rounded-2xl select-none ${className}`}
     >
       <Column images={[defaultImages[0], defaultImages[1], defaultImages[2]]} y={y1} />
       <Column images={[defaultImages[3], defaultImages[4], defaultImages[5]]} y={y2} />
@@ -69,7 +69,7 @@ const Column = ({ images, y }: ColumnProps) => {
       style={{ y }}
     >
       {images.map((src, i) => (
-        <div key={i} className="relative h-48 sm:h-64 md:h-72 w-full overflow-hidden rounded-xl border border-white/10 shadow-xl shrink-0">
+        <div key={i} className="relative h-36 sm:h-64 md:h-72 w-full overflow-hidden rounded-xl border border-white/10 shadow-xl shrink-0">
           <img
             src={src}
             alt="Parallax Showcase"

@@ -105,20 +105,20 @@ export default function AnimationsLabPage() {
       </section>
 
       {/* Main Experiments Showcase Grid */}
-      <section className="py-20 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+      <section className="py-12 sm:py-20 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
 
           {/* Card 2: Kinetic Dual-Character Text Roll */}
           {(activeCategory === 'all' || activeCategory === 'typography') && (
-            <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-8 group shadow-xs hover:shadow-xl">
+            <div className="p-6 sm:p-8 md:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-6 sm:space-y-8 group shadow-xs hover:shadow-xl overflow-hidden">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
                     — Kinetic Typography
                   </span>
-                  <span className="text-xs font-mono text-[#0A0A0A]/30">Framer Motion</span>
+                  <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Framer Motion</span>
                 </div>
-                <h3 className="font-section-heading text-2xl font-bold text-[#0A0A0A]">
+                <h3 className="font-section-heading text-xl sm:text-2xl font-bold text-[#0A0A0A]">
                   Dual-Character Text Roll
                 </h3>
                 <p className="mt-2 text-sm font-body-ui text-[#6B7280] font-light leading-relaxed">
@@ -127,23 +127,25 @@ export default function AnimationsLabPage() {
               </div>
 
               {/* Interactive Preview Canvas */}
-              <div className="relative w-full h-72 rounded-2xl bg-[#0A0A0A] border border-white/10 flex flex-col items-center justify-center p-6 space-y-4 text-white">
-                <TextRoll center className="font-hero-display text-4xl sm:text-5xl font-black text-[#C5F52A] tracking-tight uppercase cursor-pointer">
-                  HOVER OVER ME
-                </TextRoll>
-                <span className="text-xs font-mono text-[#9CA3AF] uppercase tracking-widest">
+              <div className="relative w-full h-64 sm:h-72 rounded-2xl bg-[#0A0A0A] border border-white/10 flex flex-col items-center justify-center p-4 sm:p-6 space-y-4 text-white overflow-hidden">
+                <div className="max-w-full overflow-hidden px-2 text-center">
+                  <TextRoll center className="font-hero-display text-2xl sm:text-3xl lg:text-4xl font-black text-[#C5F52A] tracking-tight uppercase cursor-pointer">
+                    HOVER OVER ME
+                  </TextRoll>
+                </div>
+                <span className="text-[10px] sm:text-xs font-mono text-[#9CA3AF] uppercase tracking-widest text-center">
                   Try hovering the text above
                 </span>
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                   <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Framer Motion</span>
                   <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Letter Stagger</span>
                 </div>
                 <a
                   href="/#contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
                 >
                   <span>Request Effect</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -154,15 +156,15 @@ export default function AnimationsLabPage() {
 
           {/* Card 3: Magnetic Physics Buttons */}
           {(activeCategory === 'all' || activeCategory === 'physics') && (
-            <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-8 group shadow-xs hover:shadow-xl">
+            <div className="p-6 sm:p-8 md:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-6 sm:space-y-8 group shadow-xs hover:shadow-xl overflow-hidden">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
                     — Cursor &amp; Physics
                   </span>
-                  <span className="text-xs font-mono text-[#0A0A0A]/30">Framer Spring</span>
+                  <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Framer Spring</span>
                 </div>
-                <h3 className="font-section-heading text-2xl font-bold text-[#0A0A0A]">
+                <h3 className="font-section-heading text-xl sm:text-2xl font-bold text-[#0A0A0A]">
                   Magnetic Physics Pull
                 </h3>
                 <p className="mt-2 text-sm font-body-ui text-[#6B7280] font-light leading-relaxed">
@@ -171,10 +173,10 @@ export default function AnimationsLabPage() {
               </div>
 
               {/* Interactive Preview Canvas */}
-              <div className="relative w-full h-72 rounded-2xl bg-[#F5F3EE] border border-[#0A0A0A]/[0.06] flex items-center justify-center gap-4 p-6">
-                <MagneticButton variant="primary" size="lg">
+              <div className="relative w-full h-64 sm:h-72 rounded-2xl bg-[#F5F3EE] border border-[#0A0A0A]/[0.06] flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 overflow-hidden">
+                <MagneticButton variant="primary" size="md">
                   <TextRoll center>MAGNETIC BTN</TextRoll>
-                  <ArrowUpRight className="w-4 h-4 ml-1" />
+                  <ArrowUpRight className="w-4 h-4 ml-1 shrink-0" />
                 </MagneticButton>
 
                 <MagneticButton variant="outline" size="md">
@@ -182,14 +184,14 @@ export default function AnimationsLabPage() {
                 </MagneticButton>
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                   <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Spring Physics</span>
                   <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Cursor Distance</span>
                 </div>
                 <a
                   href="/#contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
                 >
                   <span>Request Effect</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -200,15 +202,15 @@ export default function AnimationsLabPage() {
 
           {/* Card 4: 4-Column Multi-Speed Parallax Gallery */}
           {(activeCategory === 'all' || activeCategory === 'scroll') && (
-            <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-8 group shadow-xs hover:shadow-xl md:col-span-2">
+            <div className="p-6 sm:p-8 md:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-6 sm:space-y-8 group shadow-xs hover:shadow-xl md:col-span-2 overflow-hidden">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
                     — Scroll Dynamics
                   </span>
-                  <span className="text-xs font-mono text-[#0A0A0A]/30">Skiper 30 Parallax</span>
+                  <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Skiper 30 Parallax</span>
                 </div>
-                <h3 className="font-section-heading text-2xl font-bold text-[#0A0A0A]">
+                <h3 className="font-section-heading text-xl sm:text-2xl font-bold text-[#0A0A0A]">
                   4-Column Multi-Speed Parallax Gallery
                 </h3>
                 <p className="mt-2 text-sm font-body-ui text-[#6B7280] font-light leading-relaxed">
@@ -221,8 +223,8 @@ export default function AnimationsLabPage() {
                 <ParallaxColumns />
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center justify-between">
-                <p className="text-[10px] font-mono text-[#0A0A0A]/30">Multi-Speed Y Transform  ·  useScroll Offset</p>
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
+                <p className="text-[10px] sm:text-xs font-mono text-[#0A0A0A]/50 shrink-0">Multi-Speed Y Transform  ·  useScroll Offset</p>
                 <a
                   href="/#contact"
                   className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
@@ -236,15 +238,15 @@ export default function AnimationsLabPage() {
 
           {/* Card 5: Infinite Marquee with Hover Pause */}
           {(activeCategory === 'all' || activeCategory === 'scroll') && (
-            <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-8 group shadow-xs hover:shadow-xl">
+            <div className="p-6 sm:p-8 md:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-6 sm:space-y-8 group shadow-xs hover:shadow-xl overflow-hidden">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
                     — Scroll Dynamics
                   </span>
-                  <span className="text-xs font-mono text-[#0A0A0A]/30">Framer RAF Loop</span>
+                  <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Framer RAF Loop</span>
                 </div>
-                <h3 className="font-section-heading text-2xl font-bold text-[#0A0A0A]">
+                <h3 className="font-section-heading text-xl sm:text-2xl font-bold text-[#0A0A0A]">
                   Infinite Marquee with Scroll Velocity
                 </h3>
                 <p className="mt-2 text-sm font-body-ui text-[#6B7280] font-light leading-relaxed">
@@ -253,12 +255,12 @@ export default function AnimationsLabPage() {
               </div>
 
               {/* Interactive Preview Canvas */}
-              <div className="relative w-full h-72 rounded-2xl bg-[#F5F3EE] border border-[#0A0A0A]/[0.06] flex items-center justify-center overflow-hidden p-2">
+              <div className="relative w-full h-64 sm:h-72 rounded-2xl bg-[#F5F3EE] border border-[#0A0A0A]/[0.06] flex items-center justify-center overflow-hidden p-2">
                 <InfiniteMarquee direction="left" speed="slow" fadeColor="none">
                   {['NEXT.JS 15', 'GSAP PREMIUM', 'REACT 19', 'LENIS SCROLL', 'THREE.JS'].map((tech, i) => (
                     <div
                       key={i}
-                      className="px-6 py-3 rounded-xl bg-white border border-[#0A0A0A]/10 font-mono text-sm font-bold text-[#0A0A0A] shadow-xs shrink-0"
+                      className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-white border border-[#0A0A0A]/10 font-mono text-xs sm:text-sm font-bold text-[#0A0A0A] shadow-xs shrink-0"
                     >
                       {tech}
                     </div>
@@ -266,11 +268,11 @@ export default function AnimationsLabPage() {
                 </InfiniteMarquee>
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center justify-between">
-                <p className="text-[10px] font-mono text-[#0A0A0A]/30">RAF Loop  ·  Hover Pause</p>
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
+                <p className="text-[10px] sm:text-xs font-mono text-[#0A0A0A]/50 shrink-0">RAF Loop  ·  Hover Pause</p>
                 <a
                   href="/#contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
                 >
                   <span>Request Effect</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -281,15 +283,15 @@ export default function AnimationsLabPage() {
 
           {/* Card 6: Dynamic Metric Counter */}
           {(activeCategory === 'all' || activeCategory === 'physics') && (
-            <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-8 group shadow-xs hover:shadow-xl">
+            <div className="p-6 sm:p-8 md:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 flex flex-col justify-between space-y-6 sm:space-y-8 group shadow-xs hover:shadow-xl overflow-hidden">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
                     — Cursor &amp; Physics
                   </span>
-                  <span className="text-xs font-mono text-[#0A0A0A]/30">GSAP Counter</span>
+                  <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">GSAP Counter</span>
                 </div>
-                <h3 className="font-section-heading text-2xl font-bold text-[#0A0A0A]">
+                <h3 className="font-section-heading text-xl sm:text-2xl font-bold text-[#0A0A0A]">
                   Numerical Metric Count-Up
                 </h3>
                 <p className="mt-2 text-sm font-body-ui text-[#6B7280] font-light leading-relaxed">
@@ -298,22 +300,22 @@ export default function AnimationsLabPage() {
               </div>
 
               {/* Interactive Preview Canvas */}
-              <div className="relative w-full h-72 rounded-2xl bg-[#0A0A0A] border border-white/10 flex items-center justify-center p-6 text-center">
-                <div className="space-y-2">
-                  <span className="font-hero-display text-6xl sm:text-7xl font-black text-[#C5F52A] block">
+              <div className="relative w-full h-64 sm:h-72 rounded-2xl bg-[#0A0A0A] border border-white/10 flex items-center justify-center p-4 sm:p-6 text-center overflow-hidden">
+                <div className="space-y-2 max-w-full overflow-hidden">
+                  <span className="font-hero-display text-5xl sm:text-6xl md:text-7xl font-black text-[#C5F52A] block">
                     <CounterAnimation end={100} suffix="%" />
                   </span>
-                  <span className="text-xs font-mono text-[#9CA3AF] uppercase tracking-widest block">
+                  <span className="text-[10px] sm:text-xs font-mono text-[#9CA3AF] uppercase tracking-widest block">
                     Sub-Second Target
                   </span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center justify-between">
-                <p className="text-[10px] font-mono text-[#0A0A0A]/30">GSAP Easing  ·  Numeric Interpolation</p>
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
+                <p className="text-[10px] sm:text-xs font-mono text-[#0A0A0A]/50 shrink-0">GSAP Easing  ·  Numeric Interpolation</p>
                 <a
                   href="/#contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
                 >
                   <span>Request Effect</span>
                   <ArrowUpRight className="w-4 h-4" />

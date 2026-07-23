@@ -110,6 +110,12 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
       onMouseLeave={() => {
         isHovered.current = false;
       }}
+      onTouchStart={() => {
+        isHovered.current = true;
+      }}
+      onTouchEnd={() => {
+        isHovered.current = false;
+      }}
     >
       {/* Gradient edge masks matching section theme */}
       {fadeColor !== 'none' && (

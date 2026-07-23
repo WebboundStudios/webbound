@@ -15,12 +15,13 @@ export const TextRoll: React.FC<{
     <motion.span
       initial="initial"
       whileHover="hovered"
-      className={cn('relative block overflow-hidden cursor-pointer select-none', className)}
+      whileTap="hovered"
+      className={cn('relative inline-block overflow-hidden cursor-pointer select-none align-middle py-0.5', className)}
       style={{
-        lineHeight: 0.85,
+        lineHeight: 1.05,
       }}
     >
-      <div className="flex items-center">
+      <div className="inline-flex items-center justify-center">
         {children.split('').map((l, i) => {
           const delay = center
             ? STAGGER * Math.abs(i - (children.length - 1) / 2)
@@ -49,7 +50,7 @@ export const TextRoll: React.FC<{
           );
         })}
       </div>
-      <div className="absolute inset-0 flex items-center">
+      <div className="absolute inset-0 inline-flex items-center justify-center">
         {children.split('').map((l, i) => {
           const delay = center
             ? STAGGER * Math.abs(i - (children.length - 1) / 2)

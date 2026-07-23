@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { MagneticButton } from '@/components/animations/MagneticButton';
+import { TextRoll } from '@/components/animations/TextRoll';
 import { Send, CheckCircle2, AlertCircle, Loader2, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -253,7 +254,7 @@ export const ContactForm: React.FC = () => {
               </>
             ) : (
               <>
-                <span>SEND PROJECT INQUIRY</span>
+                <TextRoll center>SEND PROJECT INQUIRY</TextRoll>
                 <Send className="w-4 h-4 ml-1" />
               </>
             )}

@@ -123,8 +123,6 @@ export const CustomCursor: React.FC = () => {
     };
   }, [isVisible]);
 
-  if (typeof window !== 'undefined' && window.innerWidth < 1024) return null;
-
   return (
     <>
       {/* Outer Follower Ring */}
