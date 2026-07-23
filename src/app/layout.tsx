@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
 import { LoadingProvider } from '@/providers/LoadingProvider';
+import { Analytics } from '@vercel/analytics/next';
 
 const clashDisplay = localFont({
   src: [
@@ -110,7 +111,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${clashDisplay.variable} ${cabinetGrotesk.variable} ${satoshi.variable} dark h-full antialiased`}
+      className={`${clashDisplay.variable} ${cabinetGrotesk.variable} ${satoshi.variable} h-full antialiased`}
     >
       <head>
         <script
@@ -118,10 +119,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#03050C] text-white selection:bg-[#D4AF37] selection:text-[#03050C] font-body-ui">
+      <body className="min-h-full flex flex-col bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] font-body-ui">
         <LoadingProvider>
           <SmoothScrollProvider>{children}</SmoothScrollProvider>
         </LoadingProvider>
+        <Analytics />
       </body>
     </html>
   );

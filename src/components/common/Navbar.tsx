@@ -106,7 +106,7 @@ export const Navbar: React.FC = () => {
       {menuOpen && (
         <div
           ref={menuOverlayRef}
-          className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-between p-8 md:p-16"
+          className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-between p-8 md:p-16 pb-28 sm:pb-32 md:pb-36"
           style={{ clipPath: 'inset(100% 0 0 0)' }}
         >
           {/* Top Row */}
