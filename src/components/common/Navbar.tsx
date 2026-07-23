@@ -106,11 +106,11 @@ export const Navbar: React.FC = () => {
       {menuOpen && (
         <div
           ref={menuOverlayRef}
-          className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-between p-8 md:p-16 pb-28 sm:pb-32 md:pb-36"
+          className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-between p-8 md:p-16 pb-24"
           style={{ clipPath: 'inset(100% 0 0 0)' }}
         >
           {/* Top Row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between max-w-7xl mx-auto w-full">
             <span className="text-xs font-mono uppercase tracking-widest text-[#6B7280]">
               NAVIGATION
             </span>
@@ -120,7 +120,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Center Menu Items */}
-          <div ref={menuItemsRef} className="flex flex-col items-start gap-2 my-auto max-w-4xl mx-auto w-full">
+          <div ref={menuItemsRef} className="flex flex-col items-start gap-2 my-auto max-w-4xl mx-auto w-full py-6">
             {NAV_LINKS.map((link, idx) => (
               <a
                 key={link.href}
@@ -140,20 +140,6 @@ export const Navbar: React.FC = () => {
                 <ArrowUpRight className="w-6 h-6 text-[#6B7280] group-hover:text-[#C5F52A] ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300" />
               </a>
             ))}
-          </div>
-
-          {/* Bottom Row */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-8 border-t border-white/10">
-            <div className="flex flex-col">
-              <span className="text-xs text-[#6B7280] font-body-ui">Direct Contact</span>
-              <a href="mailto:hello@webboundstudios.com" className="text-sm font-semibold text-white hover:text-[#C5F52A] transition-colors">
-                <TextRoll>hello@webboundstudios.com</TextRoll>
-              </a>
-            </div>
-            <div className="flex items-center gap-3 text-xs font-mono text-[#6B7280]">
-              <span className="w-2 h-2 rounded-full bg-[#C5F52A] animate-pulse" />
-              <span>ACCEPTING NEW PROJECTS</span>
-            </div>
           </div>
         </div>
       )}
