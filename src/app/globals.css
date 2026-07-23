@@ -1,0 +1,203 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-mono: monospace;
+  --font-display: var(--font-display), sans-serif;
+  --font-heading: var(--font-heading), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+
+  --color-brand-bg: #F5F3EE;
+  --color-brand-bg-dark: #0A0A0A;
+  --color-brand-card: #FFFFFF;
+  --color-brand-card-dark: #141414;
+  --color-brand-text: #0A0A0A;
+  --color-brand-text-muted: #6B7280;
+  --color-brand-accent: #C5F52A;
+  --color-brand-accent-hover: #B8E625;
+  --color-brand-border: rgba(0, 0, 0, 0.08);
+  --color-brand-border-dark: rgba(255, 255, 255, 0.1);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-card: var(--card);
+}
+
+:root {
+  --background: #F5F3EE;
+  --foreground: #0A0A0A;
+  --card: #FFFFFF;
+  --card-foreground: #0A0A0A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0A0A0A;
+  --primary: #C5F52A;
+  --primary-foreground: #0A0A0A;
+  --secondary: #F0EDE6;
+  --secondary-foreground: #6B7280;
+  --muted: #F0EDE6;
+  --muted-foreground: #6B7280;
+  --accent: #C5F52A;
+  --accent-foreground: #0A0A0A;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: rgba(0, 0, 0, 0.08);
+  --input: rgba(0, 0, 0, 0.06);
+  --ring: #C5F52A;
+  --radius: 0.75rem;
+
+  /* Webbound Design Tokens */
+  --wb-bg: #F5F3EE;
+  --wb-bg-dark: #0A0A0A;
+  --wb-card: #FFFFFF;
+  --wb-card-dark: #141414;
+  --wb-text: #0A0A0A;
+  --wb-text-light: #FFFFFF;
+  --wb-text-muted: #6B7280;
+  --wb-text-muted-dark: #9CA3AF;
+  --wb-accent: #C5F52A;
+  --wb-border: rgba(0, 0, 0, 0.08);
+  --wb-border-dark: rgba(255, 255, 255, 0.1);
+}
+
+/* Global Selection Styling */
+::selection {
+  background-color: #C5F52A;
+  color: #0A0A0A;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F3EE;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(10, 10, 10, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0A0A0A;
+}
+
+/* Base resets & typography scoping */
+@layer base {
+  * {
+    @apply border-border outline-none;
+  }
+  html {
+    color-scheme: light;
+    scroll-behavior: auto !important;
+    background-color: #F5F3EE;
+    color: #0A0A0A;
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+  body {
+    background-color: #F5F3EE;
+    color: #0A0A0A;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Typography Rules */
+  .font-hero-display {
+    font-family: var(--font-display), system-ui, sans-serif;
+    letter-spacing: -0.04em;
+  }
+
+  .font-section-heading {
+    font-family: var(--font-heading), system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-body-ui {
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+
+  /* GSAP SplitText Word Spacing Fix */
+  div[class*="wordsClass"],
+  .split-word {
+    display: inline-block !important;
+    margin-right: 0.28em !important;
+  }
+  div[class*="wordsClass"]:last-child,
+  .split-word:last-child {
+    margin-right: 0 !important;
+  }
+}
+
+/* Custom GPU Optimization & Micro-Utilities */
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* Light Section Utility */
+.section-light {
+  background-color: var(--wb-bg);
+  color: var(--wb-text);
+}
+
+/* Dark Section Utility */
+.section-dark {
+  background-color: var(--wb-bg-dark);
+  color: var(--wb-text-light);
+}
+
+/* Glass Panel (for dark sections) */
+.glass-panel {
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Clean Card (for light sections) */
+.clean-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.clean-card:hover {
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark Card */
+.dark-card {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Accent Glow */
+.accent-glow {
+  box-shadow: 0 0 30px rgba(197, 245, 42, 0.2);
+}
+
+/* Hide default cursor on desktop when custom cursor is active */
+@media (min-width: 1024px) {
+  body.custom-cursor-enabled,
+  body.custom-cursor-enabled a,
+  body.custom-cursor-enabled button {
+    cursor: none !important;
+  }
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
