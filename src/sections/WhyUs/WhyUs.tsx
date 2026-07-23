@@ -3,6 +3,7 @@
 import React from 'react';
 import { WHY_US } from '@/constants/data';
 import { TextReveal } from '@/components/animations/TextReveal';
+import { ScrollPathFollower } from '@/components/animations/ScrollPathFollower';
 import { Shield, Cpu, Gauge, Trophy } from 'lucide-react';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -14,8 +15,13 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export const WhyUs: React.FC = () => {
   return (
-    <section id="why-us" data-theme-bg="#F5F3EE" className="relative bg-[#F5F3EE] py-28 sm:py-32 px-6 md:px-12 lg:px-20 text-[#0A0A0A] transition-colors duration-200">
-      <div className="max-w-7xl mx-auto">
+    <section id="why-us" data-theme-bg="#F5F3EE" className="relative bg-[#F5F3EE] py-28 sm:py-32 px-6 md:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-200">
+      {/* Background SVG Scroll Stroke Follower */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center opacity-30 pointer-events-none overflow-hidden">
+        <ScrollPathFollower className="w-[110%] md:w-[90%] -translate-y-12" strokeColor="#C5F52A" strokeWidth={16} />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">
           <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#6B7280]">

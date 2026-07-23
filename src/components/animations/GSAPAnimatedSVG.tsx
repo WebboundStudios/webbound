@@ -5,27 +5,37 @@ import gsap from 'gsap';
 
 export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = '' }) => {
   const containerRef = useRef<SVGSVGElement>(null);
+  const frameRef = useRef<SVGRectElement>(null);
+  const wPathRef = useRef<SVGPathElement>(null);
+  const dotRef = useRef<SVGCircleElement>(null);
   const ring1Ref = useRef<SVGCircleElement>(null);
   const ring2Ref = useRef<SVGCircleElement>(null);
-  const ring3Ref = useRef<SVGCircleElement>(null);
-  const path1Ref = useRef<SVGPathElement>(null);
-  const path2Ref = useRef<SVGPathElement>(null);
+  const particlesGroupRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
     const svg = containerRef.current;
-    if (!svg) return;
+    const wPath = wPathRef.current;
+    const dot = dotRef.current;
+    const frame = frameRef.current;
+    const ring1 = ring1Ref.current;
+    const ring2 = ring2Ref.current;
+    const particlesGroup = particlesGroupRef.current;
+
+    if (!svg || !wPath || !dot || !frame) return;
 
     const ctx = gsap.context(() => {
-      // 1. Continuous opposite rotations of SVG rings
-      gsap.to(ring1Ref.current, {
+      const length = wPath.getTotalLength();
+
+      // Continuous ambient rotation on outer tech rings
+      gsap.to(ring1, {
         rotation: 360,
         transformOrigin: '50% 50%',
-        duration: 25,
+        duration: 24,
         repeat: -1,
         ease: 'none',
       });
 
-      gsap.to(ring2Ref.current, {
+      gsap.to(ring2, {
         rotation: -360,
         transformOrigin: '50% 50%',
         duration: 18,
@@ -33,46 +43,116 @@ export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = 
         ease: 'none',
       });
 
-      gsap.to(ring3Ref.current, {
-        rotation: 360,
-        transformOrigin: '50% 50%',
-        duration: 32,
-        repeat: -1,
-        ease: 'none',
-      });
+      // Creation - Disruption - Reformation Loop Timeline
+      const masterTl = gsap.timeline({ repeat: -1, repeatDelay: 0.8 });
 
-      // 2. Stroke drawing animation on paths
-      const paths = [path1Ref.current, path2Ref.current];
-      paths.forEach((path) => {
-        if (!path) return;
-        const length = path.getTotalLength();
-        gsap.set(path, {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-        });
+      const particles = particlesGroup?.children ? Array.from(particlesGroup.children) : [];
 
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          duration: 3,
-          ease: 'power2.inOut',
-          repeat: -1,
+      masterTl
+        // 1. Initial State
+        .set(wPath, { strokeDasharray: length, strokeDashoffset: length, opacity: 1 })
+        .set(frame, { scale: 0.8, opacity: 0, rotation: -15, transformOrigin: '50% 50%' })
+        .set(dot, { scale: 0, opacity: 0, transformOrigin: '50% 50%' })
+        .set(particles, { scale: 0.5, x: 0, y: 0, opacity: 0 })
+
+        // 2. Glass Frame & Particles Reveal
+        .to(frame, {
+          scale: 1,
+          opacity: 1,
+          rotation: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+        })
+        .to(
+          particles,
+          {
+            scale: 1,
+            opacity: 0.6,
+            duration: 0.8,
+            stagger: 0.05,
+            ease: 'back.out(1.5)',
+          },
+          '-=0.8'
+        )
+
+        // 3. Draw Webbound Logo "W" Stroke
+        .to(
+          wPath,
+          {
+            strokeDashoffset: 0,
+            duration: 1.8,
+            ease: 'power3.inOut',
+          },
+          '-=0.6'
+        )
+
+        // 4. Accent Neon Dot Pop
+        .to(
+          dot,
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.5,
+            ease: 'back.out(2)',
+          },
+          '-=0.3'
+        )
+
+        // 5. Glow Hold Pulse
+        .to([wPath, dot], {
+          filter: 'drop-shadow(0 0 10px rgba(197, 245, 42, 0.8))',
+          duration: 1,
           yoyo: true,
-          repeatDelay: 0.8,
-        });
-      });
+          repeat: 1,
+        })
 
-      // 3. Dynamic Morphing SVG Path Loop
-      const morphPath = path1Ref.current;
-      if (morphPath) {
-        const d1 = 'M100 20 L180 100 L100 180 L20 100 Z'; // Diamond
-        const d2 = 'M100 10 L190 60 L160 170 L40 170 L10 60 Z'; // Pentagon
-        const d3 = 'M100 25 L135 65 L180 75 L145 115 L155 165 L100 135 L45 165 L55 115 L20 75 L65 65 Z'; // Star
+        // 6. Hold Formed Logo
+        .to({}, { duration: 1.5 })
 
-        const tl = gsap.timeline({ repeat: -1, yoyo: true });
-        tl.to(morphPath, { attr: { d: d2 }, duration: 3, ease: 'sine.inOut' })
-          .to(morphPath, { attr: { d: d3 }, duration: 3, ease: 'sine.inOut' })
-          .to(morphPath, { attr: { d: d1 }, duration: 3, ease: 'sine.inOut' });
-      }
+        // 7. DISRUPT / DISSOLVE LOGO
+        .to(
+          wPath,
+          {
+            strokeDashoffset: length,
+            opacity: 0,
+            duration: 0.9,
+            ease: 'power2.in',
+          },
+          'disrupt'
+        )
+        .to(
+          dot,
+          {
+            scale: 2,
+            opacity: 0,
+            duration: 0.6,
+            ease: 'power2.in',
+          },
+          'disrupt'
+        )
+        .to(
+          frame,
+          {
+            scale: 1.15,
+            opacity: 0,
+            rotation: 15,
+            duration: 0.8,
+            ease: 'power3.in',
+          },
+          'disrupt'
+        )
+        .to(
+          particles,
+          {
+            x: (i) => Math.cos((i * Math.PI) / 4) * 60,
+            y: (i) => Math.sin((i * Math.PI) / 4) * 60,
+            opacity: 0,
+            scale: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+          },
+          'disrupt'
+        );
     }, svg);
 
     return () => ctx.revert();
@@ -87,71 +167,75 @@ export const GSAPAnimatedSVG: React.FC<{ className?: string }> = ({ className = 
       className={`w-64 h-64 md:w-96 md:h-96 ${className}`}
     >
       <defs>
-        <linearGradient id="svg_grad_1" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#C5F52A" />
-          <stop offset="0.5" stopColor="#0A0A0A" />
+        <linearGradient id="webbound_logo_grad" x1="48" y1="68" x2="152" y2="132" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#0A0A0A" />
+          <stop offset="0.6" stopColor="#0A0A0A" />
           <stop offset="1" stopColor="#C5F52A" />
         </linearGradient>
       </defs>
 
-      {/* Outer Dashed Orbiting Ring 1 */}
+      {/* Outer Orbiting Ring 1 */}
       <circle
         ref={ring1Ref}
         cx="100"
         cy="100"
-        r="90"
-        stroke="currentColor"
-        strokeOpacity="0.2"
+        r="92"
+        stroke="#0A0A0A"
+        strokeOpacity="0.1"
         strokeWidth="1.5"
         strokeDasharray="8 8"
       />
 
-      {/* Middle Orbiting Ring 2 */}
+      {/* Inner Orbiting Ring 2 */}
       <circle
         ref={ring2Ref}
         cx="100"
         cy="100"
-        r="70"
-        stroke="url(#svg_grad_1)"
-        strokeWidth="2"
-        strokeDasharray="20 10 5 10"
-      />
-
-      {/* Inner Orbiting Ring 3 */}
-      <circle
-        ref={ring3Ref}
-        cx="100"
-        cy="100"
-        r="48"
-        stroke="currentColor"
-        strokeOpacity="0.3"
-        strokeWidth="1"
-        strokeDasharray="4 4"
-      />
-
-      {/* Dynamic Morphing Geometric Path */}
-      <path
-        ref={path1Ref}
-        d="M100 20 L180 100 L100 180 L20 100 Z"
+        r="78"
         stroke="#C5F52A"
-        strokeWidth="2.5"
+        strokeOpacity="0.35"
+        strokeWidth="1.5"
+        strokeDasharray="18 10 4 10"
+      />
+
+      {/* Disruption Floating Particles */}
+      <g ref={particlesGroupRef}>
+        {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
+          const rad = (deg * Math.PI) / 180;
+          const cx = 100 + Math.cos(rad) * 60;
+          const cy = 100 + Math.sin(rad) * 60;
+          return <circle key={i} cx={cx} cy={cy} r="2.5" fill="#C5F52A" />;
+        })}
+      </g>
+
+      {/* Glassmorphic Background Frame */}
+      <rect
+        ref={frameRef}
+        x="36"
+        y="36"
+        width="128"
+        height="128"
+        rx="28"
+        fill="#FFFFFF"
+        fillOpacity="0.75"
+        stroke="#0A0A0A"
+        strokeOpacity="0.12"
+        strokeWidth="1.5"
+      />
+
+      {/* Webbound Iconic 'W' Stroke Path */}
+      <path
+        ref={wPathRef}
+        d="M48 68 L74 132 L100 82 L126 132 L152 68"
+        stroke="url(#webbound_logo_grad)"
+        strokeWidth="5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
 
-      {/* Secondary Animated Inner Path */}
-      <path
-        ref={path2Ref}
-        d="M100 40 L160 100 L100 160 L40 100 Z"
-        stroke="currentColor"
-        strokeOpacity="0.5"
-        strokeWidth="1.5"
-        strokeDasharray="6 4"
-      />
-
-      {/* Center Animated Pulsing Core */}
-      <circle cx="100" cy="100" r="5" fill="#C5F52A" className="animate-pulse" />
-      <circle cx="100" cy="100" r="14" stroke="#C5F52A" strokeOpacity="0.4" strokeWidth="1" />
+      {/* Webbound Center Lime Dot */}
+      <circle ref={dotRef} cx="100" cy="82" r="7.5" fill="#C5F52A" stroke="#0A0A0A" strokeWidth="1" />
     </svg>
   );
 };
+

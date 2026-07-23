@@ -3,11 +3,17 @@
 import React from 'react';
 import { TextReveal } from '@/components/animations/TextReveal';
 import { CounterAnimation } from '@/components/animations/CounterAnimation';
+import { ScrollPathFollower } from '@/components/animations/ScrollPathFollower';
 import { ShieldCheck, Zap } from 'lucide-react';
 
 export const About: React.FC = () => {
   return (
     <section id="about" data-theme-bg="#F5F3EE" className="relative py-36 px-6 md:px-12 lg:px-20 text-[#0A0A0A] overflow-hidden transition-colors duration-500">
+      {/* Background SVG Scroll Path Follower */}
+      <div className="absolute top-0 right-0 bottom-0 left-0 z-0 opacity-20 pointer-events-none overflow-hidden flex items-center justify-center">
+        <ScrollPathFollower className="w-[120%] -rotate-6" strokeColor="#0A0A0A" strokeWidth={12} />
+      </div>
+
       {/* Decorative arcs */}
       <div className="absolute top-20 right-20 w-[400px] h-[400px] rounded-full border border-dashed border-[#0A0A0A]/[0.04] pointer-events-none" />
 
