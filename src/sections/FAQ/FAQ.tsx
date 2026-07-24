@@ -18,8 +18,7 @@ export const FAQ: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">09 /</span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Transparency &amp; Clarity</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Good to know</span>
           </div>
           <TextReveal
             as="h2"

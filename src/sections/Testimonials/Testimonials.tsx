@@ -15,8 +15,7 @@ export const Testimonials: React.FC = () => {
       {/* Header Container */}
       <div className="max-w-4xl mx-auto px-6 relative z-10 flex flex-col space-y-4 mb-8 sm:mb-16 text-center items-center">
         <div className="flex items-center gap-4">
-          <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">08 /</span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Client Testimonials</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Words from clients</span>
         </div>
         <TextReveal
           as="h2"

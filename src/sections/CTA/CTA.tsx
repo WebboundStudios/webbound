@@ -19,8 +19,7 @@ export const CTA: React.FC = () => {
           {/* Left Pitch Column (5 Cols) */}
           <div className="lg:col-span-5 space-y-8">
             <div className="flex items-center gap-4">
-              <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">10 /</span>
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Let&apos;s Craft Something Legendary</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Start a conversation</span>
             </div>
 
             <TextReveal

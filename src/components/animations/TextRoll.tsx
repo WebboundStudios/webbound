@@ -34,7 +34,7 @@ export const TextRoll: React.FC<{
                   y: 0,
                 },
                 hovered: {
-                  y: '-100%',
+                  y: '-120%',
                 },
               }}
               transition={{
@@ -60,7 +60,7 @@ export const TextRoll: React.FC<{
             <motion.span
               variants={{
                 initial: {
-                  y: '100%',
+                  y: '120%',
                 },
                 hovered: {
                   y: 0,

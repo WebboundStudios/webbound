@@ -17,7 +17,7 @@ import { Footer } from '@/sections/Footer/Footer';
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] transition-colors duration-500">
+    <main className="site-shell relative min-h-screen bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] transition-colors duration-500">
       {/* Scroll Background Morph Controller */}
       <ScrollThemeController />
 

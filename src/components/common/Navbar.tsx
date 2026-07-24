@@ -28,13 +28,15 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: true } }));
 
       // Animate menu overlay in
       if (menuOverlayRef.current) {
         gsap.fromTo(
           menuOverlayRef.current,
           { clipPath: 'inset(100% 0 0 0)' },
-          { clipPath: 'inset(0% 0 0 0)', duration: 0.6, ease: 'power3.inOut' }
+          { clipPath: 'inset(0% 0 0 0)', duration: 0.7, ease: 'power3.inOut' }
         );
       }
 
@@ -43,16 +45,20 @@ export const Navbar: React.FC = () => {
         const items = menuItemsRef.current.querySelectorAll('.menu-item');
         gsap.fromTo(
           items,
-          { y: 60, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5, stagger: 0.06, ease: 'power3.out', delay: 0.3 }
+          { y: 36, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power2.out', delay: 0.32 }
         );
       }
     } else {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
     }
 
     return () => {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
     };
   }, [menuOpen]);
 
@@ -60,7 +66,7 @@ export const Navbar: React.FC = () => {
     if (menuOverlayRef.current) {
       gsap.to(menuOverlayRef.current, {
         clipPath: 'inset(0 0 100% 0)',
-        duration: 0.5,
+        duration: 0.6,
         ease: 'power3.inOut',
         onComplete: () => setMenuOpen(false),
       });
@@ -73,15 +79,15 @@ export const Navbar: React.FC = () => {
     <>
       {/* Bottom-Docked Floating Capsule Navbar */}
       <nav
-        className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-out ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
         }`}
       >
-        <div className="flex items-center gap-2 bg-[#0A0A0A] rounded-full px-2 py-2 shadow-[0_8px_40px_rgba(0,0,0,0.3)]">
+        <div className="flex items-center gap-1.5 bg-[#11110f]/95 backdrop-blur-xl rounded-full px-1.5 py-1.5 border border-white/15 shadow-[0_18px_55px_rgba(0,0,0,0.24)]">
           {/* Menu Toggle */}
           <button
             onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
-            className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#1a1a1a] hover:bg-[#252525] text-white text-sm font-body-ui font-medium transition-colors"
+            className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-sm font-body-ui font-medium transition-colors"
             aria-label="Toggle Menu"
           >
             {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -89,8 +95,8 @@ export const Navbar: React.FC = () => {
           </button>
 
           {/* Center Brand Name */}
-          <span className="px-5 text-white font-hero-display text-base font-bold tracking-tight select-none">
-            Webbound
+          <span className="px-5 text-white font-hero-display text-[15px] font-bold tracking-[0.02em] select-none">
+            WEBBOUND<span className="text-[#C5F52A]">.</span>
           </span>
 
           {/* CTA Button */}
@@ -106,7 +112,10 @@ export const Navbar: React.FC = () => {
       {menuOpen && (
         <div
           ref={menuOverlayRef}
-          className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-between p-6 sm:p-12 md:p-16 pb-28 sm:pb-36 overflow-y-auto max-h-screen scrollbar-none"
+          data-lenis-prevent
+          data-lenis-prevent-wheel
+          data-lenis-prevent-touch
+          className="fixed inset-0 z-40 min-h-0 bg-[#0A0A0A] flex flex-col justify-start p-6 sm:p-12 md:p-16 pb-28 sm:pb-36 overflow-y-auto overscroll-contain touch-pan-y max-h-screen scrollbar-none"
           style={{ clipPath: 'inset(100% 0 0 0)' }}
         >
           {/* Top Row */}
@@ -120,7 +129,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Center Menu Items */}
-          <div ref={menuItemsRef} className="flex flex-col items-start gap-1 sm:gap-2 my-auto max-w-4xl mx-auto w-full py-4 shrink-0">
+          <div ref={menuItemsRef} className="flex flex-col items-start gap-1 sm:gap-2 mt-12 mb-12 max-w-4xl mx-auto w-full py-4 shrink-0">
             {NAV_LINKS.map((link, idx) => (
               <a
                 key={link.href}

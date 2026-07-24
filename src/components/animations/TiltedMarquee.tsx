@@ -21,8 +21,8 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
   const currentDir = useRef<number>(1);
 
   // Dynamic spring tilt & arrow rotation physics
-  const rawTilt = useMotionValue(-5);
-  const tiltDeg = useSpring(rawTilt, { stiffness: 200, damping: 25 });
+  const rawTilt = useMotionValue(-3);
+  const tiltDeg = useSpring(rawTilt, { stiffness: 160, damping: 28 });
 
   const rawArrowRot = useMotionValue(0);
   const arrowRotDeg = useSpring(rawArrowRot, { stiffness: 220, damping: 22 });
@@ -37,11 +37,11 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
       if (Math.abs(deltaY) > 0.5) {
         if (deltaY > 0) {
           targetDir.current = 1; // Down -> right to left
-          rawTilt.set(-5);
+          rawTilt.set(-3);
           rawArrowRot.set(185);
         } else {
           targetDir.current = -1; // Up -> left to right
-          rawTilt.set(5);
+          rawTilt.set(3);
           rawArrowRot.set(90);
         }
       }
@@ -99,5 +99,3 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
     </div>
   );
 };
-
-

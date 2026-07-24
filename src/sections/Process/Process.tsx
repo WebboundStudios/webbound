@@ -71,7 +71,7 @@ export const Process: React.FC = () => {
           <div className="flex flex-col space-y-3">
             <div className="flex items-center gap-4">
               <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">04 /</span>
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Rapid 1–2 Week Handover</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">How the work comes together</span>
             </div>
             <TextReveal
               as="h2"

@@ -11,6 +11,7 @@ interface InfiniteMarqueeProps {
   fadeColor?: 'light' | 'dark' | 'none';
   className?: string;
   interactiveScroll?: boolean;
+  paused?: boolean;
 }
 
 export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
@@ -21,6 +22,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
   fadeColor = 'light',
   className = '',
   interactiveScroll = true,
+  paused = false,
 }) => {
   const baseX = useMotionValue(0);
   const isHovered = useRef(false);
@@ -78,7 +80,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
   }, [interactiveScroll]);
 
   useAnimationFrame((_, delta) => {
-    if (pauseOnHover && isHovered.current) return;
+    if (paused || (pauseOnHover && isHovered.current)) return;
 
     // Smoothly decay scroll velocity
     scrollVelocity.current *= 0.92;
@@ -141,5 +143,4 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
     </div>
   );
 };
-
 

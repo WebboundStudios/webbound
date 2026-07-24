@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useMagnetic } from '@/hooks/useMagnetic';
 
 interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'dark';
+  variant?: 'primary' | 'secondary' | 'outline' | 'outline-dark' | 'dark';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
   className?: string;
@@ -54,6 +54,8 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
       'bg-[#0A0A0A] text-white border border-[#0A0A0A] hover:bg-[#1a1a1a] shadow-sm',
     outline:
       'bg-transparent text-[#0A0A0A] border border-[#0A0A0A]/20 hover:border-[#0A0A0A] hover:bg-[#0A0A0A]/5',
+    'outline-dark':
+      'bg-transparent text-white border border-white/30 hover:border-[#C5F52A] hover:text-[#C5F52A] hover:bg-white/10 shadow-sm',
     dark:
       'bg-[#0A0A0A] text-white border border-white/10 hover:border-[#C5F52A] hover:bg-[#141414]',
   };

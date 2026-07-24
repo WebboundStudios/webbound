@@ -13,7 +13,7 @@
   --font-heading: var(--font-heading), sans-serif;
   --font-body: var(--font-body), sans-serif;
 
-  --color-brand-bg: #F5F3EE;
+  --color-brand-bg: #F2EFE8;
   --color-brand-bg-dark: #0A0A0A;
   --color-brand-card: #FFFFFF;
   --color-brand-card-dark: #141414;
@@ -21,7 +21,7 @@
   --color-brand-text-muted: #6B7280;
   --color-brand-accent: #C5F52A;
   --color-brand-accent-hover: #B8E625;
-  --color-brand-border: rgba(0, 0, 0, 0.08);
+  --color-brand-border: rgba(16, 16, 14, 0.12);
   --color-brand-border-dark: rgba(255, 255, 255, 0.1);
 
   --color-ring: var(--ring);
@@ -32,7 +32,7 @@
 }
 
 :root {
-  --background: #F5F3EE;
+  --background: #F2EFE8;
   --foreground: #0A0A0A;
   --card: #FFFFFF;
   --card-foreground: #0A0A0A;
@@ -40,9 +40,9 @@
   --popover-foreground: #0A0A0A;
   --primary: #C5F52A;
   --primary-foreground: #0A0A0A;
-  --secondary: #F0EDE6;
+  --secondary: #EAE6DD;
   --secondary-foreground: #6B7280;
-  --muted: #F0EDE6;
+  --muted: #EAE6DD;
   --muted-foreground: #6B7280;
   --accent: #C5F52A;
   --accent-foreground: #0A0A0A;
@@ -53,7 +53,7 @@
   --radius: 0.75rem;
 
   /* Webbound Design Tokens */
-  --wb-bg: #F5F3EE;
+  --wb-bg: #F2EFE8;
   --wb-bg-dark: #0A0A0A;
   --wb-card: #FFFFFF;
   --wb-card-dark: #141414;
@@ -62,7 +62,7 @@
   --wb-text-muted: #6B7280;
   --wb-text-muted-dark: #9CA3AF;
   --wb-accent: #C5F52A;
-  --wb-border: rgba(0, 0, 0, 0.08);
+  --wb-border: rgba(16, 16, 14, 0.12);
   --wb-border-dark: rgba(255, 255, 255, 0.1);
 }
 
@@ -70,6 +70,28 @@
 ::selection {
   background-color: #C5F52A;
   color: #0A0A0A;
+}
+
+/* Quiet editorial texture. It adds depth to the paper surface without
+   competing with the existing scroll and entrance animations. */
+.site-shell {
+  isolation: isolate;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.7), transparent 28rem),
+    radial-gradient(circle at 88% 42%, rgba(197, 245, 42, 0.055), transparent 30rem);
+}
+
+.site-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.3;
+  background-image: linear-gradient(rgba(10, 10, 10, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 10, 10, 0.025) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black, transparent 75%);
 }
 
 /* Custom Scrollbar */
@@ -100,10 +122,12 @@
     font-family: var(--font-body), system-ui, sans-serif;
   }
   body {
-    background-color: #F5F3EE;
+    background-color: #F2EFE8;
     color: #0A0A0A;
     overflow-x: hidden;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   /* Typography Rules */
@@ -162,9 +186,9 @@
 
 /* Clean Card (for light sections) */
 .clean-card {
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(16, 16, 14, 0.1);
+  box-shadow: 0 8px 30px rgba(16, 16, 14, 0.045);
 }
 
 .clean-card:hover {
@@ -180,7 +204,44 @@
 
 /* Accent Glow */
 .accent-glow {
-  box-shadow: 0 0 30px rgba(197, 245, 42, 0.2);
+  box-shadow: 0 0 30px rgba(197, 245, 42, 0.16);
+}
+
+/* Shared finish for the repeated editorial surfaces across sections. */
+section[id] .bg-white {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(16, 16, 14, 0.11);
+  box-shadow: 0 12px 35px rgba(16, 16, 14, 0.045);
+}
+
+section[id] .bg-white:hover {
+  box-shadow: 0 18px 45px rgba(16, 16, 14, 0.08);
+}
+
+/* The animation lab is a gallery, not a dashboard: give every experiment
+   enough air and a quiet, tactile surface so the previews stay the focus. */
+.animations-lab section:nth-of-type(2) > div > div {
+  border-radius: 1.25rem;
+  border-color: rgba(16, 16, 14, 0.1);
+  box-shadow: 0 12px 35px rgba(16, 16, 14, 0.045);
+}
+
+.animations-lab section:nth-of-type(2) > div > div:hover {
+  border-color: rgba(16, 16, 14, 0.18);
+  box-shadow: 0 20px 48px rgba(16, 16, 14, 0.085);
+}
+
+section[id] > div > div:first-child span.font-mono:last-child {
+  letter-spacing: 0.24em;
+}
+
+input, textarea, select {
+  font-variant-numeric: tabular-nums;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid #C5F52A;
+  outline-offset: 4px;
 }
 
 /* Hide default cursor on desktop when custom cursor is active */
@@ -190,6 +251,19 @@
   body.custom-cursor-enabled button {
     cursor: none !important;
   }
+}
+
+/* Staircase Loader Panels GPU Acceleration */
+.staircase-panel {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* GSAP Flip image element transition stability */
+[data-flip-id] {
+  will-change: transform, width, height, border-radius;
+  backface-visibility: hidden;
 }
 
 /* Reduced Motion Override */

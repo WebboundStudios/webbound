@@ -22,11 +22,16 @@ const defaultImages = [
   'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=800&q=80',
 ];
 
-export const ParallaxColumns: React.FC<{ className?: string }> = ({ className = '' }) => {
+export const ParallaxColumns: React.FC<{
+  className?: string;
+  paused?: boolean;
+  scrollContainer?: React.RefObject<HTMLElement | null>;
+}> = ({ className = '', paused = false, scrollContainer }) => {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
 
   const { scrollYProgress } = useScroll({
+    container: scrollContainer,
     target: galleryRef,
     offset: ['start end', 'end start'],
   });
@@ -53,17 +58,17 @@ export const ParallaxColumns: React.FC<{ className?: string }> = ({ className = 
       ref={galleryRef}
       className={`relative flex h-80 sm:h-[420px] md:h-[480px] gap-2 sm:gap-4 overflow-hidden bg-[#0A0A0A] p-2 sm:p-4 rounded-2xl select-none ${className}`}
     >
-      <Column images={[defaultImages[0], defaultImages[1], defaultImages[2], defaultImages[3]]} y={y1} />
-      <Column images={[defaultImages[4], defaultImages[5], defaultImages[6], defaultImages[7]]} y={y2} />
-      <Column images={[defaultImages[8], defaultImages[9], defaultImages[10], defaultImages[11]]} y={y3} />
-      <Column images={[defaultImages[12], defaultImages[13], defaultImages[14], defaultImages[15]]} y={y4} />
+      <Column images={[defaultImages[0], defaultImages[1], defaultImages[2], defaultImages[3]]} y={paused ? undefined : y1} />
+      <Column images={[defaultImages[4], defaultImages[5], defaultImages[6], defaultImages[7]]} y={paused ? undefined : y2} />
+      <Column images={[defaultImages[8], defaultImages[9], defaultImages[10], defaultImages[11]]} y={paused ? undefined : y3} />
+      <Column images={[defaultImages[12], defaultImages[13], defaultImages[14], defaultImages[15]]} y={paused ? undefined : y4} />
     </div>
   );
 };
 
 type ColumnProps = {
   images: string[];
-  y: MotionValue<number>;
+  y?: MotionValue<number>;
 };
 
 const Column = ({ images, y }: ColumnProps) => {

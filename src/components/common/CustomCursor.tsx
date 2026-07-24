@@ -28,21 +28,21 @@ export const CustomCursor: React.FC = () => {
       const el = document.elementFromPoint(x, y) as HTMLElement | null;
       if (!el) return;
 
-      // 1. Check data-theme-bg attribute on active section
-      const section = el.closest('[data-theme-bg]') as HTMLElement | null;
-      if (section) {
-        const theme = section.getAttribute('data-theme-bg');
-        if (theme === '#0A0A0A') {
-          setIsDarkBg(true);
-          return;
-        }
-        if (theme === '#F5F3EE') {
-          setIsDarkBg(false);
-          return;
-        }
+      // 1. Direct check for explicit dark container, modal, or dark section parent
+      const darkParent = el.closest('[data-theme-bg="#0A0A0A"], .dark, [class*="bg-[#0A0A0A]"], [class*="bg-[#121212]"], [class*="bg-[#141414]"], [class*="bg-black"]');
+      if (darkParent) {
+        setIsDarkBg(true);
+        return;
       }
 
-      // 2. Check computed background color luminance of hovered element
+      // 2. Direct check for explicit light section
+      const lightParent = el.closest('[data-theme-bg="#F5F3EE"]');
+      if (lightParent) {
+        setIsDarkBg(false);
+        return;
+      }
+
+      // 3. Computed background color luminance check up the DOM chain
       let current: HTMLElement | null = el;
       while (current && current !== document.body) {
         const bg = getComputedStyle(current).backgroundColor;
@@ -60,7 +60,7 @@ export const CustomCursor: React.FC = () => {
         current = current.parentElement;
       }
 
-      // 3. Fallback to main/body background theme
+      // 4. Fallback to main/body background theme
       const mainEl = document.querySelector('main');
       const bodyBg = getComputedStyle(mainEl || document.body).backgroundColor;
       const match = bodyBg.match(/\d+/g);
@@ -128,14 +128,14 @@ export const CustomCursor: React.FC = () => {
       {/* Outer Follower Ring */}
       <div
         ref={cursorRef}
-        className={`hidden lg:flex items-center justify-center text-center pointer-events-none fixed top-0 left-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-200 ease-out ${
+        className={`hidden lg:flex items-center justify-center text-center pointer-events-none fixed top-0 left-0 z-[100000] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300 ease-out ${
           isVisible ? 'opacity-100' : 'opacity-0'
         } ${
           isHovered
             ? cursorText
-              ? 'w-20 h-20 bg-[#C5F52A] border-transparent text-[#0A0A0A] shadow-xl scale-105'
-              : 'w-12 h-12 bg-[#C5F52A]/20 border-[#C5F52A] scale-110'
-            : `w-7 h-7 bg-transparent ${isDarkBg ? 'border-[#C5F52A]/70' : 'border-[#0A0A0A]/40'}`
+              ? 'w-16 h-16 bg-[#C5F52A] border-transparent text-[#0A0A0A] shadow-lg scale-100'
+              : 'w-10 h-10 bg-[#C5F52A]/20 border-[#C5F52A] scale-105'
+            : `w-6 h-6 bg-transparent ${isDarkBg ? 'border-[#C5F52A]' : 'border-[#0A0A0A]/40'}`
         }`}
       >
         {cursorText && (
@@ -148,11 +148,10 @@ export const CustomCursor: React.FC = () => {
       {/* Center Precise Dot */}
       <div
         ref={dotRef}
-        className={`hidden lg:block pointer-events-none fixed top-0 left-0 z-[9999] w-2.5 h-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-200 ${
-          isDarkBg ? 'bg-[#C5F52A]' : 'bg-[#0A0A0A]'
+        className={`hidden lg:block pointer-events-none fixed top-0 left-0 z-[100000] w-2.5 h-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-200 ${
+          isDarkBg ? 'bg-[#C5F52A] shadow-[0_0_10px_rgba(197,245,42,0.9)]' : 'bg-[#0A0A0A]'
         } ${isVisible && !cursorText ? 'opacity-100' : 'opacity-0'}`}
       />
     </>
   );
 };
-

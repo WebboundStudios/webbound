@@ -6,35 +6,26 @@ import { Navbar } from '@/components/common/Navbar';
 import { CustomCursor } from '@/components/common/CustomCursor';
 import { Footer } from '@/sections/Footer/Footer';
 import { TextRoll } from '@/components/animations/TextRoll';
-import { TextReveal } from '@/components/animations/TextReveal';
 import { MagneticButton } from '@/components/animations/MagneticButton';
 import { InfiniteMarquee } from '@/components/animations/InfiniteMarquee';
 import { CounterAnimation } from '@/components/animations/CounterAnimation';
 import { ParallaxColumns } from '@/components/animations/ParallaxColumns';
+import { FullscreenPreviewModal, PreviewEffectId } from '@/components/animations/FullscreenPreviewModal';
 import { useLoadingStore } from '@/providers/LoadingProvider';
-import { ArrowLeft, ArrowUpRight, Sparkles, Play, Code2, Layers, Cpu, Zap, Compass, MoveUpRight } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Maximize2 } from 'lucide-react';
 
 type CategoryType = 'all' | 'typography' | 'vector' | 'physics' | 'scroll';
 
-interface AnimationShowcaseItem {
-  id: string;
-  title: string;
-  category: CategoryType;
-  categoryLabel: string;
-  description: string;
-  techTags: string[];
-  complexity: 'Fluid 60FPS' | 'GPU Accelerated' | 'Physics Engine' | 'GSAP Timeline';
-}
-
 const CATEGORIES = [
-  { id: 'all', label: 'All Experiments' },
-  { id: 'typography', label: 'Kinetic Typography' },
-  { id: 'physics', label: 'Cursor & Physics' },
-  { id: 'scroll', label: 'Scroll Dynamics' },
+  { id: 'all', label: 'Everything' },
+  { id: 'typography', label: 'Kinetic type' },
+  { id: 'physics', label: 'Cursor & physics' },
+  { id: 'scroll', label: 'Scroll studies' },
 ] as const;
 
 export default function AnimationsLabPage() {
   const [activeCategory, setActiveCategory] = useState<CategoryType>('all');
+  const [activePreview, setActivePreview] = useState<PreviewEffectId | null>(null);
   const { finishLoading } = useLoadingStore();
 
   useEffect(() => {
@@ -43,7 +34,7 @@ export default function AnimationsLabPage() {
   }, [finishLoading]);
 
   return (
-    <main className="relative min-h-screen bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] transition-colors duration-300">
+    <main className="site-shell animations-lab relative min-h-screen bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] transition-colors duration-300">
       {/* Custom Cursor */}
       <CustomCursor />
 
@@ -68,20 +59,19 @@ export default function AnimationsLabPage() {
           <div className="flex flex-col space-y-4 max-w-4xl">
             {/* Editorial kicker — no pill */}
             <div className="flex items-center gap-3">
-              <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">Lab /</span>
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Creative Engineering Lab</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">A closer look at the motion</span>
             </div>
 
             <h1 className="font-hero-display text-4xl sm:text-6xl md:text-7xl font-black text-[#0A0A0A] tracking-tight leading-[0.95]">
               Interactive Motion &amp; <br />
               <span className="text-[#0A0A0A] relative inline-block">
-                Animation Playground
+                Motion studies
                 <span className="absolute bottom-0 left-0 right-0 h-2.5 bg-[#C5F52A]/35 -z-10" />
               </span>
             </h1>
 
             <p className="font-body-ui text-lg sm:text-xl text-[#6B7280] font-light leading-relaxed max-w-2xl pt-2">
-              A curated collection of bespoke kinetic typography, GPU-accelerated motion, cursor physics, and scroll dynamics engineered for flagship web experiences.
+              A curated collection of bespoke kinetic typography, GPU-accelerated motion, cursor physics, and scroll dynamics. Click any card&apos;s full-page preview for an immersive view.
             </p>
           </div>
 
@@ -114,7 +104,7 @@ export default function AnimationsLabPage() {
               <div>
                 <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
-                    — Kinetic Typography
+                    Kinetic type
                   </span>
                   <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Framer Motion</span>
                 </div>
@@ -139,10 +129,13 @@ export default function AnimationsLabPage() {
               </div>
 
               <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Framer Motion</span>
-                  <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Letter Stagger</span>
-                </div>
+                <button
+                  onClick={() => setActivePreview('dual-text-roll')}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#0A0A0A]/5 hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#C5F52A] text-xs font-mono font-bold transition-all duration-200"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Full Page Preview</span>
+                </button>
                 <a
                   href="/#contact"
                   className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
@@ -160,7 +153,7 @@ export default function AnimationsLabPage() {
               <div>
                 <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
-                    — Cursor &amp; Physics
+                    Cursor &amp; physics
                   </span>
                   <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Framer Spring</span>
                 </div>
@@ -185,10 +178,13 @@ export default function AnimationsLabPage() {
               </div>
 
               <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Spring Physics</span>
-                  <span className="px-2.5 py-1 rounded-md bg-[#F5F3EE] text-[10px] font-mono text-[#0A0A0A]">Cursor Distance</span>
-                </div>
+                <button
+                  onClick={() => setActivePreview('magnetic-physics')}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#0A0A0A]/5 hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#C5F52A] text-xs font-mono font-bold transition-all duration-200"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Full Page Preview</span>
+                </button>
                 <a
                   href="/#contact"
                   className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
@@ -206,7 +202,7 @@ export default function AnimationsLabPage() {
               <div>
                 <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
-                    — Scroll Dynamics
+                    Scroll studies
                   </span>
                   <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Skiper 30 Parallax</span>
                 </div>
@@ -220,11 +216,17 @@ export default function AnimationsLabPage() {
 
               {/* Interactive Preview Canvas */}
               <div className="relative w-full overflow-hidden rounded-2xl">
-                <ParallaxColumns />
+                <ParallaxColumns paused={activePreview !== null} />
               </div>
 
               <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
-                <p className="text-[10px] sm:text-xs font-mono text-[#0A0A0A]/50 shrink-0">Multi-Speed Y Transform  ·  useScroll Offset</p>
+                <button
+                  onClick={() => setActivePreview('parallax-gallery')}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#0A0A0A]/5 hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#C5F52A] text-xs font-mono font-bold transition-all duration-200"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Full Page Preview</span>
+                </button>
                 <a
                   href="/#contact"
                   className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
@@ -242,7 +244,7 @@ export default function AnimationsLabPage() {
               <div>
                 <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
-                    — Scroll Dynamics
+                    Scroll studies
                   </span>
                   <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">Framer RAF Loop</span>
                 </div>
@@ -256,7 +258,7 @@ export default function AnimationsLabPage() {
 
               {/* Interactive Preview Canvas */}
               <div className="relative w-full h-64 sm:h-72 rounded-2xl bg-[#F5F3EE] border border-[#0A0A0A]/[0.06] flex items-center justify-center overflow-hidden p-2">
-                <InfiniteMarquee direction="left" speed="slow" fadeColor="none">
+                <InfiniteMarquee direction="left" speed="slow" fadeColor="none" paused={activePreview !== null}>
                   {['NEXT.JS 15', 'GSAP PREMIUM', 'REACT 19', 'LENIS SCROLL', 'THREE.JS'].map((tech, i) => (
                     <div
                       key={i}
@@ -269,7 +271,13 @@ export default function AnimationsLabPage() {
               </div>
 
               <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
-                <p className="text-[10px] sm:text-xs font-mono text-[#0A0A0A]/50 shrink-0">RAF Loop  ·  Hover Pause</p>
+                <button
+                  onClick={() => setActivePreview('infinite-marquee')}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#0A0A0A]/5 hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#C5F52A] text-xs font-mono font-bold transition-all duration-200"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Full Page Preview</span>
+                </button>
                 <a
                   href="/#contact"
                   className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
@@ -287,7 +295,7 @@ export default function AnimationsLabPage() {
               <div>
                 <div className="flex items-center justify-between mb-4 gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[#6B7280]">
-                    — Cursor &amp; Physics
+                    Cursor &amp; physics
                   </span>
                   <span className="text-xs font-mono text-[#0A0A0A]/40 shrink-0">GSAP Counter</span>
                 </div>
@@ -312,7 +320,13 @@ export default function AnimationsLabPage() {
               </div>
 
               <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex flex-wrap items-center justify-between gap-3">
-                <p className="text-[10px] sm:text-xs font-mono text-[#0A0A0A]/50 shrink-0">GSAP Easing  ·  Numeric Interpolation</p>
+                <button
+                  onClick={() => setActivePreview('metric-counter')}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#0A0A0A]/5 hover:bg-[#0A0A0A] text-[#0A0A0A] hover:text-[#C5F52A] text-xs font-mono font-bold transition-all duration-200"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Full Page Preview</span>
+                </button>
                 <a
                   href="/#contact"
                   className="inline-flex items-center gap-1.5 text-xs font-bold font-body-ui text-[#0A0A0A] hover:text-[#C5F52A] transition-colors shrink-0"
@@ -331,13 +345,13 @@ export default function AnimationsLabPage() {
         <div className="p-10 sm:p-16 rounded-3xl bg-[#0A0A0A] text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
           <div className="space-y-4 max-w-2xl relative z-10">
             <span className="text-xs font-mono uppercase tracking-widest text-[#C5F52A]">
-              WANT CUSTOM MOTION FOR YOUR BRAND?
+              NEED A MORE CONSIDERED KIND OF MOTION?
             </span>
             <h2 className="font-hero-display text-3xl sm:text-5xl font-bold tracking-tight">
-              Ready to Engineer Your Flagship Website?
+              Let&apos;s make your site feel unmistakably yours.
             </h2>
             <p className="text-sm font-body-ui text-[#9CA3AF] font-light">
-              Let&apos;s build a bespoke digital flagship with liquid smooth animations, sub-second speed targets, and 1 year of included free maintenance.
+              Thoughtful interaction, fast performance, and a finish that gives people a reason to stay.
             </p>
           </div>
 
@@ -352,6 +366,13 @@ export default function AnimationsLabPage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Full Page Immersive Preview Modal */}
+      <FullscreenPreviewModal
+        effectId={activePreview}
+        onClose={() => setActivePreview(null)}
+        onSelectEffect={(id) => setActivePreview(id)}
+      />
     </main>
   );
 }

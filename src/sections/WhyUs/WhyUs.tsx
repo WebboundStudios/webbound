@@ -19,8 +19,7 @@ export const WhyUs: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">06 /</span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Why Work With Me</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Why clients come back</span>
           </div>
           <TextReveal
             as="h2"

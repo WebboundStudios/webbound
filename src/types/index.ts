@@ -25,6 +25,11 @@ export interface ProjectItem {
   link?: string;
   featured: boolean;
   tier?: string;
+  longDescription?: string;
+  challenge?: string;
+  solution?: string;
+  role?: string;
+  githubLink?: string;
 }
 
 export interface TestimonialItem {

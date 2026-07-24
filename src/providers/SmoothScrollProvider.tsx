@@ -33,6 +33,19 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     lenisRef.current = lenis;
 
+    // Full-screen demos use their own native scroll container. Pausing Lenis
+    // while one is open prevents two scroll engines from competing for input.
+    const handlePreviewScroll = (event: Event) => {
+      const open = (event as CustomEvent<{ open?: boolean }>).detail?.open;
+      if (open) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    };
+    window.addEventListener('webbound:preview-scroll', handlePreviewScroll);
+    window.addEventListener('webbound:scroll-lock', handlePreviewScroll);
+
     // Sync Lenis scroll with GSAP ScrollTrigger
     lenis.on('scroll', () => {
       ScrollTrigger.update();
@@ -47,6 +60,8 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     return () => {
       gsap.ticker.remove(updateTicker);
+      window.removeEventListener('webbound:preview-scroll', handlePreviewScroll);
+      window.removeEventListener('webbound:scroll-lock', handlePreviewScroll);
       lenis.destroy();
       lenisRef.current = null;
     };

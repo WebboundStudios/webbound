@@ -92,7 +92,7 @@ export const ContactForm: React.FC = () => {
   };
 
   return (
-    <div id="contact" className="w-full max-w-2xl mx-auto p-8 sm:p-12 rounded-3xl bg-[#141414] border border-white/[0.08] shadow-2xl space-y-8">
+    <div id="contact" className="w-full max-w-2xl mx-auto p-7 sm:p-10 rounded-[1.25rem] bg-[#151513] border border-white/[0.12] shadow-[0_24px_80px_rgba(10,10,10,0.18)] space-y-8">
       <div>
         <h3 className="font-section-heading text-2xl sm:text-3xl font-bold text-white">
           Initiate Project Inquiry

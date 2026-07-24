@@ -27,10 +27,10 @@ export const Hero: React.FC = () => {
         });
         gsap.fromTo(
           split.chars,
-          { opacity: 0, y: 80, rotateX: -60 },
+          { opacity: 0, y: 52, rotateX: -38 },
           {
             opacity: 1, y: 0, rotateX: 0,
-            duration: 0.9, stagger: 0.02, ease: 'power3.out', delay: 0.2,
+            duration: 1.05, stagger: 0.035, ease: 'power2.out', delay: 0.25,
           }
         );
       }
@@ -39,7 +39,7 @@ export const Hero: React.FC = () => {
         gsap.fromTo(
           subtextRef.current,
           { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.8, delay: 0.8, ease: 'power3.out' }
+          { opacity: 1, y: 0, duration: 0.9, delay: 1.05, ease: 'power2.out' }
         );
       }
 
@@ -47,7 +47,7 @@ export const Hero: React.FC = () => {
         gsap.fromTo(
           ctaRef.current,
           { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.7, delay: 1, ease: 'power3.out' }
+          { opacity: 1, y: 0, duration: 0.8, delay: 1.2, ease: 'power2.out' }
         );
       }
 
@@ -55,7 +55,7 @@ export const Hero: React.FC = () => {
         gsap.fromTo(
           kickerRef.current,
           { opacity: 0, x: -16 },
-          { opacity: 1, x: 0, duration: 0.6, delay: 0.05, ease: 'power3.out' }
+          { opacity: 1, x: 0, duration: 0.75, delay: 0.1, ease: 'power2.out' }
         );
       }
     });
@@ -72,10 +72,10 @@ export const Hero: React.FC = () => {
             {/* Editorial Kicker — no pill, no dot */}
             <div ref={kickerRef} className="flex items-center gap-3">
               <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">
-                ↗ Independent Creative Engineer
+                ↗ Independent studio · Worldwide
               </span>
               <span className="h-px w-8 bg-[#0A0A0A]/20" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0A0A0A]/30">2025</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0A0A0A]/30">Web design · Development</span>
             </div>
 
             {/* Main Headline */}

@@ -15,9 +15,8 @@ export const About: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col space-y-3 mb-16">
           {/* Numbered section marker */}
-          <div className="flex items-center gap-4">
-            <span className="font-mono text-[10px] text-[#0A0A0A]/20 tracking-widest uppercase">02 /</span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Who I Am</span>
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">A little about the work</span>
           </div>
           <TextReveal
             as="h2"
