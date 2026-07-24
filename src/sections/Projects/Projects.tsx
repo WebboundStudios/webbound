@@ -21,36 +21,34 @@ export const Projects: React.FC = () => {
   const [isDetailVisible, setIsDetailVisible] = useState<boolean>(false);
   const [loaderStatus, setLoaderStatus] = useState<'idle' | 'entering' | 'exiting'>('idle');
 
-  const imageRefs = useRef<Record<string, HTMLImageElement | null>>({});
+  const cardImageParentRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const imageDivRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const heroImageContainerRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const detailScrollRef = useRef<HTMLDivElement | null>(null);
   
   const flipStateRef = useRef<any>(null);
-  const activeProjectIdRef = useRef<string | null>(null);
   const actionRef = useRef<'open' | 'close' | null>(null);
 
-  // Step 1 & 2: Initiate Open Project Transition
+  // Initiate Open Project Transition
   const handleOpenProject = (project: ProjectItem) => {
-    if (loaderStatus !== 'idle') return;
+    if (isDetailVisible || loaderStatus !== 'idle') return;
 
-    activeProjectIdRef.current = project.id;
     actionRef.current = 'open';
+    const imgDiv = imageDivRefs.current[project.id];
+    if (!imgDiv) return;
 
     // Step 1: Capture initial image state using GSAP Flip
-    const imgEl = imageRefs.current[project.id];
-    if (imgEl) {
-      flipStateRef.current = Flip.getState(imgEl, {
-        props: 'borderRadius,transform,objectFit',
-      });
-    }
+    flipStateRef.current = Flip.getState(imgDiv, {
+      props: 'borderRadius,transform,objectFit',
+    });
 
-    // Step 2: Pause Lenis smooth scroll & trigger Staircase Loader
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: true } }));
     }
 
     setSelectedProject(project);
+    setIsDetailVisible(true);
     setLoaderStatus('entering');
   };
 
@@ -59,50 +57,63 @@ export const Projects: React.FC = () => {
     if (loaderStatus !== 'idle' || !selectedProject) return;
 
     actionRef.current = 'close';
+    const closingId = selectedProject.id;
+    const imgDiv = imageDivRefs.current[closingId];
 
-    // Reset detail scroll container to top before capturing state
     if (detailScrollRef.current) {
       detailScrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    // Capture image state in detail hero position
-    const imgEl = imageRefs.current[selectedProject.id];
-    if (imgEl) {
-      flipStateRef.current = Flip.getState(imgEl, {
+    if (imgDiv) {
+      flipStateRef.current = Flip.getState(imgDiv, {
         props: 'borderRadius,transform,objectFit',
+      });
+    }
+
+    if (contentRef.current) {
+      const animItems = contentRef.current.querySelectorAll('.detail-anim-item');
+      gsap.to(animItems, {
+        autoAlpha: 0,
+        y: 40,
+        stagger: 0.03,
+        duration: 0.3,
+        ease: 'power2.in',
       });
     }
 
     setLoaderStatus('entering');
   };
 
-  // Step 3 & 4: Triggered when Staircase Loader fully covers the screen
+  // Triggered when Staircase Loader fully covers the screen
   const handleStaircaseEnterComplete = () => {
     if (actionRef.current === 'open' && selectedProject) {
-      // Step 3: Show Project Detail View layout overlay while covered
-      setIsDetailVisible(true);
-
-      // Step 4: Perform GSAP Flip animation on same image element
       requestAnimationFrame(() => {
-        const imgEl = imageRefs.current[selectedProject.id];
-        if (imgEl && flipStateRef.current) {
+        const imgDiv = imageDivRefs.current[selectedProject.id];
+        const heroTarget = heroImageContainerRef.current;
+
+        if (heroTarget && imgDiv && flipStateRef.current) {
+          // Re-parent DOM element into detail hero container while covered
+          heroTarget.appendChild(imgDiv);
+
+          // Perform Flip morphing transition as panels retract
           Flip.from(flipStateRef.current, {
-            duration: 0.85,
+            duration: 1.0,
             ease: 'power3.inOut',
             absolute: true,
+            scale: true,
             onComplete: () => {
-              // Step 6: Reveal staggered detail content
+              // Reveal detail text items with expo.out after panels retract
               if (contentRef.current) {
                 const animItems = contentRef.current.querySelectorAll('.detail-anim-item');
                 gsap.fromTo(
                   animItems,
-                  { opacity: 0, y: 40 },
+                  { autoAlpha: 0, y: 40 },
                   {
-                    opacity: 1,
+                    autoAlpha: 1,
                     y: 0,
-                    stagger: 0.08,
-                    duration: 0.65,
-                    ease: 'power3.out',
+                    stagger: 0.05,
+                    duration: 1.2,
+                    ease: 'expo.out',
                   }
                 );
               }
@@ -110,29 +121,30 @@ export const Projects: React.FC = () => {
           });
         }
 
-        // Step 5: Remove/Exit Staircase Loader to reveal expanded detail view
         setLoaderStatus('exiting');
       });
-    } else if (actionRef.current === 'close') {
-      const closingId = selectedProject?.id;
-
-      // Switch back to Grid view layout while covered
-      setIsDetailVisible(false);
-      setSelectedProject(null);
+    } else if (actionRef.current === 'close' && selectedProject) {
+      const closingId = selectedProject.id;
+      const imgDiv = imageDivRefs.current[closingId];
+      const originalParent = cardImageParentRefs.current[closingId];
 
       requestAnimationFrame(() => {
-        if (closingId) {
-          const imgEl = imageRefs.current[closingId];
-          if (imgEl && flipStateRef.current) {
-            Flip.from(flipStateRef.current, {
-              duration: 0.8,
-              ease: 'power3.inOut',
-              absolute: true,
-            });
-          }
+        if (imgDiv && originalParent && flipStateRef.current) {
+          // Move DOM element back to card container while covered
+          originalParent.appendChild(imgDiv);
+
+          // Perform Flip morph back as panels retract
+          Flip.from(flipStateRef.current, {
+            duration: 1.0,
+            ease: 'power3.inOut',
+            absolute: true,
+            scale: true,
+          });
         }
 
-        // Resume Lenis smooth scroll on main page
+        setIsDetailVisible(false);
+        setSelectedProject(null);
+
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
         }
@@ -146,20 +158,6 @@ export const Projects: React.FC = () => {
     setLoaderStatus('idle');
     actionRef.current = null;
   };
-
-  // Helper renderer for single featured image element
-  const renderProjectImage = (project: ProjectItem) => (
-    <img
-      key={project.id}
-      ref={(el) => {
-        imageRefs.current[project.id] = el;
-      }}
-      data-flip-id={project.id}
-      src={project.image}
-      alt={project.title}
-      className="w-full h-full object-cover object-top select-none"
-    />
-  );
 
   return (
     <section
@@ -206,14 +204,14 @@ export const Projects: React.FC = () => {
             {PROJECTS.map((project, idx) => (
               <div
                 key={project.id}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
+                onClick={() => handleOpenProject(project)}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center cursor-pointer group select-none"
                 data-cursor="View"
               >
                 {/* Visual Column (7 Cols) */}
                 <div className={`lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}`}>
                   <div
-                    onClick={() => handleOpenProject(project)}
-                    className="block relative w-full aspect-[16/10] rounded-2xl bg-[#0A0A0A] border border-white/[0.08] overflow-hidden shadow-2xl cursor-pointer group"
+                    className="block relative w-full aspect-[16/10] rounded-2xl bg-[#0A0A0A] border border-white/[0.08] overflow-hidden shadow-2xl group"
                     data-cursor="View"
                   >
                     {/* Browser chrome bar */}
@@ -232,14 +230,28 @@ export const Projects: React.FC = () => {
                     </div>
 
                     {/* Screenshot Container & Hover "View" Button */}
-                    <div className="relative w-full h-[calc(100%-2rem)] overflow-hidden">
-                      {/* Shared single image (rendered here when not in detail view) */}
-                      {!isDetailVisible || selectedProject?.id !== project.id
-                        ? renderProjectImage(project)
-                        : null}
+                    <div
+                      ref={(el) => {
+                        cardImageParentRefs.current[project.id] = el;
+                      }}
+                      className="relative w-full h-[calc(100%-2rem)] overflow-hidden"
+                    >
+                      {/* Physical DOM Image DIV element */}
+                      <div
+                        ref={(el) => {
+                          imageDivRefs.current[project.id] = el;
+                        }}
+                        className="project-img w-full h-full relative overflow-hidden rounded-xl"
+                      >
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover object-top select-none"
+                        />
+                      </div>
 
                       {/* Top category badge */}
-                      <div className="absolute top-3 left-3 z-10">
+                      <div className="absolute top-3 left-3 z-10 pointer-events-none">
                         <span className="px-3 py-1 rounded-full bg-[#0A0A0A]/85 backdrop-blur-md border border-white/10 text-[#C5F52A] font-mono text-xs font-semibold shadow-lg">
                           {project.category}
                         </span>
@@ -324,7 +336,6 @@ export const Projects: React.FC = () => {
           heroImageContainerRef={heroImageContainerRef}
           contentRef={contentRef}
           detailScrollRef={detailScrollRef}
-          imageElement={renderProjectImage(selectedProject)}
         />
       )}
     </section>

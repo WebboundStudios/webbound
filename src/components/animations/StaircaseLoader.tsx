@@ -38,27 +38,35 @@ export const StaircaseLoader: React.FC<StaircaseLoaderProps> = ({
           transformOrigin: 'bottom center',
         });
 
-        // Animate panels sliding up to cover the screen sequentially
+        // Animate panels sliding up to cover the screen sequentially from edges
         gsap.to(panels, {
           yPercent: 0,
-          duration: 0.65,
-          stagger: 0.05,
-          ease: 'power4.inOut',
+          duration: 1.0,
+          stagger: {
+            each: 0.07,
+            from: 'edges',
+          },
+          ease: 'power2.inOut',
           onComplete: () => {
             if (onEnterComplete) onEnterComplete();
           },
         });
       } else if (status === 'exiting') {
-        // Animate panels sliding up and away to reveal detail / grid
+        // Animate panels sliding up and away from edges
         gsap.to(panels, {
           yPercent: -100,
-          duration: 0.6,
-          stagger: 0.05,
-          ease: 'power4.inOut',
+          duration: 1.0,
+          stagger: {
+            each: 0.07,
+            from: 'edges',
+          },
+          ease: 'power2.inOut',
           onComplete: () => {
             if (containerRef.current) {
               containerRef.current.style.pointerEvents = 'none';
             }
+            // Reset panel yPercent to 100 for next open
+            gsap.set(panels, { yPercent: 100 });
             if (onExitComplete) onExitComplete();
           },
         });
