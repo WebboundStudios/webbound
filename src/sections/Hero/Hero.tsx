@@ -72,7 +72,7 @@ export const Hero: React.FC = () => {
             {/* Editorial Kicker — no pill, no dot */}
             <div ref={kickerRef} className="flex items-center gap-3">
               <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">
-                ↗ Independent studio · Worldwide
+                ↗ Independent studio
               </span>
               <span className="h-px w-8 bg-[#0A0A0A]/20" />
               <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0A0A0A]/30">Web design · Development</span>
