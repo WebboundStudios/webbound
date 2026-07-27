@@ -91,11 +91,8 @@ export const StaircaseLoader: React.FC<StaircaseLoaderProps> = ({
           ref={(el) => {
             if (el) panelsRef.current[i] = el;
           }}
-          className="flex-1 h-full bg-[#0A0A0A] border-r border-white/[0.04] relative staircase-panel"
-        >
-          {/* Subtle accent glow accentuating the cinematic panels */}
-          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#C5F52A]/40 to-transparent opacity-60" />
-        </div>
+          className="flex-1 h-full bg-[#1C1C1E] relative staircase-panel"
+        />
       ))}
     </div>
   );

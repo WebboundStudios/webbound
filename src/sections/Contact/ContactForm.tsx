@@ -9,21 +9,24 @@ import { TextRoll } from '@/components/animations/TextRoll';
 import { Send, CheckCircle2, AlertCircle, Loader2, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import Lottie from 'lottie-react';
+import contactFormAnimation from '../../../public/contact-form.json';
+
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   company: z.string().optional(),
-  budget: z.string().min(1, 'Please select a package range'),
+  budget: z.string().min(1, 'Please select a package tier'),
   message: z.string().min(10, 'Project description must be at least 10 characters'),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
 const BUDGET_OPTIONS = [
-  { label: 'Type 1: Single Page (₹8K – ₹9K)', value: 'Type 1: Single-Page Static Site (₹8,000 – ₹9,000)' },
-  { label: 'Type 2: Single Page CMS (₹12K – ₹15K)', value: 'Type 2: Single-Page Dynamic CMS Site (₹12,000 – ₹15,000)' },
-  { label: 'Type 3: Multi Page CMS (₹17K – ₹20K)', value: 'Type 3: Multi-Page Dynamic CMS Platform (₹17,000 – ₹20,000)' },
-  { label: 'Type 4: Full Stack App (Custom Quote)', value: 'Type 4: Custom Full-Stack Web Application (Custom Quote)' },
+  { label: 'Type 1: Single-Page Business Website', value: 'Type 1: Single-Page Business Website' },
+  { label: 'Type 2: Dynamic CMS Website', value: 'Type 2: Dynamic CMS Website' },
+  { label: 'Type 3: Premium CMS Platform', value: 'Type 3: Premium CMS Platform' },
+  { label: 'Type 4: Custom Full-Stack Web Application', value: 'Type 4: Custom Full-Stack Web Application' },
 ];
 
 export const ContactForm: React.FC = () => {
@@ -103,19 +106,60 @@ export const ContactForm: React.FC = () => {
       </div>
 
       {status === 'success' ? (
-        <div className="p-8 rounded-2xl bg-[#C5F52A]/10 border border-[#C5F52A]/30 text-center space-y-4">
-          <CheckCircle2 className="w-12 h-12 text-[#C5F52A] mx-auto" />
-          <h4 className="font-hero-display text-2xl font-bold text-white">Inquiry Received</h4>
-          <p className="font-body-ui text-sm text-[#9CA3AF]">
-            Thank you for reaching out. I will review your inquiry and contact you within 24 hours.
-          </p>
-          <button
-            onClick={() => setStatus('idle')}
-            className="px-6 py-2 rounded-full bg-[#0A0A0A] border border-white/20 text-xs font-mono text-white hover:border-[#C5F52A] transition-colors"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center justify-center py-6 text-center relative overflow-hidden"
+        >
+          {/* Paper plane Lottie animation with flight path matching reference */}
+          <motion.div
+            animate={{ 
+              x: [0, -15, 400, 1200],
+              y: [0, 15, -400, -1200],
+              scale: [1, 1.05, 0.7, 0.3],
+              opacity: [1, 1, 0.8, 0]
+            }}
+            transition={{
+              delay: 1.5,
+              duration: 1.2,
+              ease: [0.25, 0.1, 0.25, 1]
+            }}
+            className="w-48 h-48 sm:w-56 sm:h-56 mx-auto"
           >
-            Send Another Inquiry
-          </button>
-        </div>
+            <Lottie
+              animationData={contactFormAnimation}
+              loop={false}
+              className="w-full h-full"
+            />
+          </motion.div>
+          
+          {/* Staggered text reveal after flight animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2.2, duration: 0.5 }}
+            className="space-y-4 mt-2"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C5F52A]/10 border border-[#C5F52A]/30 text-[#C5F52A] font-mono text-xs font-semibold uppercase tracking-wider">
+              <CheckCircle2 className="w-4 h-4 text-[#C5F52A]" />
+              <span>INQUIRY DELIVERED</span>
+            </div>
+
+            <h3 className="font-section-heading text-3xl sm:text-4xl font-bold text-white tracking-tight">Message Sent!</h3>
+            <p className="font-body-ui text-sm sm:text-base text-[#9CA3AF] max-w-md mx-auto font-light leading-relaxed">
+              Thank you for reaching out. The paper plane has left the hangar, and I'll review your project requirements and respond within 24 hours!
+            </p>
+
+            <div className="pt-3">
+              <button
+                onClick={() => setStatus('idle')}
+                className="px-6 py-2.5 rounded-full bg-white/10 border border-white/15 text-xs font-mono text-white hover:bg-[#C5F52A] hover:text-[#0A0A0A] hover:border-[#C5F52A] transition-all cursor-pointer shadow-lg active:scale-95"
+              >
+                Send Another Inquiry
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Hidden input for RHF validation */}
@@ -169,7 +213,7 @@ export const ContactForm: React.FC = () => {
             {/* Custom Stylish Dropdown */}
             <div className="space-y-2 relative" ref={dropdownRef}>
               <label className="text-xs font-mono uppercase text-[#9CA3AF] block">
-                PACKAGE & BUDGET TIER *
+                PACKAGE & SERVICE TIER *
               </label>
 
               {/* Trigger Button */}

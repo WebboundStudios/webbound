@@ -186,7 +186,7 @@ export const Footer: React.FC = () => {
             © {currentYear} {SITE_CONFIG.name}. All Rights Reserved.
           </span>
           <span className="text-[#9CA3AF]">
-            Engineered with Next.js 15, React 19 & GSAP Premium.
+            Developed & Designed by Webbound.
           </span>
         </div>
       </div>

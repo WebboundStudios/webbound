@@ -256,20 +256,6 @@ export const Projects: React.FC = () => {
                           {project.category}
                         </span>
                       </div>
-
-                      {/* Cinematic Hover "View" Button Overlay */}
-                      <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#0A0A0A]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenProject(project);
-                          }}
-                          className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out px-6 py-3 rounded-full bg-[#C5F52A] text-[#0A0A0A] font-mono text-xs font-bold uppercase tracking-widest shadow-2xl inline-flex items-center gap-2 active:scale-95 cursor-pointer"
-                        >
-                          <Eye className="w-4 h-4" />
-                          <span>View Case Study</span>
-                        </button>
-                      </div>
                     </div>
                   </div>
                 </div>
