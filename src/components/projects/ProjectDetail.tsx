@@ -47,7 +47,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
       data-lenis-prevent="true"
       className="fixed inset-0 z-[99980] w-full h-full bg-[#0A0A0A] text-white p-6 sm:p-10 md:p-14 overflow-y-auto select-none flex flex-col justify-between"
     >
-      <div className="max-w-7xl mx-auto w-full min-h-full flex flex-col justify-between my-auto py-6">
+      <div className="max-w-7xl mx-auto w-full min-h-full flex flex-col justify-between my-auto py-6 pb-20 md:pb-32">
         {/* Main 2-Column Split Layout matching Reference Portfolio */}
         <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch my-auto">
           {/* Left Column: Close Button, Title, Subheading, Live Link & Hero Image Box */}
@@ -173,6 +173,8 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
             </div>
           </div>
         </div>
+        {/* Explicit Bottom Breathing Room Spacer */}
+        <div className="w-full h-15 sm:h-25 md:h-35 shrink-0 pointer-events-none" aria-hidden="true" />
       </div>
     </div>
   );
