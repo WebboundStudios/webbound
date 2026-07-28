@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import Lenis from 'lenis';
 import { ProjectItem } from '@/types';
-import { ArrowUpRight, X, Sparkles, CheckCircle2, ShieldCheck, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, X, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { MagneticButton } from '@/components/animations/MagneticButton';
 import { TextRoll } from '@/components/animations/TextRoll';
 
@@ -22,22 +23,36 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
   contentRef,
   detailScrollRef,
 }) => {
-  React.useEffect(() => {
+  useEffect(() => {
     const el = detailScrollRef?.current;
     if (!el) return;
 
     document.body.style.overflow = 'hidden';
 
-    const handleWheel = (e: WheelEvent) => {
-      e.stopPropagation();
-      el.scrollTop += e.deltaY;
-    };
+    // Dedicated Lenis smooth scroll engine for modal overlay container
+    const modalLenis = new Lenis({
+      wrapper: el,
+      content: (el.firstElementChild as HTMLElement) || el,
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
 
-    el.addEventListener('wheel', handleWheel, { passive: true });
+    let rafId: number;
+    const raf = (time: number) => {
+      modalLenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
 
     return () => {
       document.body.style.overflow = '';
-      el.removeEventListener('wheel', handleWheel);
+      cancelAnimationFrame(rafId);
+      modalLenis.destroy();
     };
   }, [detailScrollRef]);
 
