@@ -247,8 +247,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 /* Hide default cursor on desktop when custom cursor is active */
 @media (min-width: 1024px) {
   body.custom-cursor-enabled,
-  body.custom-cursor-enabled a,
-  body.custom-cursor-enabled button {
+  body.custom-cursor-enabled * {
     cursor: none !important;
   }
 }

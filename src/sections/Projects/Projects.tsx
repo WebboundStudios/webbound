@@ -6,7 +6,7 @@ import { Flip } from 'gsap/Flip';
 import { PROJECTS } from '@/constants/data';
 import { ProjectItem } from '@/types';
 import { TextReveal } from '@/components/animations/TextReveal';
-import { ArrowUpRight, Eye } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, MapPin, Eye } from 'lucide-react';
 import { MagneticButton } from '@/components/animations/MagneticButton';
 import { TextRoll } from '@/components/animations/TextRoll';
 import { StaircaseLoader } from '@/components/animations/StaircaseLoader';
@@ -201,64 +201,93 @@ export const Projects: React.FC = () => {
 
           {/* Project Cards Grid */}
           <div className="space-y-24">
-            {PROJECTS.map((project, idx) => (
-              <div
-                key={project.id}
-                onClick={() => handleOpenProject(project)}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center cursor-pointer group select-none"
-                data-cursor="View"
-              >
-                {/* Visual Column (7 Cols) */}
-                <div className={`lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}`}>
-                  <div
-                    className="block relative w-full aspect-[16/10] rounded-2xl bg-[#0A0A0A] border border-white/[0.08] overflow-hidden shadow-2xl group"
-                    data-cursor="View"
-                  >
-                    {/* Browser chrome bar */}
-                    <div className="h-8 bg-[#141414] border-b border-white/[0.06] px-4 flex items-center justify-between z-10 relative">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                      </div>
-                      <span className="font-mono text-[10px] text-[#9CA3AF] truncate max-w-[200px]">
-                        {project.client}
-                      </span>
-                      <span className="font-mono text-[10px] text-[#C5F52A] font-semibold">
-                        {project.year}
-                      </span>
-                    </div>
+            {PROJECTS.map((project, idx) => {
+              const match = project.client.match(/^(.*?)(?:\s*\(([^)]+)\))?$/);
+              const clientName = match && match[1] ? match[1].trim() : project.client;
+              const locationName = match && match[2] ? match[2].trim() : 'India';
 
-                    {/* Screenshot Container & Hover "View" Button */}
+              return (
+                <div
+                  key={project.id}
+                  onClick={() => handleOpenProject(project)}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center cursor-pointer group select-none"
+                  data-cursor="View"
+                >
+                  {/* Visual Column (7 Cols) */}
+                  <div className={`lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}`}>
                     <div
-                      ref={(el) => {
-                        cardImageParentRefs.current[project.id] = el;
-                      }}
-                      className="relative w-full h-[calc(100%-2rem)] overflow-hidden"
+                      className="block relative w-full aspect-[16/10] sm:aspect-[16/9.5] rounded-[28px] bg-[#0A0A0A] border border-white/10 overflow-hidden shadow-2xl group select-none"
+                      data-cursor="View"
                     >
-                      {/* Physical DOM Image DIV element */}
+                      {/* Screenshot Container & Interactive Card Overlays */}
                       <div
                         ref={(el) => {
-                          imageDivRefs.current[project.id] = el;
+                          cardImageParentRefs.current[project.id] = el;
                         }}
-                        className="project-img w-full h-full relative overflow-hidden rounded-xl"
+                        className="relative w-full h-full overflow-hidden"
                       >
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          className="w-full h-full object-cover object-top select-none"
-                        />
-                      </div>
+                        {/* Physical DOM Image DIV element for GSAP Flip */}
+                        <div
+                          ref={(el) => {
+                            imageDivRefs.current[project.id] = el;
+                          }}
+                          className="project-img w-full h-full relative overflow-hidden rounded-[28px]"
+                        >
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            className="w-full h-full object-cover object-center select-none transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                          />
+                        </div>
 
-                      {/* Top category badge */}
-                      <div className="absolute top-3 left-3 z-10 pointer-events-none">
-                        <span className="px-3 py-1 rounded-full bg-[#0A0A0A]/85 backdrop-blur-md border border-white/10 text-[#C5F52A] font-mono text-xs font-semibold shadow-lg">
-                          {project.category}
-                        </span>
+                        {/* Top Gradient Overlay */}
+                        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/80 via-black/25 to-transparent pointer-events-none z-10" />
+
+                        {/* Bottom Gradient Overlay */}
+                        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/95 via-black/50 to-transparent pointer-events-none z-10" />
+
+                        {/* Top Left Year Badge */}
+                        <div className="absolute top-4 left-4 sm:top-5 sm:left-5 z-20 pointer-events-none">
+                          <div className="px-3.5 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/10 shadow-lg flex items-center justify-center">
+                            <span className="font-mono text-xs sm:text-sm font-bold text-[#C5F52A] tracking-wider">
+                              {project.year}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Top Right Location Badge */}
+                        <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-20 pointer-events-none">
+                          <div className="px-3.5 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/10 shadow-lg flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-[#C5F52A]" />
+                            <span className="font-body-ui text-xs sm:text-sm font-medium text-white/95">
+                              {locationName}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Bottom Left Title, Category & Accent Bar */}
+                        <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-36 sm:right-44 z-20 pointer-events-none space-y-1">
+                          <h3 className="font-sans text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight leading-tight drop-shadow-md">
+                            {clientName}
+                          </h3>
+                          <p className="font-body-ui text-xs sm:text-sm md:text-base text-white/75 font-normal leading-normal truncate">
+                            {project.category}
+                          </p>
+                          <div className="w-10 sm:w-12 h-1 bg-[#C5F52A] rounded-full !mt-3" />
+                        </div>
+
+                        {/* Bottom Right View Project Button */}
+                        <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20">
+                          <div className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#141414]/90 backdrop-blur-md border border-white/15 text-white shadow-xl group-hover:bg-[#C5F52A] transition-all duration-300 group/btn">
+                            <span className="font-body-ui text-xs sm:text-sm font-semibold text-[#C5F52A] group-hover:text-[#0A0A0A] transition-colors">
+                              View Project
+                            </span>
+                            <ArrowRight className="w-4 h-4 text-[#C5F52A] group-hover:text-[#0A0A0A] group-hover:translate-x-0.5 transition-all duration-300" />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
                 {/* Info Column (5 Cols) */}
                 <div
@@ -309,7 +338,8 @@ export const Projects: React.FC = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
       </div>
