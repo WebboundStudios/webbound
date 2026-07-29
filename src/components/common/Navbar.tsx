@@ -79,29 +79,29 @@ export const Navbar: React.FC = () => {
     <>
       {/* Bottom-Docked Floating Capsule Navbar */}
       <nav
-        className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-out ${
+        className={`fixed bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-out w-max max-w-[calc(100vw-1.5rem)] ${
           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
         }`}
       >
-        <div className="flex items-center gap-1.5 bg-[#11110f]/95 backdrop-blur-xl rounded-full px-1.5 py-1.5 border border-white/15 shadow-[0_18px_55px_rgba(0,0,0,0.24)]">
+        <div className="flex items-center justify-between gap-1 sm:gap-1.5 bg-[#11110f]/95 backdrop-blur-xl rounded-full p-1 sm:p-1.5 border border-white/15 shadow-[0_18px_55px_rgba(0,0,0,0.24)] max-w-full">
           {/* Menu Toggle */}
           <button
             onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
-            className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-sm font-body-ui font-medium transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-xs sm:text-sm font-body-ui font-medium transition-colors shrink-0"
             aria-label="Toggle Menu"
           >
-            {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-            <span className="text-xs tracking-wider uppercase">{menuOpen ? 'Close' : 'Menu'}</span>
+            {menuOpen ? <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Menu className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            <span className="text-[10px] sm:text-xs tracking-wider uppercase">{menuOpen ? 'Close' : 'Menu'}</span>
           </button>
 
           {/* Center Brand Name */}
-          <span className="px-5 text-white font-hero-display text-[15px] font-bold tracking-[0.02em] select-none">
+          <span className="px-2 sm:px-5 text-white font-hero-display text-xs sm:text-[15px] font-bold tracking-[0.02em] select-none shrink-0 truncate">
             WEBBOUND<span className="text-[#C5F52A]">.</span>
           </span>
 
           {/* CTA Button */}
-          <a href="#contact">
-            <MagneticButton variant="primary" size="sm" className="whitespace-nowrap">
+          <a href="#contact" className="shrink-0">
+            <MagneticButton variant="primary" size="sm" className="!px-3.5 !py-2 sm:!px-5 sm:!py-2.5 !text-[10px] sm:!text-xs whitespace-nowrap">
               <span>Contact Us</span>
             </MagneticButton>
           </a>
