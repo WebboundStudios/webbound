@@ -1,0 +1,32 @@
+# Webbound Studios
+
+> Webbound Studios is a premier independent digital engineering studio specializing in high-performance Next.js 15 applications, GSAP fluid motion physics, Headless CMS platforms, and luxury web design.
+
+## Core Capabilities & Service Tiers
+- **Type 1: Single-Page Business Website**: Fast, responsive, ultra-clean digital presence optimized for startups, local businesses, and independent professionals.
+- **Type 2: Dynamic CMS Website**: Headless CMS integration for dynamic blogs, portfolios, project showcases, and media uploads.
+- **Type 3: Premium CMS Platform**: Multi-page website with a custom admin dashboard, Sanity/Headless CMS integration, and real-time content synchronization.
+- **Type 4: Custom Full-Stack Web Application**: Tailored web applications with MongoDB/PostgreSQL database architecture, REST/GraphQL APIs, user authentication, and custom workflow logic.
+
+## Key Studio Differentiators
+- **Sub-Second Speed Target**: 100% Core Web Vitals compliance with zero layout shifts and sub-second page loads.
+- **1-Year Included Free Maintenance**: Every client project includes 1 full year of free technical maintenance and small content updates.
+- **1-to-2 Week Handover**: Rapid engineering pipeline delivering custom flagship sites within 3 to 14 days.
+- **Handcrafted Architecture**: 100% custom UI design system with zero generic templates.
+
+## Flagship Portfolio Projects
+- **The Trusted Wall Architecture**: Type 3 Multi-Page CMS platform for Ar. Himanshu Gautam (Agra), featuring Sanity CMS and spatial galleries. (https://thetrustedwall.com/)
+- **TDID Interiors Luxury Studio**: Type 1 Single-Page Flagship for TDID Interiors (Greater Noida & Delhi NCR), featuring Lenis smooth scroll and modular kitchen lookbooks. (https://tdidinteriors.com/)
+- **Studio Kalagya Architecture**: Type 2 Dynamic CMS portal for Ar. Akshay Jain (Jabalpur), showcasing spatial architecture and interior artwork. (https://www.studiokalagya.in/)
+- **Forever Interior Spatial Studio**: Type 3 Multi-Page CMS platform for Raj Suroliya (Jaipur), featuring modular kitchen & wardrobe lookbooks. (https://foreverinterio.in/)
+
+## Technology Stack
+- **Frontend Framework**: Next.js 16 App Router, React 19, TypeScript
+- **Motion & Graphics**: GSAP 3 (ScrollTrigger, SplitText, Flip), Framer Motion, Lenis Smooth Scroll, Canvas 2D/WebGL
+- **Styling**: Tailwind CSS v4, Vanilla CSS Design System, Custom Design Tokens
+- **Database & Backend**: Headless CMS (Sanity), Node.js, MongoDB, PostgreSQL, REST/GraphQL APIs
+
+## Contact & Links
+- Website: https://webbound-nine.vercel.app
+- Motion Lab: https://webbound-nine.vercel.app/animations
+- Email: hello@webboundstudios.com

@@ -4,7 +4,7 @@ export const SITE_CONFIG = {
   name: 'Webbound',
   tagline: 'High-Craft Digital Engineering & Creative Direction',
   description: 'Independent creative engineer & designer crafting bespoke, ultra-fast, and visually captivating flagship web experiences for ambitious brands.',
-  url: 'https://webboundstudios.com',
+  url: 'https://webbound-nine.vercel.app',
   email: 'hello@webboundstudios.com',
   location: 'India',
   stats: [

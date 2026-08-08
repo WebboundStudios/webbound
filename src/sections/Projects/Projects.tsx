@@ -235,7 +235,7 @@ export const Projects: React.FC = () => {
                         >
                           <img
                             src={project.image}
-                            alt={project.title}
+                            alt={`${project.title} - ${project.category} Portfolio Project by Webbound Studios`}
                             className="w-full h-full object-cover object-center select-none transform group-hover:scale-105 transition-transform duration-700 ease-out"
                           />
                         </div>
