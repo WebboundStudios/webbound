@@ -52,7 +52,28 @@
   --ring: #C5F52A;
   --radius: 0.75rem;
 
-  /* Webbound Design Tokens */
+  /* Shared motion tokens — the same expo-out and back-ease curves used
+     throughout the component layer (cursor, cards, accordions, buttons).
+     Centralizing them here means every hand-typed
+     `ease-[cubic-bezier(0.16,1,0.3,1)]` in the components and every
+     transition declared in this file are provably the same curve, not
+     eight slightly-different approximations of "premium." */
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 200ms;
+  --dur-base: 350ms;
+  --dur-slow: 500ms;
+
+  /* Webbound Design Tokens
+     Note: these literal values duplicate --color-brand-* above (same
+     colors, two names). I didn't merge them — --color-brand-* lives
+     inside a Tailwind `@theme inline` block, and I can't confirm from
+     static analysis alone whether Tailwind v4 emits those as real
+     globally-referenceable CSS variables or only inlines them into
+     generated utility classes. Referencing one from the other on a guess
+     risked silently breaking .section-light/.section-dark if wrong, so
+     I left both sets as literals. Worth deciding on one source of truth
+     when you have a build to verify against. */
   --wb-bg: #F2EFE8;
   --wb-bg-dark: #0A0A0A;
   --wb-card: #FFFFFF;
@@ -98,13 +119,17 @@
 ::-webkit-scrollbar {
   width: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: #F5F3EE;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(10, 10, 10, 0.15);
   border-radius: 3px;
+  transition: background-color 0.25s ease;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #0A0A0A;
 }
@@ -114,6 +139,7 @@
   * {
     @apply border-border outline-none;
   }
+
   html {
     color-scheme: light;
     scroll-behavior: auto !important;
@@ -121,6 +147,7 @@
     color: #0A0A0A;
     font-family: var(--font-body), system-ui, sans-serif;
   }
+
   body {
     background-color: #F2EFE8;
     color: #0A0A0A;
@@ -134,15 +161,23 @@
   .font-hero-display {
     font-family: var(--font-display), system-ui, sans-serif;
     letter-spacing: -0.04em;
+    text-wrap: balance;
   }
 
   .font-section-heading {
     font-family: var(--font-heading), system-ui, sans-serif;
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 
   .font-body-ui {
     font-family: var(--font-body), system-ui, sans-serif;
+  }
+
+  /* Body copy avoids orphaned single words on the last line — supported
+     browsers only; unsupported browsers just fall back to normal wrapping. */
+  p {
+    text-wrap: pretty;
   }
 
   /* GSAP SplitText Word Spacing Fix */
@@ -151,6 +186,7 @@
     display: inline-block !important;
     margin-right: 0.28em !important;
   }
+
   div[class*="wordsClass"]:last-child,
   .split-word:last-child {
     margin-right: 0 !important;
@@ -189,6 +225,8 @@
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(16, 16, 14, 0.1);
   box-shadow: 0 8px 30px rgba(16, 16, 14, 0.045);
+  transition: border-color var(--dur-base) var(--ease-premium),
+    box-shadow var(--dur-base) var(--ease-premium);
 }
 
 .clean-card:hover {
@@ -212,6 +250,7 @@ section[id] .bg-white {
   background: rgba(255, 255, 255, 0.82);
   border-color: rgba(16, 16, 14, 0.11);
   box-shadow: 0 12px 35px rgba(16, 16, 14, 0.045);
+  transition: box-shadow var(--dur-base) var(--ease-premium);
 }
 
 section[id] .bg-white:hover {
@@ -220,32 +259,51 @@ section[id] .bg-white:hover {
 
 /* The animation lab is a gallery, not a dashboard: give every experiment
    enough air and a quiet, tactile surface so the previews stay the focus. */
-.animations-lab section:nth-of-type(2) > div > div {
+.animations-lab section:nth-of-type(2)>div>div {
   border-radius: 1.25rem;
   border-color: rgba(16, 16, 14, 0.1);
   box-shadow: 0 12px 35px rgba(16, 16, 14, 0.045);
+  transition: border-color var(--dur-base) var(--ease-premium),
+    box-shadow var(--dur-base) var(--ease-premium);
 }
 
-.animations-lab section:nth-of-type(2) > div > div:hover {
+.animations-lab section:nth-of-type(2)>div>div:hover {
   border-color: rgba(16, 16, 14, 0.18);
   box-shadow: 0 20px 48px rgba(16, 16, 14, 0.085);
 }
 
-section[id] > div > div:first-child span.font-mono:last-child {
+section[id]>div>div:first-child span.font-mono:last-child {
   letter-spacing: 0.24em;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-variant-numeric: tabular-nums;
 }
 
-button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+button,
+a,
+input,
+textarea,
+select {
+  transition: outline-offset var(--dur-fast) var(--ease-premium),
+    box-shadow var(--dur-fast) var(--ease-premium);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   outline: 2px solid #C5F52A;
   outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(197, 245, 42, 0.15);
 }
 
 /* Hide default cursor on desktop when custom cursor is active */
 @media (min-width: 1024px) {
+
   body.custom-cursor-enabled,
   body.custom-cursor-enabled * {
     cursor: none !important;
@@ -267,7 +325,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+
+  *,
+  ::before,
+  ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

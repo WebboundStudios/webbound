@@ -73,7 +73,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
                 <button
                   onClick={onClose}
                   data-cursor="Close"
-                  className="closeBtn group inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/10 border border-white/15 text-white hover:bg-[#C5F52A] hover:text-[#0A0A0A] hover:border-[#C5F52A] transition-all duration-300 font-mono text-xs uppercase tracking-widest cursor-pointer shadow-lg active:scale-95"
+                  className="closeBtn group inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/10 border border-white/15 text-white hover:bg-[#C5F52A] hover:text-[#0A0A0A] hover:border-[#C5F52A] hover:tracking-[0.15em] transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] font-mono text-xs uppercase tracking-widest cursor-pointer shadow-lg active:scale-90"
                 >
                   <span>Return To Home</span>
                   <X className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" />
@@ -82,7 +82,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
 
               {/* Title, Subheading & Year */}
               <div className="space-y-3 detail-anim-item" style={{ opacity: 0 }}>
-                <h1 className="projecttitle font-section-heading text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tight leading-none">
+                <h1 className="projecttitle font-section-heading text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-[-0.02em] leading-[0.95]">
                   {project.title}
                 </h1>
                 <div className="subheading flex items-center gap-4 pt-1">
@@ -145,9 +145,9 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="font-mono text-xs sm:text-sm text-white/90 flex items-center gap-2"
+                        className="group/tag font-mono text-xs sm:text-sm text-white/90 flex items-center gap-2 w-fit transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-x-1.5"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#C5F52A]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C5F52A] transition-transform duration-300 group-hover/tag:scale-125" />
                         {tag}
                       </span>
                     ))}

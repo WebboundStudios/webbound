@@ -19,12 +19,12 @@ export const CTA: React.FC = () => {
           {/* Left Pitch Column (5 Cols) */}
           <div className="lg:col-span-5 space-y-8">
             <div className="flex items-center gap-4">
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Start a conversation</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">Start a conversation</span>
             </div>
 
             <TextReveal
               as="h2"
-              className="font-hero-display text-4xl sm:text-6xl font-black text-[#0A0A0A] tracking-tight leading-[1.05]"
+              className="font-hero-display text-4xl sm:text-6xl font-black text-[#0A0A0A] tracking-[-0.03em] leading-[1.05]"
             >
               READY TO BUILD A <span className="underline decoration-[#C5F52A] decoration-4">FLAGSHIP</span> SITE?
             </TextReveal>
@@ -34,14 +34,14 @@ export const CTA: React.FC = () => {
             </p>
 
             <div className="space-y-4 pt-6 border-t border-[#0A0A0A]/[0.08]">
-              <div className="flex items-center gap-3 text-sm text-[#6B7280]">
-                <Mail className="w-4 h-4 text-[#0A0A0A]" />
+              <div className="group flex items-center gap-3 text-sm text-[#6B7280] w-fit">
+                <Mail className="w-4 h-4 text-[#0A0A0A] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-6 group-hover:scale-110" />
                 <a href={`mailto:${SITE_CONFIG.email}`} className="text-[#0A0A0A] hover:text-[#0A0A0A] transition-colors font-bold">
                   <TextRoll>{SITE_CONFIG.email}</TextRoll>
                 </a>
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#6B7280]">
-                <MapPin className="w-4 h-4 text-[#0A0A0A]" />
+              <div className="group flex items-center gap-3 text-sm text-[#6B7280] w-fit">
+                <MapPin className="w-4 h-4 text-[#0A0A0A] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-0.5" />
                 <span className="font-medium text-[#0A0A0A]">{SITE_CONFIG.location}</span>
               </div>
             </div>

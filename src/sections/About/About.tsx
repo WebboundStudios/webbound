@@ -16,11 +16,11 @@ export const About: React.FC = () => {
         <div className="flex flex-col space-y-3 mb-16">
           {/* Numbered section marker */}
             <div className="flex items-center gap-4">
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">A little about the work</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">A little about the work</span>
           </div>
           <TextReveal
             as="h2"
-            className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight max-w-4xl"
+            className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-[-0.02em] leading-[1.05] max-w-4xl"
           >
             A Creative Engineer Obsessed With Digital Distinction.
           </TextReveal>
@@ -39,12 +39,12 @@ export const About: React.FC = () => {
 
             {/* Feature Highlights — left-border accent, no icon box */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-6">
-              <div className="pl-4 border-l-2 border-[#C5F52A] space-y-1">
+              <div className="pl-4 border-l-2 border-[#C5F52A] space-y-1 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:pl-5">
                 <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">Uncompromised Quality</h4>
                 <p className="text-xs text-[#6B7280]">Zero templates. Bespoke architecture built for long-term scalability.</p>
               </div>
 
-              <div className="pl-4 border-l-2 border-[#0A0A0A] space-y-1">
+              <div className="pl-4 border-l-2 border-[#0A0A0A] space-y-1 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:pl-5 hover:border-[#C5F52A]">
                 <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">GPU Motion Physics</h4>
                 <p className="text-xs text-[#6B7280]">Liquid smooth 60fps scroll animations tailored for high-end feel.</p>
               </div>
@@ -61,8 +61,8 @@ export const About: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-white block">
+                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
+                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-white block tracking-[-0.02em]">
                     <CounterAnimation end={100} suffix="%" />
                   </span>
                   <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">
@@ -70,8 +70,8 @@ export const About: React.FC = () => {
                   </span>
                 </div>
 
-                <div>
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-[#C5F52A] block">
+                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
+                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-[#C5F52A] block tracking-[-0.02em]">
                     <CounterAnimation end={6} suffix="+" />
                   </span>
                   <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">
@@ -79,8 +79,8 @@ export const About: React.FC = () => {
                   </span>
                 </div>
 
-                <div>
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-white block">
+                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
+                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-white block tracking-[-0.02em]">
                     <CounterAnimation end={65} suffix="+" />
                   </span>
                   <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">
@@ -88,8 +88,8 @@ export const About: React.FC = () => {
                   </span>
                 </div>
 
-                <div>
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-[#C5F52A] block">
+                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
+                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-[#C5F52A] block tracking-[-0.02em]">
                     <CounterAnimation end={100} suffix="%" />
                   </span>
                   <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">

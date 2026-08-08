@@ -19,11 +19,11 @@ export const WhyUs: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col space-y-3 mb-16 text-center items-center">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Why clients come back</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">Why clients come back</span>
           </div>
           <TextReveal
             as="h2"
-            className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight max-w-3xl"
+            className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-[-0.02em] leading-tight max-w-3xl"
           >
             Why Visionary Brands Entrust Me With Their Flagship Digital Assets.
           </TextReveal>
@@ -34,11 +34,11 @@ export const WhyUs: React.FC = () => {
           {WHY_US.map((item) => (
             <div
               key={item.id}
-              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] transition-all duration-300 space-y-5 flex flex-col justify-between h-full group shadow-xs hover:shadow-md"
+              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#C5F52A] hover:-translate-y-1.5 transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] space-y-5 flex flex-col justify-between h-full group shadow-xs hover:shadow-lg"
             >
               <div>
                 <div className="flex items-start justify-between mb-5">
-                  <div className="p-2.5 rounded-xl bg-[#F5F3EE] group-hover:bg-[#C5F52A]/20 transition-colors duration-300">
+                  <div className="p-2.5 rounded-xl bg-[#F5F3EE] group-hover:bg-[#C5F52A]/20 group-hover:scale-110 transition-all duration-[400ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]">
                     {iconMap[item.number]}
                   </div>
                   <span className="font-mono text-4xl font-black text-[#0A0A0A]/[0.06] group-hover:text-[#0A0A0A]/[0.10] transition-colors">
@@ -46,7 +46,7 @@ export const WhyUs: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="font-section-heading text-xl font-bold text-[#0A0A0A] transition-colors duration-300">
+                <h3 className="font-section-heading text-xl font-bold text-[#0A0A0A] tracking-[-0.01em] transition-colors duration-300">
                   {item.title}
                 </h3>
 
@@ -55,7 +55,7 @@ export const WhyUs: React.FC = () => {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06]">
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
                 <span className="font-mono text-[11px] uppercase tracking-wider text-[#0A0A0A] font-bold">
                   {item.highlight}
                 </span>

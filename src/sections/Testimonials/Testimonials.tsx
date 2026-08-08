@@ -15,11 +15,11 @@ export const Testimonials: React.FC = () => {
       {/* Header Container */}
       <div className="max-w-4xl mx-auto px-6 relative z-10 flex flex-col space-y-4 mb-8 sm:mb-16 text-center items-center">
         <div className="flex items-center gap-4">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Words from clients</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">Words from clients</span>
         </div>
         <TextReveal
           as="h2"
-          className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight max-w-3xl"
+          className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-[-0.02em] leading-tight max-w-3xl"
         >
           Endorsed By Leaders At Visionary Companies.
         </TextReveal>
@@ -31,7 +31,7 @@ export const Testimonials: React.FC = () => {
           {TESTIMONIALS.map((item) => (
             <div
               key={item.id}
-              className="p-6 sm:p-8 lg:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#0A0A0A]/20 transition-all duration-300 shadow-sm flex flex-col justify-between max-w-lg min-w-[270px] sm:min-w-[440px] lg:min-w-[480px] space-y-5 sm:space-y-6 select-none"
+              className="p-6 sm:p-8 lg:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#0A0A0A]/20 hover:-translate-y-1.5 hover:shadow-xl transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] shadow-sm flex flex-col justify-between max-w-lg min-w-[270px] sm:min-w-[440px] lg:min-w-[480px] space-y-5 sm:space-y-6 select-none"
             >
               <div className="space-y-4">
                 {/* Rating — typographic, not icon array */}
@@ -45,14 +45,14 @@ export const Testimonials: React.FC = () => {
                 </div>
 
                 {/* Quote — typographic opening mark, no icon */}
-                <p className="font-body-ui text-sm sm:text-base text-[#0A0A0A] font-normal leading-relaxed">
+                <p className="font-body-ui text-sm sm:text-base text-[#0A0A0A] font-normal leading-[1.65]">
                   <span className="text-[#C5F52A] font-hero-display text-2xl leading-none mr-1 align-text-top">&ldquo;</span>
                   {item.quote}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#F5F3EE] border border-[#0A0A0A]/10 flex items-center justify-center font-mono font-bold text-xs text-[#0A0A0A]">
+              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center gap-3 group">
+                <div className="w-8 h-8 rounded-full bg-[#F5F3EE] border border-[#0A0A0A]/10 flex items-center justify-center font-mono font-bold text-xs text-[#0A0A0A] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:border-[#C5F52A]">
                   {item.author.charAt(0)}
                 </div>
                 <div>

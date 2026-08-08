@@ -36,17 +36,18 @@ export const Navbar: React.FC = () => {
         gsap.fromTo(
           menuOverlayRef.current,
           { clipPath: 'inset(100% 0 0 0)' },
-          { clipPath: 'inset(0% 0 0 0)', duration: 0.7, ease: 'power3.inOut' }
+          { clipPath: 'inset(0% 0 0 0)', duration: 0.75, ease: 'expo.inOut' }
         );
       }
 
-      // Stagger menu items
+      // Stagger menu items — slightly tighter stagger + expo.out reads
+      // snappier and more considered than a generic power2 ease.
       if (menuItemsRef.current) {
         const items = menuItemsRef.current.querySelectorAll('.menu-item');
         gsap.fromTo(
           items,
-          { y: 36, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power2.out', delay: 0.32 }
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, stagger: 0.06, ease: 'expo.out', delay: 0.3 }
         );
       }
     } else {
@@ -66,8 +67,8 @@ export const Navbar: React.FC = () => {
     if (menuOverlayRef.current) {
       gsap.to(menuOverlayRef.current, {
         clipPath: 'inset(0 0 100% 0)',
-        duration: 0.6,
-        ease: 'power3.inOut',
+        duration: 0.55,
+        ease: 'expo.inOut',
         onComplete: () => setMenuOpen(false),
       });
     } else {
@@ -79,7 +80,7 @@ export const Navbar: React.FC = () => {
     <>
       {/* Bottom-Docked Floating Capsule Navbar */}
       <nav
-        className={`fixed bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-out w-max max-w-[calc(100vw-1.5rem)] ${
+        className={`fixed bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-[650ms] ease-[cubic-bezier(0.16,1,0.3,1)] w-max max-w-[calc(100vw-1.5rem)] ${
           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
         }`}
       >
@@ -87,7 +88,7 @@ export const Navbar: React.FC = () => {
           {/* Menu Toggle */}
           <button
             onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
-            className="flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-xs sm:text-sm font-body-ui font-medium transition-colors shrink-0"
+            className="flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-xs sm:text-sm font-body-ui font-medium transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 shrink-0"
             aria-label="Toggle Menu"
           >
             {menuOpen ? <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Menu className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
@@ -135,18 +136,18 @@ export const Navbar: React.FC = () => {
                 key={link.href}
                 href={link.href}
                 onClick={closeMenu}
-                className="menu-item group flex items-center gap-4 sm:gap-6 w-full py-2 sm:py-3 border-b border-white/5 hover:border-[#C5F52A]/40 transition-colors"
+                className="menu-item group flex items-center gap-4 sm:gap-6 w-full py-2 sm:py-3 border-b border-white/5 hover:border-[#C5F52A]/40 hover:pl-2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
               >
-                <span className="text-xs font-mono text-[#6B7280] group-hover:text-[#C5F52A] transition-colors w-7 sm:w-8 shrink-0">
+                <span className="text-xs font-mono text-[#6B7280] group-hover:text-[#C5F52A] group-hover:tracking-[0.15em] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-7 sm:w-8 shrink-0">
                   0{idx + 1}
                 </span>
                 <TextRoll
                   center
-                  className="font-hero-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white group-hover:text-[#C5F52A] transition-colors tracking-tight uppercase"
+                  className="font-hero-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white group-hover:text-[#C5F52A] transition-colors duration-500 tracking-tight uppercase"
                 >
                   {link.label}
                 </TextRoll>
-                <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#6B7280] group-hover:text-[#C5F52A] ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300 shrink-0" />
+                <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#6B7280] group-hover:text-[#C5F52A] ml-auto opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shrink-0" />
               </a>
             ))}
           </div>

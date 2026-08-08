@@ -98,7 +98,7 @@ export const Projects: React.FC = () => {
           // Perform Flip morphing transition as panels retract
           Flip.from(flipStateRef.current, {
             duration: 1.0,
-            ease: 'power3.inOut',
+            ease: 'expo.inOut',
             absolute: true,
             scale: true,
             onComplete: () => {
@@ -136,7 +136,7 @@ export const Projects: React.FC = () => {
           // Perform Flip morph back as panels retract
           Flip.from(flipStateRef.current, {
             duration: 1.0,
-            ease: 'power3.inOut',
+            ease: 'expo.inOut',
             absolute: true,
             scale: true,
           });
@@ -179,13 +179,13 @@ export const Projects: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
             <div className="flex flex-col space-y-3">
               <div className="flex items-center gap-4">
-                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#C5F52A]/70">
+                <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#C5F52A]/70">
                   Selected work
                 </span>
               </div>
               <TextReveal
                 as="h2"
-                className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight max-w-3xl"
+                className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-tight max-w-3xl"
               >
                 Crafted For Digital Dominance &amp; Market Authority.
               </TextReveal>
@@ -216,7 +216,7 @@ export const Projects: React.FC = () => {
                   {/* Visual Column (7 Cols) */}
                   <div className={`lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}`}>
                     <div
-                      className="block relative w-full aspect-[16/10] sm:aspect-[16/9.5] rounded-[28px] bg-[#0A0A0A] border border-white/10 overflow-hidden shadow-2xl group select-none"
+                      className="block relative w-full aspect-[16/10] sm:aspect-[16/9.5] rounded-[28px] bg-[#0A0A0A] border border-white/10 overflow-hidden shadow-2xl group select-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(0,0,0,0.5)]"
                       data-cursor="View"
                     >
                       {/* Screenshot Container & Interactive Card Overlays */}
@@ -294,18 +294,18 @@ export const Projects: React.FC = () => {
                   className={`lg:col-span-5 space-y-5 ${idx % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs text-[#C5F52A] tracking-widest uppercase">
+                    <span className="font-mono text-xs text-[#C5F52A] tracking-[0.2em] uppercase">
                       0{idx + 1}
                     </span>
                     <span className="h-px w-8 bg-[#C5F52A]/40" />
-                    <span className="font-mono text-xs text-white/30 uppercase tracking-widest">
+                    <span className="font-mono text-xs text-white/30 uppercase tracking-[0.2em]">
                       Case Study
                     </span>
                   </div>
 
                   <h3
                     onClick={() => handleOpenProject(project)}
-                    className="font-section-heading text-3xl md:text-4xl font-bold text-white hover:text-[#C5F52A] transition-colors duration-300 cursor-pointer"
+                    className="font-section-heading text-3xl md:text-4xl font-bold text-white hover:text-[#C5F52A] tracking-[-0.01em] transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
                   >
                     {project.title}
                   </h3>
@@ -330,10 +330,10 @@ export const Projects: React.FC = () => {
                   <div className="flex items-center gap-4 pt-2">
                     <button
                       onClick={() => handleOpenProject(project)}
-                      className="inline-flex items-center gap-2 text-sm font-semibold font-body-ui text-[#C5F52A] hover:underline cursor-pointer"
+                      className="group/expand inline-flex items-center gap-2 text-sm font-semibold font-body-ui text-[#C5F52A] hover:underline cursor-pointer"
                     >
                       <TextRoll center>Expand Presentation</TextRoll>
-                      <ArrowUpRight className="w-4 h-4" />
+                      <ArrowUpRight className="w-4 h-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/expand:translate-x-1 group-hover/expand:-translate-y-1" />
                     </button>
                   </div>
                 </div>

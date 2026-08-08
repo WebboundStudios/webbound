@@ -65,13 +65,15 @@ export const Process: React.FC = () => {
 
         const mainTl = gsap.timeline();
 
-        // Step 0 activation
+        // Step 0 activation — a touch of back-ease overshoot on scale
+        // makes each node feel like it "arrives" rather than just appears.
         mainTl.to(nodes[0], {
           scale: 1.15,
           backgroundColor: '#C5F52A',
           color: '#0A0A0A',
           boxShadow: '0 0 25px rgba(197, 245, 42, 0.85)',
-          duration: 0.1,
+          duration: 0.15,
+          ease: 'back.out(2.5)',
         }, 0);
 
         if (progressFills[0]) {
@@ -105,7 +107,8 @@ export const Process: React.FC = () => {
                 backgroundColor: '#C5F52A',
                 color: '#0A0A0A',
                 boxShadow: '0 0 25px rgba(197, 245, 42, 0.85)',
-                duration: 0.1,
+                duration: 0.15,
+                ease: 'back.out(2.5)',
               },
               `>-0.05`
             );
@@ -179,11 +182,11 @@ export const Process: React.FC = () => {
           <div className="flex flex-col space-y-3">
             <div className="flex items-center gap-4">
               <span className="font-mono text-[10px] text-[#0A0A0A]/30 tracking-widest uppercase">04 / PROCESS</span>
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">Our Development Lifecycle</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">Our Development Lifecycle</span>
             </div>
             <TextReveal
               as="h2"
-              className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight max-w-4xl"
+              className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-[-0.02em] leading-tight max-w-4xl"
             >
               Rapid Delivery In Days, Not Months.
             </TextReveal>
@@ -221,7 +224,7 @@ export const Process: React.FC = () => {
                   {/* Content Block */}
                   <div className="flex flex-col flex-1 justify-between pt-5 space-y-4">
                     <div className="space-y-2 min-h-[110px]">
-                      <h3 className="font-section-heading text-lg font-bold text-[#0A0A0A] tracking-tight">
+                      <h3 className="font-section-heading text-lg font-bold text-[#0A0A0A] tracking-[-0.01em]">
                         {stepItem.title}
                       </h3>
                       <p className="font-body-ui text-xs text-[#6B7280] font-light leading-relaxed">
@@ -277,7 +280,7 @@ export const Process: React.FC = () => {
                   {/* Right Column: Content Block */}
                   <div className="flex flex-col flex-1 pb-8 space-y-3">
                     <div className="space-y-1">
-                      <h3 className="font-section-heading text-lg sm:text-xl font-bold text-[#0A0A0A] tracking-tight">
+                      <h3 className="font-section-heading text-lg sm:text-xl font-bold text-[#0A0A0A] tracking-[-0.01em]">
                         {stepItem.title}
                       </h3>
                       <p className="font-body-ui text-xs sm:text-sm text-[#6B7280] font-light leading-relaxed">
@@ -310,7 +313,3 @@ export const Process: React.FC = () => {
     </section>
   );
 };
-
-
-
-

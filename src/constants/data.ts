@@ -6,7 +6,7 @@ export const SITE_CONFIG = {
   description: 'Independent creative engineer & designer crafting bespoke, ultra-fast, and visually captivating flagship web experiences for ambitious brands.',
   url: 'https://webboundstudios.com',
   email: 'hello@webboundstudios.com',
-  location: 'Agra, India',
+  location: 'India',
   stats: [
     { label: 'Bespoke Projects', value: 65, suffix: '+' },
     { label: 'Sub-Second Speed Target', value: 100, suffix: '%' },

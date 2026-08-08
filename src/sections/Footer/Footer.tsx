@@ -90,7 +90,7 @@ export const Footer: React.FC = () => {
 
           {/* Nav Links Column (4 Cols) */}
           <div className="md:col-span-4 space-y-4">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#9CA3AF] block font-semibold">
+            <span className="text-xs font-mono uppercase tracking-[0.15em] text-[#9CA3AF] block font-semibold">
               QUICK NAVIGATION
             </span>
             <div className="grid grid-cols-2 gap-3">
@@ -98,7 +98,7 @@ export const Footer: React.FC = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="font-body-ui text-sm text-[#9CA3AF] hover:text-[#C5F52A] transition-colors duration-300 w-fit font-medium"
+                  className="font-body-ui text-sm text-[#9CA3AF] hover:text-[#C5F52A] hover:translate-x-1 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] w-fit font-medium inline-block"
                 >
                   <TextRoll center>{link.label}</TextRoll>
                 </a>
@@ -110,11 +110,11 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-3 space-y-6 flex flex-col items-start md:items-end">
             <button
               onClick={scrollToTop}
-              className="group inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] text-xs font-mono text-white transition-all duration-300 cursor-pointer shadow-sm"
+              className="group inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] text-xs font-mono tracking-wide text-white transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm active:scale-95"
               aria-label="Back to top"
             >
               <span>BACK TO TOP</span>
-              <div className="w-6 h-6 rounded-full bg-white/10 text-white flex items-center justify-center group-hover:bg-[#C5F52A] group-hover:text-[#0A0A0A] transition-colors">
+              <div className="w-6 h-6 rounded-full bg-white/10 text-white flex items-center justify-center group-hover:bg-[#C5F52A] group-hover:text-[#0A0A0A] group-hover:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
                 <ArrowUp className="w-3.5 h-3.5" />
               </div>
             </button>
@@ -125,7 +125,7 @@ export const Footer: React.FC = () => {
                 href="https://github.com/webboundstudios"
                 target="_blank"
                 rel="noreferrer"
-                className="p-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] hover:bg-[#C5F52A] text-white hover:text-[#0A0A0A] transition-all shadow-sm"
+                className="p-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] hover:bg-[#C5F52A] hover:-translate-y-1 text-white hover:text-[#0A0A0A] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 shadow-sm"
                 aria-label="GitHub"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -137,7 +137,7 @@ export const Footer: React.FC = () => {
                 href="https://twitter.com/webboundstudios"
                 target="_blank"
                 rel="noreferrer"
-                className="p-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] hover:bg-[#C5F52A] text-white hover:text-[#0A0A0A] transition-all shadow-sm"
+                className="p-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] hover:bg-[#C5F52A] hover:-translate-y-1 text-white hover:text-[#0A0A0A] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 shadow-sm"
                 aria-label="Twitter"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -149,7 +149,7 @@ export const Footer: React.FC = () => {
                 href="https://linkedin.com/company/webboundstudios"
                 target="_blank"
                 rel="noreferrer"
-                className="p-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] hover:bg-[#C5F52A] text-white hover:text-[#0A0A0A] transition-all shadow-sm"
+                className="p-3 rounded-full bg-[#141414] border border-white/10 hover:border-[#C5F52A] hover:bg-[#C5F52A] hover:-translate-y-1 text-white hover:text-[#0A0A0A] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 shadow-sm"
                 aria-label="LinkedIn"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">

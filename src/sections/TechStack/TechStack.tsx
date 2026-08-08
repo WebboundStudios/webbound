@@ -28,11 +28,11 @@ export const TechStack: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col space-y-3 mb-8 sm:mb-16 text-center items-center">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B7280]">The tools behind the work</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">The tools behind the work</span>
           </div>
           <TextReveal
             as="h2"
-            className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight max-w-3xl"
+            className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-[-0.02em] leading-tight max-w-3xl"
           >
             Engineered With Premium Modern Technologies.
           </TextReveal>
@@ -44,10 +44,10 @@ export const TechStack: React.FC = () => {
             {row1.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-2.5 sm:gap-4 px-3.5 py-2.5 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] transition-all duration-300 group min-w-[200px] sm:min-w-[290px] shadow-sm select-none"
+                className="flex items-center gap-2.5 sm:gap-4 px-3.5 py-2.5 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] hover:-translate-y-1 transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group min-w-[200px] sm:min-w-[290px] shadow-sm hover:shadow-md select-none"
                 data-cursor="Tech"
               >
-                <div className="w-8 h-8 sm:w-11 sm:h-11 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] transition-all duration-300 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 sm:w-11 sm:h-11 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] group-hover:scale-110 transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-center shrink-0">
                   <img
                     src={techLogoMap[item.id]}
                     alt={`${item.name} logo`}
@@ -68,10 +68,10 @@ export const TechStack: React.FC = () => {
             {row2.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-2.5 sm:gap-4 px-3.5 py-2.5 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] transition-all duration-300 group min-w-[200px] sm:min-w-[290px] shadow-sm select-none"
+                className="flex items-center gap-2.5 sm:gap-4 px-3.5 py-2.5 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-[#0A0A0A]/[0.06] hover:border-[#C5F52A] hover:-translate-y-1 transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group min-w-[200px] sm:min-w-[290px] shadow-sm hover:shadow-md select-none"
                 data-cursor="Tech"
               >
-                <div className="w-8 h-8 sm:w-11 sm:h-11 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] transition-all duration-300 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 sm:w-11 sm:h-11 p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white border border-[#0A0A0A]/[0.08] group-hover:border-[#C5F52A] group-hover:scale-110 transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-center shrink-0">
                   <img
                     src={techLogoMap[item.id]}
                     alt={`${item.name} logo`}

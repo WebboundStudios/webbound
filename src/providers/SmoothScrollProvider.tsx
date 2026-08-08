@@ -22,8 +22,11 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
     if (prefersReducedMotion) return;
 
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      // Slightly shorter duration + a steeper expo-out curve = the scroll
+      // settles faster without losing the smoothed, weighted feel — reads
+      // as "responsive" rather than "floaty."
+      duration: 1.05,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -12 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,

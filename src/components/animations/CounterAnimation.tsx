@@ -14,6 +14,7 @@ interface CounterAnimationProps {
   prefix?: string;
   suffix?: string;
   className?: string;
+  delay?: number;
 }
 
 export const CounterAnimation: React.FC<CounterAnimationProps> = ({
@@ -22,6 +23,7 @@ export const CounterAnimation: React.FC<CounterAnimationProps> = ({
   prefix = '',
   suffix = '',
   className = '',
+  delay = 0,
 }) => {
   const [count, setCount] = useState(0);
   const containerRef = useRef<HTMLSpanElement>(null);
@@ -31,20 +33,26 @@ export const CounterAnimation: React.FC<CounterAnimationProps> = ({
     if (!el) return;
 
     const obj = { val: 0 };
-    gsap.to(obj, {
+    const tween = gsap.to(obj, {
       val: end,
       duration: duration,
+      delay: delay,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: el,
-        start: 'top 85%',
+        start: 'top bottom',
         toggleActions: 'play none none none',
       },
       onUpdate: () => {
         setCount(Math.round(obj.val));
       },
     });
-  }, [end, duration]);
+
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, [end, duration, delay]);
 
   return (
     <span ref={containerRef} className={className}>

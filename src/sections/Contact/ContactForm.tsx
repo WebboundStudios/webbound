@@ -97,7 +97,7 @@ export const ContactForm: React.FC = () => {
   return (
     <div id="contact" className="w-full max-w-2xl mx-auto p-7 sm:p-10 rounded-[1.25rem] bg-[#151513] border border-white/[0.12] shadow-[0_24px_80px_rgba(10,10,10,0.18)] space-y-8">
       <div>
-        <h3 className="font-section-heading text-2xl sm:text-3xl font-bold text-white">
+        <h3 className="font-section-heading text-2xl sm:text-3xl font-bold text-white tracking-[-0.01em]">
           Initiate Project Inquiry
         </h3>
         <p className="font-body-ui text-sm text-[#9CA3AF] mt-2 font-light">
@@ -153,7 +153,7 @@ export const ContactForm: React.FC = () => {
             <div className="pt-3">
               <button
                 onClick={() => setStatus('idle')}
-                className="px-6 py-2.5 rounded-full bg-white/10 border border-white/15 text-xs font-mono text-white hover:bg-[#C5F52A] hover:text-[#0A0A0A] hover:border-[#C5F52A] transition-all cursor-pointer shadow-lg active:scale-95"
+                className="px-6 py-2.5 rounded-full bg-white/10 border border-white/15 text-xs font-mono text-white hover:bg-[#C5F52A] hover:text-[#0A0A0A] hover:border-[#C5F52A] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-lg active:scale-90"
               >
                 Send Another Inquiry
               </button>
@@ -168,13 +168,13 @@ export const ContactForm: React.FC = () => {
           {/* Name & Email Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-xs font-mono uppercase text-[#9CA3AF] block">
+              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
                 YOUR NAME *
               </label>
               <input
                 {...register('name')}
                 placeholder="Ananya Singhania"
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] transition-all"
+                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
               />
               {errors.name && (
                 <p className="text-xs text-red-400 font-mono">{errors.name.message}</p>
@@ -182,14 +182,14 @@ export const ContactForm: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-mono uppercase text-[#9CA3AF] block">
+              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
                 EMAIL ADDRESS *
               </label>
               <input
                 {...register('email')}
                 type="email"
                 placeholder="ananya@brand.in"
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] transition-all"
+                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
               />
               {errors.email && (
                 <p className="text-xs text-red-400 font-mono">{errors.email.message}</p>
@@ -200,19 +200,19 @@ export const ContactForm: React.FC = () => {
           {/* Company & Custom Dropdown Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-xs font-mono uppercase text-[#9CA3AF] block">
+              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
                 COMPANY / ORGANISATION
               </label>
               <input
                 {...register('company')}
                 placeholder="Vedic Couture / ZenoPay"
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] transition-all"
+                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
               />
             </div>
 
             {/* Custom Stylish Dropdown */}
             <div className="space-y-2 relative" ref={dropdownRef}>
-              <label className="text-xs font-mono uppercase text-[#9CA3AF] block">
+              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
                 PACKAGE & SERVICE TIER *
               </label>
 
@@ -220,8 +220,8 @@ export const ContactForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className={`w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border text-left flex items-center justify-between text-xs sm:text-sm font-body-ui transition-all ${
-                  dropdownOpen ? 'border-[#C5F52A] ring-1 ring-[#C5F52A] text-white' : 'border-white/10 text-white hover:border-white/25'
+                className={`w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border text-left flex items-center justify-between text-xs sm:text-sm font-body-ui transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  dropdownOpen ? 'border-[#C5F52A] ring-1 ring-[#C5F52A] text-white -translate-y-0.5' : 'border-white/10 text-white hover:border-white/25'
                 }`}
               >
                 <span className="truncate pr-2 font-medium">{selectedBudget.label}</span>
@@ -244,7 +244,7 @@ export const ContactForm: React.FC = () => {
                         <div
                           key={opt.value}
                           onClick={() => handleSelectOption(opt)}
-                          className={`flex items-center justify-between px-3.5 py-3 rounded-xl cursor-pointer text-xs font-mono transition-all ${
+                          className={`flex items-center justify-between px-3.5 py-3 rounded-xl cursor-pointer text-xs font-mono transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-x-1 ${
                             isSelected
                               ? 'bg-[#C5F52A] text-[#0A0A0A] font-bold'
                               : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'
@@ -263,14 +263,14 @@ export const ContactForm: React.FC = () => {
 
           {/* Message textarea */}
           <div className="space-y-2">
-            <label className="text-xs font-mono uppercase text-[#9CA3AF] block">
+            <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
               PROJECT OVERVIEW & GOALS *
             </label>
             <textarea
               {...register('message')}
               rows={4}
               placeholder="Describe your brand, desired launch timeline, custom animation ideas, or specific technical requirements..."
-              className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] transition-all resize-none"
+              className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] resize-none"
             />
             {errors.message && (
               <p className="text-xs text-red-400 font-mono">{errors.message.message}</p>
