@@ -30,76 +30,82 @@ export const About: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Main Story Narrative (7 Cols) */}
           <div className="lg:col-span-7 space-y-6 text-[#6B7280] font-body-ui text-lg font-light leading-relaxed">
-            <p className="text-xl text-[#0A0A0A] font-normal">
-              I craft digital experiences with a singular conviction: websites should never feel like static brochures. They should be living, breathing brand assets that mesmerize users and out-convert competitors.
+            <p className="text-xl text-[#0A0A0A] font-normal leading-relaxed">
+              I build websites with a simple conviction: your digital presence should never look or feel like an off-the-shelf template. It should be a tactile, bespoke flagship that communicates taste, commands trust, and loads instantly.
             </p>
             <p>
-              I bridge the gap between high-art creative direction and rigorous software engineering. By pairing fluid visual motion (GSAP, WebGL, Lenis) with Next.js 15 App Router performance, I deliver bespoke digital flagships that load instantly and leave a lasting impression.
+              I bridge the gap between editorial art direction and rigorous software engineering. By combining Next.js 15, React 19, and 60 FPS motion physics (GSAP & Lenis), I deliver platforms that look striking on desktop, glide smoothly on mobile, and stay fast for years.
             </p>
 
-            {/* Feature Highlights — left-border accent, no icon box */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-6">
-              <div className="pl-4 border-l-2 border-[#C5F52A] space-y-1 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:pl-5">
-                <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">Uncompromised Quality</h4>
-                <p className="text-xs text-[#6B7280]">Zero templates. Bespoke architecture built for long-term scalability.</p>
+            {/* Feature Highlights — left-border accent, clean human copy */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+              <div className="pl-4 border-l-2 border-[#C5F52A] space-y-1.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:pl-5">
+                <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">Pure Craftsmanship</h4>
+                <p className="text-xs text-[#6B7280] leading-normal">
+                  Zero theme marketplaces or page builders. Every grid, interaction, and transition is built custom from scratch.
+                </p>
               </div>
 
-              <div className="pl-4 border-l-2 border-[#0A0A0A] space-y-1 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:pl-5 hover:border-[#C5F52A]">
-                <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">GPU Motion Physics</h4>
-                <p className="text-xs text-[#6B7280]">Liquid smooth 60fps scroll animations tailored for high-end feel.</p>
+              <div className="pl-4 border-l-2 border-[#0A0A0A] space-y-1.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:pl-5 hover:border-[#C5F52A]">
+                <h4 className="font-section-heading text-[#0A0A0A] font-bold text-base">Direct 1-on-1 Access</h4>
+                <p className="text-xs text-[#6B7280] leading-normal">
+                  You work directly with the lead engineer and designer. No account managers, ticket queues, or lost feedback.
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Right Highlight Box (5 Cols) */}
+          {/* Right Tactile Studio Directive Card (5 Cols) */}
           <div className="lg:col-span-5">
-            <div className="p-8 sm:p-10 rounded-3xl bg-[#0A0A0A] text-white space-y-8">
-              <div className="flex items-center justify-between border-b border-white/10 pb-6">
-                <span className="text-xs uppercase font-mono tracking-widest text-[#C5F52A]">
-                  CRAFT METRICS
+            <div className="p-7 sm:p-9 rounded-3xl bg-[#0A0A0A] text-white space-y-6 shadow-2xl border border-white/10 relative overflow-hidden group">
+              {/* Subtle top ambient glow */}
+              <div className="absolute top-0 right-0 w-36 h-36 bg-[#C5F52A]/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="flex items-center justify-between border-b border-white/10 pb-5 relative z-10">
+                <span className="text-[11px] uppercase font-mono tracking-widest text-[#C5F52A] font-bold flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5F52A] animate-pulse" />
+                  STUDIO DIRECTIVES
+                </span>
+                <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider">
+                  STANDARD // 2026
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-8">
-                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-white block tracking-[-0.02em]">
-                    <CounterAnimation end={100} suffix="%" />
-                  </span>
-                  <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">
-                    Sub-Second Target
-                  </span>
+              <div className="space-y-4 relative z-10 font-body-ui">
+                <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/5 hover:border-[#C5F52A]/40 transition-colors">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-white mb-1">
+                    <span className="text-[#C5F52A]">01 // ARCHITECTURE</span>
+                    <span className="text-white/40 font-normal">Next.js 15 & React 19</span>
+                  </div>
+                  <p className="text-xs text-[#9CA3AF] font-light leading-relaxed">
+                    Server components, edge caching, and sub-second Core Web Vitals across every viewport.
+                  </p>
                 </div>
 
-                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-[#C5F52A] block tracking-[-0.02em]">
-                    <CounterAnimation end={6} suffix="+" />
-                  </span>
-                  <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">
-                    Years Experience
-                  </span>
+                <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/5 hover:border-[#C5F52A]/40 transition-colors">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-white mb-1">
+                    <span className="text-[#C5F52A]">02 // FLUID MOTION</span>
+                    <span className="text-white/40 font-normal">GSAP & Lenis</span>
+                  </div>
+                  <p className="text-xs text-[#9CA3AF] font-light leading-relaxed">
+                    Hardware-accelerated 60 FPS physics. Natural inertial scrolling that never feels sluggish.
+                  </p>
                 </div>
 
-                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-white block tracking-[-0.02em]">
-                    <CounterAnimation end={65} suffix="+" />
-                  </span>
-                  <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">
-                    Projects Delivered
-                  </span>
-                </div>
-
-                <div className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
-                  <span className="font-hero-display text-4xl sm:text-5xl font-black text-[#C5F52A] block tracking-[-0.02em]">
-                    <CounterAnimation end={100} suffix="%" />
-                  </span>
-                  <span className="text-xs font-body-ui text-[#9CA3AF] uppercase tracking-wider mt-1 block">
-                    Custom Crafted
-                  </span>
+                <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/5 hover:border-[#C5F52A]/40 transition-colors">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-white mb-1">
+                    <span className="text-[#C5F52A]">03 // PEACE OF MIND</span>
+                    <span className="text-white/40 font-normal">365 Days Care</span>
+                  </div>
+                  <p className="text-xs text-[#9CA3AF] font-light leading-relaxed">
+                    1 full year of included technical maintenance, copy updates, and ongoing monitoring post-launch.
+                  </p>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/10 text-xs text-[#9CA3AF] italic font-body-ui">
-                &ldquo;Every project is approached as a bespoke digital asset engineered to elevate brand authority.&rdquo;
+              <div className="pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-white/50 relative z-10">
+                <span>AUTHENTIC HUMAN CRAFT</span>
+                <span className="text-[#C5F52A]">ZERO TEMPLATES</span>
               </div>
             </div>
           </div>

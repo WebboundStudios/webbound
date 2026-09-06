@@ -35,17 +35,18 @@ export const Footer: React.FC = () => {
     const flatPath = 'M 0 140 Q 500 140 1000 140';
 
     const ctx = gsap.context(() => {
-      // Set initial states (oversized 2.4x scale extending past monitor edges)
+      // Set initial states
       gsap.set(path, { attr: { d: curvedPath } });
-      gsap.set(wrapper, { scale: 2.4, transformOrigin: 'center center' });
+      gsap.set(wrapper, { scale: 1.85, transformOrigin: 'center bottom' });
 
-      // Scrubbed scroll animation: reduce curvature to flat & scale down to 1.0 over full footer scroll
+      // Scrubbed scroll animation: starts as footer enters viewport, completes fully when user reaches bottom of page
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: footer,
-          start: 'top 50%',
-          end: 'bottom 95%',
-          scrub: 1,
+          start: 'top bottom',
+          end: 'bottom bottom',
+          scrub: 0.5,
+          invalidateOnRefresh: true,
         },
       });
 
@@ -53,27 +54,38 @@ export const Footer: React.FC = () => {
         path,
         {
           attr: { d: flatPath },
-          ease: 'power1.inOut',
+          ease: 'power1.out',
         },
         0
       ).to(
         wrapper,
         {
           scale: 1,
-          ease: 'power1.inOut',
+          ease: 'power1.out',
         },
         0
       );
     });
 
-    return () => ctx.revert();
+    const handleRefresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    const refreshTimer = setTimeout(handleRefresh, 250);
+    window.addEventListener('resize', handleRefresh);
+
+    return () => {
+      clearTimeout(refreshTimer);
+      window.removeEventListener('resize', handleRefresh);
+      ctx.revert();
+    };
   }, []);
 
   return (
     <footer ref={footerRef} data-theme-bg="#0A0A0A" className="relative bg-[#0A0A0A] text-white pt-24 pb-12 px-6 md:px-12 lg:px-20 border-t border-white/10 overflow-hidden transition-colors duration-500">
       <div className="max-w-7xl mx-auto space-y-16 relative z-10">
-        {/* Top Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start justify-between">
+        {/* Top Footer Grid (z-20 to stay above oversized typography) */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start justify-between relative z-20">
           {/* Brand Info (5 Cols) */}
           <div className="md:col-span-5 space-y-6">
             <span className="font-hero-display text-2xl font-black text-white tracking-tight">

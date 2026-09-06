@@ -20,6 +20,7 @@ export interface ProjectItem {
   client: string;
   impact: string;
   image: string;
+  images?: string[];
   videoUrl?: string;
   tags: string[];
   link?: string;

@@ -18,7 +18,8 @@ export const CustomCursor: React.FC = () => {
   const isVisibleRef = useRef<boolean>(false);
 
   useEffect(() => {
-    if (window.innerWidth < 1024) return;
+    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+    if (!isFinePointer) return;
 
     document.body.classList.add('custom-cursor-enabled');
     const cursor = cursorRef.current;
@@ -174,18 +175,18 @@ export const CustomCursor: React.FC = () => {
           frame and would otherwise silently discard a CSS-based center. */}
       <div
         ref={cursorRef}
-        className={`hidden lg:flex items-center justify-center text-center pointer-events-none fixed top-0 left-0 z-[100000] rounded-full border transition-[width,height,background-color,border-color,box-shadow,opacity] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`hidden [@media(pointer:fine)]:flex items-center justify-center text-center pointer-events-none fixed top-0 left-0 z-[100000] rounded-full border transition-[width,height,background-color,border-color,box-shadow,opacity] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isVisible ? 'opacity-100' : 'opacity-0'
         } ${
           isHovered
             ? cursorText
-              ? 'w-16 h-16 bg-[#C5F52A] border-transparent text-[#0A0A0A] shadow-lg'
-              : 'w-10 h-10 bg-[#C5F52A]/20 border-[#C5F52A]'
-            : `w-6 h-6 bg-transparent ${isDarkBg ? 'border-[#C5F52A]' : 'border-[#0A0A0A]/40'}`
+              ? 'w-16 h-16 bg-[#BAFF39] border-transparent text-[#0A0A0A] shadow-xl'
+              : 'w-10 h-10 bg-[#BAFF39]/20 border-[#BAFF39]'
+            : `w-6 h-6 bg-transparent ${isDarkBg ? 'border-[#BAFF39]' : 'border-[#0A0A0A]/40'}`
         }`}
       >
         {cursorText && (
-          <span className="uppercase tracking-widest text-[10px] font-mono font-bold leading-none text-center select-none text-[#0A0A0A] block">
+          <span className="uppercase tracking-wider text-[11px] font-mono font-black leading-none text-center select-none text-[#0A0A0A] block">
             {cursorText}
           </span>
         )}
@@ -194,8 +195,8 @@ export const CustomCursor: React.FC = () => {
       {/* Center Precise Dot — see note above; centered via GSAP xPercent/yPercent */}
       <div
         ref={dotRef}
-        className={`hidden lg:block pointer-events-none fixed top-0 left-0 z-[100000] w-2.5 h-2.5 rounded-full transition-[background-color,box-shadow,opacity] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isDarkBg ? 'bg-[#C5F52A] shadow-[0_0_10px_rgba(197,245,42,0.9)]' : 'bg-[#0A0A0A]'
+        className={`hidden [@media(pointer:fine)]:block pointer-events-none fixed top-0 left-0 z-[100000] w-2.5 h-2.5 rounded-full transition-[background-color,box-shadow,opacity] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isDarkBg ? 'bg-[#BAFF39] shadow-[0_0_10px_rgba(186,255,57,0.9)]' : 'bg-[#0A0A0A]'
         } ${isVisible && !cursorText ? 'opacity-100' : 'opacity-0'}`}
       />
     </>

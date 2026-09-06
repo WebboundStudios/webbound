@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { PROJECTS } from '@/constants/data';
 import { ProjectItem } from '@/types';
-import { TextReveal } from '@/components/animations/TextReveal';
-import { ArrowUpRight, ArrowRight, MapPin, Eye } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { MagneticButton } from '@/components/animations/MagneticButton';
 import { TextRoll } from '@/components/animations/TextRoll';
 import { StaircaseLoader } from '@/components/animations/StaircaseLoader';
@@ -20,6 +19,8 @@ export const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [isDetailVisible, setIsDetailVisible] = useState<boolean>(false);
   const [loaderStatus, setLoaderStatus] = useState<'idle' | 'entering' | 'exiting'>('idle');
+  const [activeSlides, setActiveSlides] = useState<Record<string, number>>({});
+  const [hoveredProjects, setHoveredProjects] = useState<Record<string, boolean>>({});
 
   const cardImageParentRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const imageDivRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -27,8 +28,27 @@ export const Projects: React.FC = () => {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const detailScrollRef = useRef<HTMLDivElement | null>(null);
   
-  const flipStateRef = useRef<any>(null);
+  const flipStateRef = useRef<Flip.FlipState | null>(null);
   const actionRef = useRef<'open' | 'close' | null>(null);
+
+  // Auto-advance slideshow fast (every 1.6s) unless card is hovered
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlides((prev) => {
+        const updated = { ...prev };
+        PROJECTS.forEach((p) => {
+          if (!hoveredProjects[p.id]) {
+            const imgs = p.images && p.images.length > 0 ? p.images : [p.image];
+            const curr = updated[p.id] || 0;
+            updated[p.id] = (curr + 1) % imgs.length;
+          }
+        });
+        return updated;
+      });
+    }, 1600);
+
+    return () => clearInterval(timer);
+  }, [hoveredProjects]);
 
   // Initiate Open Project Transition
   const handleOpenProject = (project: ProjectItem) => {
@@ -178,20 +198,21 @@ export const Projects: React.FC = () => {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
             <div className="flex flex-col space-y-3">
-              <div className="flex items-center gap-4">
-                <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#C5F52A]/70">
+              <div className="flex items-center gap-3">
+                <span className="inline-block w-2 h-2 rounded-full bg-[#C5F52A] animate-pulse" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/70">
                   Selected work
                 </span>
               </div>
-              <TextReveal
-                as="h2"
-                className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-[-0.02em] leading-tight max-w-3xl"
-              >
-                Crafted For Digital Dominance &amp; Market Authority.
-              </TextReveal>
+              <h2 className="font-section-heading text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-[-0.035em] leading-[1.05] max-w-xl">
+                Design in the real world <span className="inline-block text-[#C5F52A] font-light">↗</span>
+              </h2>
+              <p className="font-body-ui text-base sm:text-lg text-[#9CA3AF] font-light leading-relaxed max-w-lg">
+                Brand, digital engineering, and headless CMS platforms handled by one team — built so the work scales up as your business does, instead of being rebuilt.
+              </p>
             </div>
 
-            <a href="#contact" className="shrink-0">
+            <a href="#contact" className="shrink-0 pt-2">
               <MagneticButton variant="primary" size="md">
                 <TextRoll center>Request Portfolio</TextRoll>
                 <ArrowUpRight className="w-4 h-4 ml-1" />
@@ -199,147 +220,197 @@ export const Projects: React.FC = () => {
             </a>
           </div>
 
-          {/* Project Cards Grid */}
-          <div className="space-y-24">
+          {/* Project Cards - Asymmetric Editorial Flow */}
+          <div className="space-y-28 md:space-y-36">
             {PROJECTS.map((project, idx) => {
-              const match = project.client.match(/^(.*?)(?:\s*\(([^)]+)\))?$/);
-              const clientName = match && match[1] ? match[1].trim() : project.client;
-              const locationName = match && match[2] ? match[2].trim() : 'India';
+              const isEven = idx % 2 === 0;
+              const projectImages = project.images && project.images.length > 0 ? project.images : [project.image];
+              const currentSlide = activeSlides[project.id] || 0;
 
               return (
                 <div
                   key={project.id}
-                  onClick={() => handleOpenProject(project)}
-                  className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center cursor-pointer group select-none"
-                  data-cursor="View"
+                  className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center`}
                 >
-                  {/* Visual Column (7 Cols) */}
-                  <div className={`lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}`}>
+                  {/* Visual Card Column (7 Cols) */}
+                  <div className={`lg:col-span-7 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
                     <div
-                      className="block relative w-full aspect-[16/10] sm:aspect-[16/9.5] rounded-[28px] bg-[#0A0A0A] border border-white/10 overflow-hidden shadow-2xl group select-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(0,0,0,0.5)]"
+                      onClick={() => handleOpenProject(project)}
+                      onMouseEnter={() => setHoveredProjects((prev) => ({ ...prev, [project.id]: true }))}
+                      onMouseLeave={() => setHoveredProjects((prev) => ({ ...prev, [project.id]: false }))}
+                      className="relative w-full group cursor-pointer select-none"
                       data-cursor="View"
                     >
-                      {/* Screenshot Container & Interactive Card Overlays */}
-                      <div
-                        ref={(el) => {
-                          cardImageParentRefs.current[project.id] = el;
-                        }}
-                        className="relative w-full h-full overflow-hidden"
-                      >
-                        {/* Physical DOM Image DIV element for GSAP Flip */}
+                      {/* Top Shelf: Houses the crest on left and pill tags in the cutout notch on right */}
+                      <div className="flex items-end justify-between w-full h-[44px] relative z-10">
+                        {/* Left Crest of the Card */}
+                        <div className="h-full w-[48%] sm:w-[54%] md:w-[58%] bg-[#151515] rounded-tl-[24px] sm:rounded-tl-[28px] border-t border-l border-white/10 relative flex items-center px-4 sm:px-5">
+                          <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#C5F52A]">
+                            0{idx + 1} &bull; STUDIO CASE
+                          </span>
+
+                          {/* Seamless S-Curve Connector: Curves down from crest to shelf with continuous 1px border and flush fill */}
+                          <svg
+                            className="absolute -right-[31px] top-0 w-[32px] h-[44px] pointer-events-none z-20"
+                            viewBox="0 0 32 44"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            {/* Opaque background fill to seal the corner flawlessly */}
+                            <path
+                              d="M -1 0 C 8 0, 16 10, 16 22 C 16 34, 24 44, 32 44 V 45 H -1 Z"
+                              fill="#151515"
+                            />
+                            {/* 1px smooth border stroke following the S-curve */}
+                            <path
+                              d="M 0 0.5 C 8 0.5, 16 10, 16 22 C 16 34, 24 43.5, 32 43.5"
+                              stroke="rgba(255, 255, 255, 0.1)"
+                              strokeWidth="1"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </div>
+
+                        {/* Top-Right Cutout Notch Shelf: Pill tags sit directly in this recessed area */}
+                        <div className="h-full flex items-center justify-end gap-2 pb-1.5 pr-1">
+                          {project.tags.slice(0, 2).map((tag, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="px-3 sm:px-3.5 py-1 rounded-full bg-[#1A1A1A] hover:bg-[#222222] border border-white/15 text-white/90 font-mono text-[10px] sm:text-[11px] font-medium tracking-wide shadow-sm transition-colors"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Main Card Body with Inverted Notch Silhouette */}
+                      <div className="relative w-full -mt-px aspect-[16/10.5] sm:aspect-[16/9.5] rounded-bl-[24px] sm:rounded-bl-[28px] rounded-br-[24px] sm:rounded-br-[28px] rounded-tr-[24px] sm:rounded-tr-[28px] bg-[#151515] border border-white/10 overflow-hidden shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-white/20 group-hover:shadow-[0_25px_60px_rgba(0,0,0,0.7)]">
+                        {/* Physical DOM Image Parent for GSAP Flip */}
                         <div
                           ref={(el) => {
-                            imageDivRefs.current[project.id] = el;
+                            cardImageParentRefs.current[project.id] = el;
                           }}
-                          className="project-img w-full h-full relative overflow-hidden rounded-[28px]"
+                          className="relative w-full h-full p-2.5 sm:p-3"
                         >
-                          <img
-                            src={project.image}
-                            alt={`${project.title} - ${project.category} Portfolio Project by Webbound Studios`}
-                            className="w-full h-full object-cover object-center select-none transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                          />
-                        </div>
+                          <div
+                            ref={(el) => {
+                              imageDivRefs.current[project.id] = el;
+                            }}
+                            className="project-img w-full h-full relative overflow-hidden rounded-[18px] sm:rounded-[22px] bg-[#0A0A0A] border border-white/5"
+                          >
+                            {/* Slideshow Image Stack */}
+                            {projectImages.map((imgSrc, imgIdx) => (
+                              <img
+                                key={imgIdx}
+                                src={imgSrc}
+                                alt={`${project.title} - Showcase view ${imgIdx + 1}`}
+                                className={`absolute inset-0 w-full h-full object-cover object-center select-none transform transition-all duration-400 ease-out ${
+                                  imgIdx === currentSlide
+                                    ? 'opacity-100 scale-100 z-10 group-hover:scale-105'
+                                    : 'opacity-0 scale-105 z-0 pointer-events-none'
+                                }`}
+                              />
+                            ))}
 
-                        {/* Top Gradient Overlay */}
-                        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/80 via-black/25 to-transparent pointer-events-none z-10" />
+                            {/* Crisp Vignette Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none z-20" />
 
-                        {/* Bottom Gradient Overlay */}
-                        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/95 via-black/50 to-transparent pointer-events-none z-10" />
+                            {/* Floating "View Project" Pill on Hover */}
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
+                              <div className="px-5 py-2.5 rounded-full bg-white text-[#0A0A0A] font-body-ui text-xs sm:text-sm font-bold tracking-tight shadow-2xl flex items-center gap-2 transform group-hover:scale-100 scale-90 transition-transform duration-300">
+                                <span>View Case Study</span>
+                                <ArrowUpRight className="w-4 h-4 text-[#0A0A0A]" />
+                              </div>
+                            </div>
 
-                        {/* Top Left Year Badge */}
-                        <div className="absolute top-4 left-4 sm:top-5 sm:left-5 z-20 pointer-events-none">
-                          <div className="px-3.5 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/10 shadow-lg flex items-center justify-center">
-                            <span className="font-mono text-xs sm:text-sm font-bold text-[#C5F52A] tracking-wider">
-                              {project.year}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Top Right Location Badge */}
-                        <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-20 pointer-events-none">
-                          <div className="px-3.5 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/10 shadow-lg flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-[#C5F52A]" />
-                            <span className="font-body-ui text-xs sm:text-sm font-medium text-white/95">
-                              {locationName}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Bottom Left Title, Category & Accent Bar */}
-                        <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-36 sm:right-44 z-20 pointer-events-none space-y-1">
-                          <h3 className="font-sans text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight leading-tight drop-shadow-md">
-                            {clientName}
-                          </h3>
-                          <p className="font-body-ui text-xs sm:text-sm md:text-base text-white/75 font-normal leading-normal truncate">
-                            {project.category}
-                          </p>
-                          <div className="w-10 sm:w-12 h-1 bg-[#C5F52A] rounded-full !mt-3" />
-                        </div>
-
-                        {/* Bottom Right View Project Button */}
-                        <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20">
-                          <div className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#141414]/90 backdrop-blur-md border border-white/15 text-white shadow-xl group-hover:bg-[#C5F52A] transition-all duration-300 group/btn">
-                            <span className="font-body-ui text-xs sm:text-sm font-semibold text-[#C5F52A] group-hover:text-[#0A0A0A] transition-colors">
-                              View Project
-                            </span>
-                            <ArrowRight className="w-4 h-4 text-[#C5F52A] group-hover:text-[#0A0A0A] group-hover:translate-x-0.5 transition-all duration-300" />
+                            {/* Bottom-Right Interactive Pagination Indicator Notch / Dashes */}
+                            <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/10 shadow-lg">
+                              {projectImages.map((_, dotIdx) => (
+                                <button
+                                  key={dotIdx}
+                                  type="button"
+                                  aria-label={`Go to slide ${dotIdx + 1}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveSlides((prev) => ({ ...prev, [project.id]: dotIdx }));
+                                  }}
+                                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                                    dotIdx === currentSlide
+                                      ? 'w-6 sm:w-7 bg-[#C5F52A]'
+                                      : 'w-2.5 sm:w-3 bg-white/30 hover:bg-white/70'
+                                  }`}
+                                />
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                {/* Info Column (5 Cols) */}
-                <div
-                  className={`lg:col-span-5 space-y-5 ${idx % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs text-[#C5F52A] tracking-[0.2em] uppercase">
-                      0{idx + 1}
-                    </span>
-                    <span className="h-px w-8 bg-[#C5F52A]/40" />
-                    <span className="font-mono text-xs text-white/30 uppercase tracking-[0.2em]">
-                      Case Study
-                    </span>
-                  </div>
-
-                  <h3
-                    onClick={() => handleOpenProject(project)}
-                    className="font-section-heading text-3xl md:text-4xl font-bold text-white hover:text-[#C5F52A] tracking-[-0.01em] transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
+                  {/* Editorial Narrative Column (5 Cols) */}
+                  <div
+                    className={`lg:col-span-5 space-y-6 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}
                   >
-                    {project.title}
-                  </h3>
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs text-[#C5F52A] tracking-[0.2em] uppercase font-bold">
+                        0{idx + 1}
+                      </span>
+                      <span className="h-px w-8 bg-[#C5F52A]/40" />
+                      <span className="font-mono text-xs text-white/40 uppercase tracking-[0.2em]">
+                        {project.category}
+                      </span>
+                    </div>
 
-                  <p className="font-body-ui text-base text-[#9CA3AF] font-light leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  {/* Impact callout */}
-                  <div className="flex items-center gap-3">
-                    <span className="h-px w-4 bg-[#C5F52A]/50" />
-                    <span className="font-body-ui text-sm font-semibold text-[#C5F52A]">
-                      {project.impact}
-                    </span>
-                  </div>
-
-                  {/* Tech tags */}
-                  <p className="text-xs font-mono text-white/30">
-                    {project.tags.join('  ·  ')}
-                  </p>
-
-                  <div className="flex items-center gap-4 pt-2">
-                    <button
+                    <h4
                       onClick={() => handleOpenProject(project)}
-                      className="group/expand inline-flex items-center gap-2 text-sm font-semibold font-body-ui text-[#C5F52A] hover:underline cursor-pointer"
+                      className="font-section-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-white hover:text-[#C5F52A] tracking-[-0.02em] leading-tight transition-colors duration-300 cursor-pointer"
                     >
-                      <TextRoll center>Expand Presentation</TextRoll>
-                      <ArrowUpRight className="w-4 h-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/expand:translate-x-1 group-hover/expand:-translate-y-1" />
-                    </button>
+                      {project.title}
+                    </h4>
+
+                    <p className="font-body-ui text-sm sm:text-base text-[#9CA3AF] font-light leading-relaxed">
+                      {project.longDescription || project.description}
+                    </p>
+
+                    {/* Impact / Deliverable Callout */}
+                    <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-[#C5F52A] mt-1.5 shrink-0" />
+                      <div className="space-y-0.5">
+                        <p className="font-mono text-[11px] uppercase tracking-wider text-white/40">Studio Impact</p>
+                        <p className="font-body-ui text-xs sm:text-sm font-semibold text-white">
+                          {project.impact}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Tech Stack Pills */}
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {project.tags.map((t, tagIdx) => (
+                        <span
+                          key={tagIdx}
+                          className="px-2.5 py-1 rounded-md bg-white/[0.04] border border-white/10 font-mono text-[10px] text-white/60"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Expand CTA Link */}
+                    <div className="pt-2">
+                      <button
+                        onClick={() => handleOpenProject(project)}
+                        className="group/expand inline-flex items-center gap-2 text-sm font-semibold font-body-ui text-[#C5F52A] hover:underline cursor-pointer"
+                      >
+                        <TextRoll center>Expand Presentation</TextRoll>
+                        <ArrowUpRight className="w-4 h-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/expand:translate-x-1 group-hover/expand:-translate-y-1" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
           </div>
         </div>
       </div>

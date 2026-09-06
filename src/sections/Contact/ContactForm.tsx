@@ -23,10 +23,10 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 const BUDGET_OPTIONS = [
-  { label: 'Type 1: Single-Page Business Website', value: 'Type 1: Single-Page Business Website' },
-  { label: 'Type 2: Dynamic CMS Website', value: 'Type 2: Dynamic CMS Website' },
-  { label: 'Type 3: Premium CMS Platform', value: 'Type 3: Premium CMS Platform' },
-  { label: 'Type 4: Custom Full-Stack Web Application', value: 'Type 4: Custom Full-Stack Web Application' },
+  { label: 'Single-Page Flagship (3–5 Days)', value: 'Single-Page Flagship' },
+  { label: 'Dynamic CMS Studio (7–10 Days)', value: 'Dynamic CMS Studio' },
+  { label: 'Multi-Page Spatial Platform (10–14 Days)', value: 'Multi-Page Spatial Platform' },
+  { label: 'Custom Web Application (Bespoke Timeline)', value: 'Custom Web Application' },
 ];
 
 export const ContactForm: React.FC = () => {
