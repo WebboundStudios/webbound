@@ -21,6 +21,21 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
+    // Mobile / touch devices already have hardware-accelerated 120Hz asynchronous
+    // momentum scrolling in the browser compositor thread. Virtual scroll engines
+    // (like Lenis) on touch devices introduce non-passive touch listeners,
+    // compositor delays, and conflicts with dynamic address bar resizing.
+    // We only enable Lenis on fine-pointer devices (desktop/trackpad/mouse).
+    const isTouchDevice =
+      window.matchMedia('(pointer: coarse)').matches ||
+      ('ontouchstart' in window && !window.matchMedia('(pointer: fine)').matches);
+
+    if (isTouchDevice) {
+      // Allow native scroll; ensure ScrollTrigger works smoothly with native scroll
+      ScrollTrigger.refresh();
+      return;
+    }
+
     const lenis = new Lenis({
       // Slightly shorter duration + a steeper expo-out curve = the scroll
       // settles faster without losing the smoothed, weighted feel — reads
@@ -31,7 +46,7 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
-      touchMultiplier: 2,
+      touchMultiplier: 1,
     });
 
     lenisRef.current = lenis;

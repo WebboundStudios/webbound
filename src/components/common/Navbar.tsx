@@ -15,10 +15,26 @@ export const Navbar: React.FC = () => {
   const menuItemsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const currentY = window.scrollY;
-      setIsVisible(currentY < 100 || currentY < lastScrollY.current);
-      lastScrollY.current = currentY;
+      if (ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollY.current;
+
+        if (currentY < 100) {
+          setIsVisible(true);
+          lastScrollY.current = currentY;
+        } else if (Math.abs(delta) > 10) {
+          setIsVisible(delta < 0);
+          lastScrollY.current = currentY;
+        }
+
+        ticking = false;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

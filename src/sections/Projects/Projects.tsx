@@ -22,6 +22,8 @@ export const Projects: React.FC = () => {
   const [activeSlides, setActiveSlides] = useState<Record<string, number>>({});
   const [hoveredProjects, setHoveredProjects] = useState<Record<string, boolean>>({});
 
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isInView, setIsInView] = useState<boolean>(false);
   const cardImageParentRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const imageDivRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const heroImageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -31,8 +33,26 @@ export const Projects: React.FC = () => {
   const flipStateRef = useRef<Flip.FlipState | null>(null);
   const actionRef = useRef<'open' | 'close' | null>(null);
 
-  // Auto-advance slideshow fast (every 1.6s) unless card is hovered
+  // Track if projects section is in viewport
   useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: '100px 0px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Auto-advance slideshow only when section is visible and card is not hovered
+  useEffect(() => {
+    if (!isInView) return;
+
     const timer = setInterval(() => {
       setActiveSlides((prev) => {
         const updated = { ...prev };
@@ -45,10 +65,10 @@ export const Projects: React.FC = () => {
         });
         return updated;
       });
-    }, 1600);
+    }, 2200);
 
     return () => clearInterval(timer);
-  }, [hoveredProjects]);
+  }, [isInView, hoveredProjects]);
 
   // Initiate Open Project Transition
   const handleOpenProject = (project: ProjectItem) => {
@@ -181,6 +201,7 @@ export const Projects: React.FC = () => {
 
   return (
     <section
+      ref={sectionRef}
       id="projects"
       data-theme-bg="#0A0A0A"
       className="relative bg-[#0A0A0A] text-white transition-colors duration-500 min-h-screen"

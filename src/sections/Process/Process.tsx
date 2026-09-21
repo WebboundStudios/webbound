@@ -218,9 +218,12 @@ export const Process: React.FC = () => {
 
   // Sync dimensions and responsive mode
   useEffect(() => {
+    let lastWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+
     const updateDimensions = () => {
       if (!containerRef.current) return;
-      const mobile = window.innerWidth < 1024;
+      const currentWidth = window.innerWidth;
+      const mobile = currentWidth < 1024;
       setIsMobile(mobile);
       const rect = containerRef.current.getBoundingClientRect();
 
@@ -248,9 +251,17 @@ export const Process: React.FC = () => {
       });
     };
 
+    const handleResize = () => {
+      // Ignore mobile address bar expansion/collapse (only vertical height change)
+      if (Math.abs(window.innerWidth - lastWidth) > 5) {
+        lastWidth = window.innerWidth;
+        updateDimensions();
+      }
+    };
+
     updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [calculateDefaultPositions]);
 
   // Pointer drag handling

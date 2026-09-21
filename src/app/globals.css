@@ -146,16 +146,17 @@
     background-color: #F5F3EE;
     color: #0A0A0A;
     font-family: var(--font-body), system-ui, sans-serif;
-    overflow-x: clip;
+    overflow-x: hidden;
   }
 
   body {
     background-color: #F2EFE8;
     color: #0A0A0A;
-    overflow-x: clip;
+    overflow-x: hidden;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Typography Rules */
@@ -486,7 +487,23 @@ select:focus-visible {
 
 @media screen and (max-width: 767px) {
   .card-stack {
-    --stack-top: 6svh;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    grid-auto-rows: auto;
+    view-timeline-name: none;
+  }
+
+  .card-stack__item {
+    position: relative;
+    top: 0;
+    height: auto;
+    min-height: auto;
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+    padding: 2em 1.5em;
+    border-radius: 1.75em;
   }
 
   .card-stack__item-top {
@@ -498,8 +515,14 @@ select:focus-visible {
     grid-row-gap: 1.5em;
   }
 
-  .card-stack__item {
-    padding: 2em 1.5em;
-    border-radius: 1.75em;
+  .card-stack__item-bottom {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .card-stack__item-bottom .backdrop-blur-xs {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }

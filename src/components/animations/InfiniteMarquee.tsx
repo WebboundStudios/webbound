@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useAnimationFrame, useMotionValue, useTransform, wrap } from 'framer-motion';
 
 interface InfiniteMarqueeProps {
@@ -24,6 +24,8 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
   interactiveScroll = true,
   paused = false,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
   const baseX = useMotionValue(0);
   const isHovered = useRef(false);
 
@@ -45,42 +47,62 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
   const currentDirection = useRef<number>(baseDir);
   const scrollVelocity = useRef<number>(0);
 
+  // Only animate and listen when the marquee is actually in or near the viewport
   useEffect(() => {
-    if (!interactiveScroll) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: '150px 0px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!interactiveScroll || !isInView) return;
 
     let lastScrollY = window.scrollY;
     let lastTime = performance.now();
+    let ticking = false;
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const currentTime = performance.now();
-      const deltaY = currentScrollY - lastScrollY;
-      const deltaTime = Math.max(1, currentTime - lastTime);
+      if (ticking) return;
+      ticking = true;
 
-      if (Math.abs(deltaY) > 0.5) {
-        if (deltaY > 0) {
-          // Scrolling DOWN -> normal direction for this row
-          targetDirection.current = baseDirRef.current;
-        } else {
-          // Scrolling UP -> reverse direction for this row
-          targetDirection.current = -baseDirRef.current;
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const currentTime = performance.now();
+        const deltaY = currentScrollY - lastScrollY;
+        const deltaTime = Math.max(1, currentTime - lastTime);
+
+        if (Math.abs(deltaY) > 0.5) {
+          if (deltaY > 0) {
+            targetDirection.current = baseDirRef.current;
+          } else {
+            targetDirection.current = -baseDirRef.current;
+          }
+
+          const v = (deltaY / deltaTime) * 0.02;
+          scrollVelocity.current = Math.min(Math.max(v, -0.12), 0.12);
         }
 
-        // Add proportional scroll velocity boost
-        const v = (deltaY / deltaTime) * 0.02;
-        scrollVelocity.current = Math.min(Math.max(v, -0.12), 0.12);
-      }
-
-      lastScrollY = currentScrollY;
-      lastTime = currentTime;
+        lastScrollY = currentScrollY;
+        lastTime = currentTime;
+        ticking = false;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [interactiveScroll]);
+  }, [interactiveScroll, isInView]);
 
   useAnimationFrame((_, delta) => {
-    if (paused || (pauseOnHover && isHovered.current)) return;
+    if (!isInView || paused || (pauseOnHover && isHovered.current)) return;
 
     // Smoothly decay scroll velocity
     scrollVelocity.current *= 0.92;
@@ -105,6 +127,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
 
   return (
     <div
+      ref={containerRef}
       className={`overflow-hidden w-full relative ${className}`}
       onMouseEnter={() => {
         isHovered.current = true;
@@ -135,8 +158,6 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
         className="flex w-max space-x-3 sm:space-x-6 will-change-transform"
         style={{ x: xTransform }}
       >
-        {children}
-        {children}
         {children}
         {children}
       </motion.div>

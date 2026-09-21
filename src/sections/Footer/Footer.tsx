@@ -67,16 +67,24 @@ export const Footer: React.FC = () => {
       );
     });
 
-    const handleRefresh = () => {
-      ScrollTrigger.refresh();
+    let lastWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+    const handleResize = () => {
+      // Only refresh if horizontal viewport changed (orientation change or window resize),
+      // ignore vertical-only resize events caused by mobile address bar show/hide!
+      if (Math.abs(window.innerWidth - lastWidth) > 5) {
+        lastWidth = window.innerWidth;
+        ScrollTrigger.refresh();
+      }
     };
 
-    const refreshTimer = setTimeout(handleRefresh, 250);
-    window.addEventListener('resize', handleRefresh);
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+    window.addEventListener('resize', handleResize);
 
     return () => {
       clearTimeout(refreshTimer);
-      window.removeEventListener('resize', handleRefresh);
+      window.removeEventListener('resize', handleResize);
       ctx.revert();
     };
   }, []);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useAnimationFrame, useMotionValue, useTransform, useSpring, wrap } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { SITE_CONFIG } from '@/constants/data';
@@ -16,6 +16,9 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
   link = `mailto:${SITE_CONFIG.email}`,
   className = '',
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
   const baseX = useMotionValue(0);
   const targetDir = useRef<number>(1);
   const currentDir = useRef<number>(1);
@@ -28,31 +31,56 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
   const arrowRotDeg = useSpring(rawArrowRot, { stiffness: 220, damping: 22 });
 
   useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: '150px 0px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isInView) return;
+
     let lastScrollY = window.scrollY;
+    let ticking = false;
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const deltaY = currentScrollY - lastScrollY;
+      if (ticking) return;
+      ticking = true;
 
-      if (Math.abs(deltaY) > 0.5) {
-        if (deltaY > 0) {
-          targetDir.current = 1; // Down -> right to left
-          rawTilt.set(-3);
-          rawArrowRot.set(185);
-        } else {
-          targetDir.current = -1; // Up -> left to right
-          rawTilt.set(3);
-          rawArrowRot.set(90);
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const deltaY = currentScrollY - lastScrollY;
+
+        if (Math.abs(deltaY) > 0.5) {
+          if (deltaY > 0) {
+            targetDir.current = 1; // Down -> right to left
+            rawTilt.set(-3);
+            rawArrowRot.set(185);
+          } else {
+            targetDir.current = -1; // Up -> left to right
+            rawTilt.set(3);
+            rawArrowRot.set(90);
+          }
         }
-      }
-      lastScrollY = currentScrollY;
+        lastScrollY = currentScrollY;
+        ticking = false;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [rawTilt, rawArrowRot]);
+  }, [isInView, rawTilt, rawArrowRot]);
 
   useAnimationFrame((_, delta) => {
+    if (!isInView) return;
     currentDir.current += (targetDir.current - currentDir.current) * 0.08;
     const moveStep = 0.05 * currentDir.current * (delta / 16.66);
     baseX.set(baseX.get() - moveStep);
@@ -63,7 +91,7 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
   const marqueeItems = [1, 2, 3, 4];
 
   return (
-    <div className={`relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-visible py-6 sm:py-10 select-none ${className}`}>
+    <div ref={containerRef} className={`relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-visible py-6 sm:py-10 select-none ${className}`}>
       <a
         href={link}
         data-cursor="Contact"
