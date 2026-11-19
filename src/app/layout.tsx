@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider';
-import { LoadingProvider } from '@/providers/LoadingProvider';
 import { Analytics } from '@vercel/analytics/next';
 import { SITE_CONFIG, FAQS, PROJECTS } from '@/constants/data';
 
@@ -264,7 +263,7 @@ export default function RootLayout({
             '@type': 'CreativeWork',
             name: proj.title,
             description: proj.description,
-            image: proj.image,
+            image: new URL(proj.image, siteUrl).href,
             url: proj.link,
             creator: {
               '@id': `${siteUrl}/#organization`,
@@ -287,9 +286,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] font-body-ui">
-        <LoadingProvider>
-          <SmoothScrollProvider>{children}</SmoothScrollProvider>
-        </LoadingProvider>
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
         <Analytics />
       </body>
     </html>

@@ -49,7 +49,7 @@ export const LoadingScreen: React.FC = () => {
         },
       });
 
-      // Exit transition — slide up
+      // Slide up on exit
       gsap.to(containerRef.current, {
         yPercent: -100,
         duration: 0.8,
@@ -91,7 +91,7 @@ export const LoadingScreen: React.FC = () => {
         </span>
       </div>
 
-      {/* Giant Counter — Center */}
+      {/* Centered counter */}
       <div className="flex items-center justify-center flex-1">
         <span className="font-hero-display text-[12rem] sm:text-[16rem] md:text-[22rem] lg:text-[28rem] font-black text-[#0A0A0A] leading-none tracking-tighter select-none">
           {percent}

@@ -1,204 +1,172 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
+import { useEffect, useRef } from 'react';
+import styles from './CustomCursor.module.css';
 
-export const CustomCursor: React.FC = () => {
+const pointerMedia = '(any-pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none)';
+const nativeCursorTargets = 'input, textarea, select, iframe, dialog[open], :disabled, [aria-disabled="true"], [contenteditable]:not([contenteditable="false"])';
+const hoverTargets = 'a[href], button, summary, [role="button"], [role="link"], [data-cursor]';
+const maxTrailDistance = 26;
+
+function getCursorTone(element: Element) {
+  for (let surface: Element | null = element; surface; surface = surface.parentElement) {
+    const background = getComputedStyle(surface).backgroundColor;
+    const color = background.startsWith('rgb') ? background.match(/[\d.]+/g)?.map(Number) : undefined;
+    if (color && color.length >= 3 && (color[3] ?? 1) >= 0.5) {
+      const [red, green, blue] = color;
+      return (red * 0.299 + green * 0.587 + blue * 0.114) < 135 ? 'light' : 'dark';
+    }
+
+    const theme = surface.getAttribute('data-theme-bg')?.toUpperCase();
+    if (theme === '#0A0A0A') return 'light';
+    if (theme === '#F5F3EE') return 'dark';
+  }
+
+  return 'dark';
+}
+
+export function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
-  const [cursorText, setCursorText] = useState<string>('');
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [isDarkBg, setIsDarkBg] = useState<boolean>(false);
-  // Ref (not state) because it's read every RAF frame inside the loop that
-  // already owns this element's transform — GSAP rewrites `transform` each
-  // tick, so scale feedback has to be composed there, not via a CSS class.
-  const isPressedRef = useRef<boolean>(false);
-  // Mirrors `isVisible` without being a effect dependency — see fix below.
-  const isVisibleRef = useRef<boolean>(false);
+  const trailRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-    if (!isFinePointer) return;
-
-    document.body.classList.add('custom-cursor-enabled');
     const cursor = cursorRef.current;
-    const dot = dotRef.current;
-    if (!cursor || !dot) return;
+    const trail = trailRef.current;
+    const label = labelRef.current;
+    if (!cursor || !trail || !label) return;
 
-    // Fix: center via GSAP's own xPercent/yPercent instead of Tailwind's
-    // -translate-x-1/2 -translate-y-1/2. GSAP owns this element's transform
-    // every frame (see render() below); a CSS percentage-based translate
-    // gets silently discarded the moment GSAP writes its own x/y, since
-    // GSAP recomposes the whole `transform` from its internal cache rather
-    // than merging with the class-based one. Setting xPercent/yPercent
-    // here puts the -50%/-50% centering *inside* that cache so it's
-    // preserved on every subsequent x/y/scale/rotate update.
-    gsap.set([cursor, dot], { xPercent: -50, yPercent: -50 });
+    const media = window.matchMedia(pointerMedia);
+    const listeners = new AbortController();
+    const options = { passive: true, signal: listeners.signal };
+    let point: { x: number; y: number } | null = null;
+    let target: Element | null = null;
+    let capturedTarget: Element | null = null;
+    let active = false;
+    let pressed = false;
+    let frame = 0;
+    let previousTime = 0;
+    let trailX = 0;
+    let trailY = 0;
 
-    let posX = 0;
-    let posY = 0;
-    let mouseX = 0;
-    let mouseY = 0;
+    const setActive = (next: boolean) => {
+      if (next === active) return;
+      active = next;
+      cursor.toggleAttribute('data-active', next);
+      document.body.classList.toggle('custom-cursor-enabled', next);
+    };
 
-    const checkBgTheme = (x: number, y: number) => {
-      const el = document.elementFromPoint(x, y) as HTMLElement | null;
-      if (!el) return;
+    const render = (now: number) => {
+      frame = 0;
+      if (!point) return;
+      const { x, y } = point;
+      const hit = document.elementFromPoint(x, y);
+      const current = hit && (capturedTarget || hit);
 
-      // 1. Direct check for explicit dark container, modal, or dark section parent
-      const darkParent = el.closest('[data-theme-bg="#0A0A0A"], .dark, [class*="bg-[#0A0A0A]"], [class*="bg-[#121212]"], [class*="bg-[#141414]"], [class*="bg-black"]');
-      if (darkParent) {
-        setIsDarkBg(true);
+      if (!current || current.closest(nativeCursorTargets)) {
+        setActive(false);
+        target = null;
+        previousTime = 0;
         return;
       }
 
-      // 2. Direct check for explicit light section
-      const lightParent = el.closest('[data-theme-bg="#F5F3EE"]');
-      if (lightParent) {
-        setIsDarkBg(false);
-        return;
+      if (current !== target) {
+        target = current;
+        const interactive = current.closest(hoverTargets);
+        const action = interactive?.getAttribute('data-cursor')?.trim();
+        cursor.dataset.mode = action ? 'label' : interactive ? 'hover' : 'idle';
+        cursor.dataset.tone = getCursorTone(current);
+        if (action && label.textContent !== action) label.textContent = action;
       }
 
-      // 3. Computed background color luminance check up the DOM chain
-      let current: HTMLElement | null = el;
-      while (current && current !== document.body) {
-        const bg = getComputedStyle(current).backgroundColor;
-        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-          const match = bg.match(/\d+/g);
-          if (match && match.length >= 3) {
-            const r = parseInt(match[0], 10);
-            const g = parseInt(match[1], 10);
-            const b = parseInt(match[2], 10);
-            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            setIsDarkBg(brightness < 140);
-            return;
-          }
-        }
-        current = current.parentElement;
-      }
+      cursor.toggleAttribute('data-pressed', pressed);
+      const side = x > window.innerWidth - 106 ? 'left' : 'right';
+      if (cursor.dataset.side !== side) cursor.dataset.side = side;
 
-      // 4. Fallback to main/body background theme
-      const mainEl = document.querySelector('main');
-      const bodyBg = getComputedStyle(mainEl || document.body).backgroundColor;
-      const match = bodyBg.match(/\d+/g);
-      if (match && match.length >= 3) {
-        const r = parseInt(match[0], 10);
-        const g = parseInt(match[1], 10);
-        const b = parseInt(match[2], 10);
-        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        setIsDarkBg(brightness < 140);
-      }
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-
-      if (!isVisibleRef.current) {
-        isVisibleRef.current = true;
-        setIsVisible(true);
-      }
-      gsap.set(dot, { x: mouseX, y: mouseY });
-
-      checkBgTheme(mouseX, mouseY);
-    };
-
-    // Fast snappy RAF tracking (0.45 lerp for instantaneous feel)
-    const render = () => {
-      posX += (mouseX - posX) * 0.45;
-      posY += (mouseY - posY) * 0.45;
-
-      const pressScale = isPressedRef.current ? 0.86 : 1;
-      gsap.set(cursor, { x: posX, y: posY, scale: pressScale });
-
-      requestAnimationFrame(render);
-    };
-    const rafId = requestAnimationFrame(render);
-
-    const onMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactiveEl = target.closest('a, button, [data-cursor], input, textarea, select') as HTMLElement;
-
-      if (interactiveEl) {
-        setIsHovered(true);
-        const label = interactiveEl.getAttribute('data-cursor');
-        setCursorText(label || '');
+      if (!active) {
+        trailX = x;
+        trailY = y;
       } else {
-        setIsHovered(false);
-        setCursorText('');
+        const elapsed = previousTime ? now - previousTime : 1000 / 60;
+        const easing = 1 - Math.exp(-elapsed / 34);
+        trailX += (x - trailX) * easing;
+        trailY += (y - trailY) * easing;
       }
+
+      const offsetX = trailX - x;
+      const offsetY = trailY - y;
+      const distance = Math.hypot(offsetX, offsetY);
+      const ratio = distance > maxTrailDistance ? maxTrailDistance / distance : 1;
+      const moving = distance > 0.25;
+
+      trailX = moving ? x + offsetX * ratio : x;
+      trailY = moving ? y + offsetY * ratio : y;
+      cursor.style.transform = `translate3d(${x}px,${y}px,0)`;
+      trail.style.transform = `translate3d(${trailX - x}px,${trailY - y}px,0)`;
+      setActive(true);
+
+      previousTime = moving ? now : 0;
+      if (moving) schedule();
     };
 
-    const onMouseLeave = () => {
-      isVisibleRef.current = false;
-      setIsVisible(false);
-    };
+    function schedule() {
+      if (point && !frame) frame = requestAnimationFrame(render);
+    }
 
-    // Tactile press feedback: the ring compresses slightly on click,
-    // the kind of small detail that reads as "considered" rather than default.
-    const onMouseDown = () => {
-      isPressedRef.current = true;
-      gsap.to(dot, { scale: 0.5, duration: 0.15, ease: 'power2.out' });
-    };
-    const onMouseUp = () => {
-      isPressedRef.current = false;
-      gsap.to(dot, { scale: 1, duration: 0.5, ease: 'back.out(2.5)' });
-    };
+    function reset() {
+      setActive(false);
+      cancelAnimationFrame(frame);
+      point = null;
+      target = null;
+      capturedTarget = null;
+      pressed = false;
+      frame = 0;
+      previousTime = 0;
+    }
 
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    document.addEventListener('mouseover', onMouseOver, { passive: true });
-    document.addEventListener('mouseleave', onMouseLeave);
-    window.addEventListener('mousedown', onMouseDown, { passive: true });
-    window.addEventListener('mouseup', onMouseUp, { passive: true });
+    function track(event: PointerEvent) {
+      if (event.pointerType !== 'mouse' || !media.matches) {
+        reset();
+        return;
+      }
+      point = { x: event.clientX, y: event.clientY };
+      pressed = Boolean(event.buttons & 1);
+      schedule();
+    }
+
+    function updateCapture(event: PointerEvent) {
+      if (event.pointerType !== 'mouse') return;
+      capturedTarget = event.type === 'gotpointercapture' && event.target instanceof Element ? event.target : null;
+      schedule();
+    }
+
+    window.addEventListener('pointermove', track, options);
+    window.addEventListener('pointerover', track, options);
+    window.addEventListener('pointerdown', track, options);
+    window.addEventListener('pointerup', track, options);
+    window.addEventListener('gotpointercapture', updateCapture, options);
+    window.addEventListener('lostpointercapture', updateCapture, options);
+    window.addEventListener('pointercancel', reset, options);
+    window.addEventListener('scroll', schedule, { ...options, capture: true });
+    window.addEventListener('resize', schedule, options);
+    window.addEventListener('blur', reset, options);
+    document.documentElement.addEventListener('pointerleave', reset, options);
+    document.addEventListener('visibilitychange', reset, options);
+    media.addEventListener('change', reset, options);
 
     return () => {
-      document.body.classList.remove('custom-cursor-enabled');
-      window.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseover', onMouseOver);
-      document.removeEventListener('mouseleave', onMouseLeave);
-      window.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mouseup', onMouseUp);
-      cancelAnimationFrame(rafId);
+      listeners.abort();
+      reset();
     };
-    // Runs once on mount. isVisible was previously a dependency here, which
-    // meant the whole effect — including posX/posY/mouseX/mouseY — reset to
-    // 0 every time visibility flipped (i.e. every mouse enter/leave), making
-    // the cursor visibly snap to the top-left corner and fly back in. It's
-    // tracked via isVisibleRef above instead so the effect can stay mounted.
   }, []);
 
   return (
-    <>
-      {/* Outer Follower Ring — centering is handled entirely by GSAP's
-          xPercent/yPercent (set once on mount, above) rather than a CSS
-          translate class, since GSAP owns this element's transform every
-          frame and would otherwise silently discard a CSS-based center. */}
-      <div
-        ref={cursorRef}
-        className={`hidden [@media(pointer:fine)]:flex items-center justify-center text-center pointer-events-none fixed top-0 left-0 z-[100000] rounded-full border transition-[width,height,background-color,border-color,box-shadow,opacity] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        } ${
-          isHovered
-            ? cursorText
-              ? 'w-16 h-16 bg-[#BAFF39] border-transparent text-[#0A0A0A] shadow-xl'
-              : 'w-10 h-10 bg-[#BAFF39]/20 border-[#BAFF39]'
-            : `w-6 h-6 bg-transparent ${isDarkBg ? 'border-[#BAFF39]' : 'border-[#0A0A0A]/40'}`
-        }`}
-      >
-        {cursorText && (
-          <span className="uppercase tracking-wider text-[11px] font-mono font-black leading-none text-center select-none text-[#0A0A0A] block">
-            {cursorText}
-          </span>
-        )}
+    <div ref={cursorRef} className={styles.cursor} aria-hidden="true">
+      <div ref={trailRef} className={styles.trail}>
+        <span className={styles.ring} />
       </div>
-
-      {/* Center Precise Dot — see note above; centered via GSAP xPercent/yPercent */}
-      <div
-        ref={dotRef}
-        className={`hidden [@media(pointer:fine)]:block pointer-events-none fixed top-0 left-0 z-[100000] w-2.5 h-2.5 rounded-full transition-[background-color,box-shadow,opacity] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isDarkBg ? 'bg-[#BAFF39] shadow-[0_0_10px_rgba(186,255,57,0.9)]' : 'bg-[#0A0A0A]'
-        } ${isVisible && !cursorText ? 'opacity-100' : 'opacity-0'}`}
-      />
-    </>
+      <span className={styles.dot} />
+      <span ref={labelRef} className={styles.label} />
+    </div>
   );
-};
+}

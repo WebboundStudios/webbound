@@ -3,25 +3,18 @@ import { ServiceItem, ProjectItem, TestimonialItem, FAQItem, TechItem, ProcessSt
 export const SITE_CONFIG = {
   name: 'Webbound',
   tagline: 'High-Craft Digital Engineering & Creative Direction',
-  description: 'Independent creative engineer & designer crafting bespoke, ultra-fast, and visually captivating flagship web experiences for ambitious brands.',
+  description: 'Independent web design and development for architecture studios, interior designers, and brands with work to show.',
   url: 'https://webbound-nine.vercel.app',
-  email: 'hello@webboundstudios.com',
+  email: 'hello.webbound@gmail.com',
   location: 'India',
-  stats: [
-    { label: 'Bespoke Projects', value: 65, suffix: '+' },
-    { label: 'Sub-Second Speed Target', value: 100, suffix: '%' },
-    { label: 'Client Satisfaction', value: 99, suffix: '%' },
-    { label: 'Years of Craft', value: 6, suffix: '+' },
-  ]
 };
 
 export const SERVICES: ServiceItem[] = [
   {
     id: 'type-1-single-page-static',
-    title: 'Single-Page Flagship',
+    title: 'Single-page website',
     subtitle: 'High-Impact Brand Presence & Instant Conversion',
-    description:
-      'A bespoke single-page flagship engineered for studios, practices, and luxury services. Optimized for sub-second load times, fluid mobile responsiveness, and razor-sharp typographic hierarchy.',
+    description: 'A one-page website with an inquiry form, a studio map, and responsive layouts for phones and desktops.',
     iconName: 'Layout',
     tierBadge: 'Starter Studio Tier',
     deliverables: [
@@ -36,10 +29,9 @@ export const SERVICES: ServiceItem[] = [
 
   {
     id: 'type-2-single-page-cms',
-    title: 'Dynamic CMS Studio',
+    title: 'Website with a CMS',
     subtitle: 'Self-Serve Case Studies, Journals & Lookbooks',
-    description:
-      'A dynamic platform paired with a lightweight headless CMS. Effortlessly publish architectural project lookbooks, journal entries, and spatial galleries without touching a line of code.',
+    description: 'A site with a Sanity CMS for publishing case studies, galleries, and journal entries yourself.',
     iconName: 'Edit3',
     tierBadge: 'Growth Tier',
     deliverables: [
@@ -56,10 +48,9 @@ export const SERVICES: ServiceItem[] = [
 
   {
     id: 'type-3-multipage-cms',
-    title: 'Multi-Page Spatial Platform',
+    title: 'Multi-page studio website',
     subtitle: 'Comprehensive Digital Flagship With Bespoke Motion',
-    description:
-      'Our signature multi-page tier built for established architectural studios and luxury interior practices. Features bespoke spatial layout grids, fluid page transitions, custom admin CMS controls, and dedicated project archives.',
+    description: 'A multi-page portfolio for an architecture or interiors studio, with a project archive, galleries, and a CMS tailored to the way you publish.',
     iconName: 'Layers',
     tierBadge: 'Most Selected',
     deliverables: [
@@ -83,10 +74,9 @@ export const SERVICES: ServiceItem[] = [
 
   {
     id: 'type-4-fullstack-custom',
-    title: 'Custom Web Application',
+    title: 'Custom web application',
     subtitle: 'Bespoke Logic, Database Architecture & Edge APIs',
-    description:
-      'Tailored full-stack platforms engineered around unique business logic. From client quote calculators and booking engines to secure portal dashboards with PostgreSQL and authentication.',
+    description: 'A web application for a specific workflow, such as customer portals, quote calculators, or online bookings.',
     iconName: 'Database',
     tierBadge: 'Enterprise Tier',
     deliverables: [
@@ -115,19 +105,15 @@ export const PROJECTS: ProjectItem[] = [
     category: 'Architecture & Luxury Interiors',
     year: '2026',
     tier: 'Type 3: Multi-Page Dynamic CMS Platform',
-    description: 'A flagship architectural and luxury interior design studio platform for Ar. Himanshu Gautam, built under our Type 3 package with Sanity CMS for dynamic project creation, blog updates, and spatial galleries.',
-    longDescription: 'The Trusted Wall Architecture required an immersive digital presence capable of showcasing high-end residential and commercial architectural achievements with sub-second page performance. Built under Webbound’s Type 3 Multi-Page CMS tier, we integrated Sanity Headless CMS, spatial layout grids, and bespoke fluid motion physics to ensure Ar. Himanshu Gautam’s studio presents authority and elegance at scale.',
-    challenge: 'Architectural portfolios often suffer from heavy high-resolution media leading to slow load times and layout shifts. The challenge was rendering uncompromised, razor-sharp gallery imagery while maintaining sub-second Core Web Vitals across all device viewports.',
-    solution: 'We engineered an edge-cached Next.js image pipeline paired with Sanity CMS, custom webp compression, and GSAP scroll-triggered motion physics. Layout shifts were completely eliminated while delivering fluid 60 FPS transitions.',
+    description: 'A Sanity-powered portfolio and journal for The Trusted Wall, an architecture studio in Agra.',
+    longDescription: 'The Trusted Wall needed a site where the team could publish architecture projects and journal entries. The build includes a project archive, galleries, and a Sanity editing workflow.',
+    challenge: 'The studio needed to show large architectural images clearly on phones and desktops while keeping pages quick to load.',
+    solution: 'I set up responsive WebP images, edge caching, and short GSAP transitions for browsing galleries.',
     role: 'Lead Creative Engineer & Architect',
     client: 'The Trusted Wall Studio (Agra)',
     impact: 'Type 3 Multi-Page CMS Flagship',
-    image: 'https://ik.imagekit.io/dhyh95euj/webbound/TrustedWall.webp',
-    images: [
-      'https://ik.imagekit.io/dhyh95euj/webbound/TrustedWall.webp',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1600&auto=format&fit=crop',
-    ],
+    image: '/projects/the-trusted-wall.webp',
+    coverAspectRatio: 1680 / 853,
     tags: ['Type 3 Package', 'Sanity CMS', 'React 19', 'GSAP', 'Vite'],
     link: 'https://thetrustedwall.com/',
     featured: true,
@@ -138,19 +124,15 @@ export const PROJECTS: ProjectItem[] = [
     category: 'Luxury Interior Design & Turnkey',
     year: '2026',
     tier: 'Type 1: Single-Page Flagship',
-    description: 'A bespoke single-page luxury interior design portal for TDID Interiors in Greater Noida, built under our Type 1 package featuring custom modular kitchen lookbooks and Lenis smooth scroll.',
-    longDescription: 'TDID Interiors wanted a ultra-clean, tactile digital experience to capture high-ticket turnkey interior design inquiries across Greater Noida and Delhi NCR. Under Webbound’s Type 1 Single-Page Flagship tier, we crafted a high-frictionless spatial journey with smooth Lenis physics, interactive lookbooks, and instant inquiry forms.',
-    challenge: 'Standing out in a crowded interior design market required moving away from cookie-cutter templates to deliver an editorial-grade interactive experience that builds immediate trust with luxury homeowners.',
-    solution: 'We designed a custom editorial theme with rich typography pairing (Clash Display & Satoshi), micro-animations, and GPU-accelerated smooth scrolling that guides high-intent visitors directly to the inquiry funnel.',
+    description: 'A single-page website for TDID Interiors, with a modular kitchen lookbook and an inquiry form.',
+    longDescription: 'TDID Interiors needed one site to show its work and receive inquiries from homeowners in Greater Noida and Delhi NCR.',
+    challenge: 'The website had to show enough finished interiors for visitors to understand the studio’s work and find the inquiry form easily.',
+    solution: 'I built the page around project photography, a modular kitchen lookbook, and an inquiry form, with GSAP and Lenis handling motion and scrolling.',
     role: 'Digital Engineer & UI Director',
     client: 'TDID Interiors (Delhi NCR)',
     impact: 'Type 1 Single-Page Flagship',
-    image: 'https://ik.imagekit.io/dhyh95euj/webbound/Tdid-interiors.webp',
-    images: [
-      'https://ik.imagekit.io/dhyh95euj/webbound/Tdid-interiors.webp',
-      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1600&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1600&auto=format&fit=crop',
-    ],
+    image: '/projects/tdid-interiors.webp',
+    coverAspectRatio: 1680 / 854,
     tags: ['Type 1 Package', 'React 19', 'Lenis Scroll', 'GSAP', 'Formspree'],
     link: 'https://tdidinteriors.com/',
     featured: true,
@@ -161,19 +143,14 @@ export const PROJECTS: ProjectItem[] = [
     category: 'Architecture & Spatial Interiors',
     year: '2026',
     tier: 'Type 2: Dynamic CMS Website',
-    description: 'A dynamic architecture and interior design CMS portal for Studio Kalagya in Jabalpur, featuring flexible project galleries, custom interior artwork showcases, and headless content management.',
-    longDescription: 'Studio Kalagya required a dynamic digital showcase to manage and highlight their architectural projects, interior design transformations, and custom material installations across Jabalpur and Central India. Built under Webbound’s Type 2 Dynamic CMS tier, the platform enables continuous content management while delivering organic design aesthetics and sub-second performance.',
-    challenge: 'Architectural and interior design portfolios require frequently updating high-resolution spatial imagery and custom art installations without compromising mobile load times, visual crispness, or site performance.',
-    solution: 'We engineered a dynamic headless CMS pipeline paired with high-legibility spatial typography, fluid micro-interactions, and optimized media delivery to empower real-time portfolio management.',
+    description: 'A project portfolio and editing system for Studio Kalagya’s architecture, interiors, and installations.',
+    longDescription: 'Studio Kalagya needed a place to publish architecture projects, interior renovations, and custom installations as the team completed them.',
+    challenge: 'The studio needed to update image-heavy galleries without a developer or slowing the mobile site.',
+    solution: 'I set up a headless CMS, reusable gallery layouts, and responsive media delivery for new projects.',
     role: 'Lead Digital Engineer & UI Architect',
     client: 'Studio Kalagya (Jabalpur, MP)',
     impact: 'Type 2 Dynamic CMS Portal',
-    image: 'https://framerusercontent.com/images/KSmNZNCybUljPNMsMJbAmkxK4M.jpg',
-    images: [
-      'https://framerusercontent.com/images/KSmNZNCybUljPNMsMJbAmkxK4M.jpg',
-      'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=1600&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1600&auto=format&fit=crop',
-    ],
+    image: '/projects/studio-kalagya.webp',
     tags: ['Type 2 Package', 'Headless CMS', 'Architecture', 'React 19', 'GSAP'],
     link: 'https://www.studiokalagya.in/',
     featured: true,
@@ -184,19 +161,14 @@ export const PROJECTS: ProjectItem[] = [
     category: 'Modular Kitchen & Spatial Interiors',
     year: '2026',
     tier: 'Type 3: Multi-Page Dynamic CMS Platform',
-    description: 'A multi-page luxury interior design and modular kitchen platform for Forever Interior in Jaipur, built under our Type 3 package with headless CMS for dynamic project lookbooks, wardrobe showcases, and spatial galleries.',
-    longDescription: 'Forever Interior is a premier modular kitchen and luxury interior design studio based in Jaipur, Rajasthan, founded by Raj Suroliya. Webbound engineered a high-craft Type 3 multi-page digital flagship with headless CMS integration to showcase their extensive modular kitchen layouts, wardrobe collections, and living space transformations while streamlining high-ticket client inquiries.',
-    challenge: 'Managing and displaying extensive multi-page modular kitchen designs and high-resolution spatial interior galleries without compromising page load speeds, visual crispness, or mobile responsiveness.',
-    solution: 'We built a multi-page Next.js platform powered by headless CMS, edge-cached media pipelines, Lenis smooth scroll physics, custom spatial typography, and an interactive quote request funnel tailored for luxury homeowners.',
+    description: 'A portfolio and quote-request website for Forever Interior, a modular kitchen and interiors studio in Jaipur.',
+    longDescription: 'Forever Interior needed a website to show its kitchens, wardrobes, and living spaces and accept quote requests from homeowners.',
+    challenge: 'Visitors needed to find the right product gallery across several pages, including on smaller screens.',
+    solution: 'I built a multi-page Next.js site with a headless CMS, separate galleries by product, and a guided quote form.',
     role: 'Lead Digital Engineer & UI Architect',
     client: 'Forever Interior (Jaipur, Rajasthan)',
     impact: 'Type 3 Multi-Page CMS Flagship',
-    image: 'https://foreverinterio.in/wp-content/uploads/2021/01/living-space.jpg',
-    images: [
-      'https://foreverinterio.in/wp-content/uploads/2021/01/living-space.jpg',
-      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1600&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1616137466211-f939a420be84?q=80&w=1600&auto=format&fit=crop',
-    ],
+    image: '/projects/forever-interior.webp',
     tags: ['Type 3 Package', 'Sanity CMS', 'React 19', 'GSAP', 'Next.js 15'],
     link: 'https://foreverinterio.in/',
     featured: true,
@@ -206,7 +178,7 @@ export const PROJECTS: ProjectItem[] = [
 export const PROCESS_STEPS: ProcessStep[] = [
   {
     step: '01',
-    title: 'Rapid Discovery & Strategy',
+    title: 'Discovery & Strategy',
     subtitle: 'Deconstructing brand essence & technical requirements',
     description: 'I analyze your goals 1-on-1 to establish the site architecture, typography, and motion plan within 24 hours.',
     duration: 'Day 1 – 2',
@@ -214,7 +186,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
   {
     step: '02',
-    title: 'Bespoke UI/UX & Motion Prototyping',
+    title: 'Design & Motion',
     subtitle: 'Designing for clarity & immediate visual impact',
     description: 'Every layout grid, component, and animation curve is custom-designed down to the pixel for your brand.',
     duration: 'Days 3 – 5',
@@ -222,7 +194,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
   {
     step: '03',
-    title: 'Precision Engineering & CMS Integration',
+    title: 'Web Development',
     subtitle: 'Writing clean code with 60 FPS fluidity',
     description: 'I build your platform using Next.js 15, React 19, GSAP, and Headless CMS for rapid dynamic content updates.',
     duration: 'Days 6 – 9',
@@ -230,7 +202,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
   {
     step: '04',
-    title: 'Performance Tuning & Speed Audit',
+    title: 'Performance & QA',
     subtitle: 'Achieving sub-second load times',
     description: 'Rigorously tested across real devices and network speeds to ensure instant hydration, zero layout shift, and SEO readiness.',
     duration: 'Days 10 – 12',
@@ -238,7 +210,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
   {
     step: '05',
-    title: 'Final Launch & 1-Year Free Maintenance',
+    title: 'Launch & Support',
     subtitle: 'Deploying to global edge CDN with ongoing support',
     description: 'Production deployment with 1 Full Year of Included Free Maintenance & Free Small Content Changes.',
     duration: 'Day 14 (Handover)',
@@ -294,6 +266,7 @@ export const TESTIMONIALS: TestimonialItem[] = [
   {
     id: '1',
     quote: 'Working with Webbound was a smooth experience from start to finish. They understood how we wanted to present our architectural work and delivered a fast, modern website that reflects our brand perfectly. The CMS also makes updating projects much easier.',
+    excerpt: 'The CMS also makes updating projects much easier.',
     author: 'Ar. Himanshu Gautam',
     role: 'Founder & Lead Architect',
     company: 'The Trusted Wall (Agra)',
@@ -302,6 +275,7 @@ export const TESTIMONIALS: TestimonialItem[] = [
   {
     id: '2',
     quote: 'We wanted a clean, premium website that would showcase our interior projects without feeling cluttered. Webbound delivered exactly that. The site feels fast, looks great on every device, and has received positive feedback from our clients.',
+    excerpt: 'The site feels fast, looks great on every device, and has received positive feedback from our clients.',
     author: 'Ripul Taneja',
     role: 'Founder & Principal Designer',
     company: 'TDID Interiors (Delhi NCR)',
@@ -310,6 +284,7 @@ export const TESTIMONIALS: TestimonialItem[] = [
   {
     id: '3',
     quote: "The entire process was well organized and collaborative. Webbound paid attention to the details, kept us updated throughout the project, and built a website that represents our studio in a professional way. We're very happy with the final result.",
+    excerpt: 'The entire process was well organized and collaborative.',
     author: 'Ar. Akshay Jain',
     role: 'Founder & Principal Architect',
     company: 'Studio Kalagya (Jabalpur)',
@@ -318,6 +293,7 @@ export const TESTIMONIALS: TestimonialItem[] = [
   {
     id: '4',
     quote: "Webbound created a website that showcases our interior projects in a clean and professional way. It has become much easier for potential clients to explore our work, and we've received great feedback on the design, speed, and overall experience.",
+    excerpt: 'It has become much easier for potential clients to explore our work',
     author: 'Raj Suroliya',
     role: 'Founder',
     company: 'Forever Interior (Jaipur)',
@@ -328,32 +304,32 @@ export const TESTIMONIALS: TestimonialItem[] = [
 export const FAQS: FAQItem[] = [
   {
     id: 'timeline',
-    question: 'How fast do you build and handover websites?',
-    answer: 'Most custom platforms are engineered, tested, and handed over within 7 to 14 business days. Because you work directly with me rather than an agency chain of account managers, design iterations and feedback cycles happen in hours instead of weeks.',
+    question: 'How long does a website take?',
+    answer: 'Most custom websites take 7 to 14 business days. We agree on the scope and timeline before work starts.',
     category: 'Process',
   },
   {
     id: 'maintenance',
-    question: 'What is included in the 1-Year Free Maintenance guarantee?',
-    answer: 'Every website includes a full year of complimentary technical maintenance, covering copy edits, asset swaps, project uploads, dependency updates, and 24/7 uptime monitoring with zero extra fees.',
+    question: 'What’s included in the first year of support?',
+    answer: 'Support includes technical maintenance, copy edits, image swaps, project uploads, dependency updates, and uptime monitoring.',
     category: 'Services',
   },
   {
     id: 'pricing',
-    question: 'What service tiers and packages do you offer?',
-    answer: 'We offer four tailored tiers: Single-Page Flagships (focused brand conversions), Dynamic CMS Studios (editorial journals and project archives), Multi-Page Spatial Platforms (full studio portfolios with fluid motion physics), and Custom Web Applications (bespoke logic and databases).',
+    question: 'What kinds of websites do you build?',
+    answer: 'I build single-page websites, CMS sites for publishing projects and articles, larger studio portfolios, and custom web applications.',
     category: 'Engagement',
   },
   {
     id: 'performance',
-    question: 'How do you ensure sub-second load times across mobile networks?',
-    answer: 'We enforce strict GPU hardware acceleration, RAF loop synchronization, dynamic code splitting, asset preloading, and edge CDN compression so rich animations never compromise mobile load speeds.',
+    question: 'How do you make a site load quickly on mobile?',
+    answer: 'I resize and compress images, split the code by page, and load assets as needed. I check the result across devices and connection speeds.',
     category: 'Technical',
   },
   {
     id: 'collaboration',
-    question: 'How do we collaborate during the project?',
-    answer: 'Directly 1-on-1 via private Slack/WhatsApp channels, Figma design reviews, and live staging links. You always have direct access to the engineer crafting your site.',
+    question: 'How do we work together?',
+    answer: 'You work directly with me over Slack or WhatsApp. We review designs in Figma and use a staging site to test the build before launch.',
     category: 'Process',
   },
 ];

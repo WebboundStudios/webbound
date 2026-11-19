@@ -1,73 +1,52 @@
 'use client';
 
-import React from 'react';
-import { TESTIMONIALS } from '@/constants/data';
-import { TextReveal } from '@/components/animations/TextReveal';
 import { InfiniteMarquee } from '@/components/animations/InfiniteMarquee';
+import { TextReveal } from '@/components/animations/TextReveal';
+import { TESTIMONIALS } from '@/constants/data';
 
-export const Testimonials: React.FC = () => {
+export function Testimonials() {
   return (
     <section
       id="testimonials"
+      aria-labelledby="testimonials-heading"
       data-theme-bg="#F5F3EE"
-      className="relative min-h-screen py-12 sm:py-20 px-0 text-[#0A0A0A] overflow-hidden flex flex-col justify-center transition-colors duration-200 w-full"
+      className="relative w-full overflow-hidden py-16 text-[#0A0A0A] transition-colors duration-200 sm:py-24"
     >
-      {/* Header Container */}
-      <div className="max-w-4xl mx-auto px-6 relative z-10 flex flex-col space-y-4 mb-8 sm:mb-16 text-center items-center">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">Words from clients</span>
+      <div className="mx-auto w-[calc(100%-3rem)] max-w-7xl md:w-[calc(100%-6rem)]">
+        <div id="testimonials-heading" className="mb-7 border-t border-black/12 pt-8 sm:mb-10 sm:pt-12">
+          <TextReveal
+            as="h2"
+            className="font-section-heading text-[clamp(2.5rem,5.5vw,4.75rem)] leading-[1.05] font-bold tracking-[-0.045em] [&>div:not(:last-child)]:mr-[0.08em]!"
+          >
+            What our clients say
+          </TextReveal>
         </div>
-        <TextReveal
-          as="h2"
-          className="font-section-heading text-3xl sm:text-5xl md:text-6xl font-bold text-[#0A0A0A] tracking-[-0.02em] leading-tight max-w-3xl"
-        >
-          Endorsed By Leaders At Visionary Companies.
-        </TextReveal>
       </div>
 
-      {/* Full-width Marquee Container */}
-      <div className="w-full relative z-10">
+      <div className="w-full border-y border-black/10 py-3 sm:py-5">
         <InfiniteMarquee direction="left" speed="slow" pauseOnHover={true} fadeColor="light" interactiveScroll={true}>
           {TESTIMONIALS.map((item) => (
-            <div
-              key={item.id}
-              className="p-6 sm:p-8 lg:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#0A0A0A]/[0.08] hover:border-[#0A0A0A]/20 hover:-translate-y-1.5 hover:shadow-xl transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] shadow-sm flex flex-col justify-between max-w-lg min-w-[270px] sm:min-w-[440px] lg:min-w-[480px] space-y-5 sm:space-y-6 select-none"
-            >
-              <div className="space-y-4">
-                {/* Rating — typographic, not icon array */}
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs text-[#0A0A0A]/40 tracking-wider">★★★★★ 5.0</span>
-                  {item.metrics && (
-                    <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-[#C5F52A] text-[#0A0A0A] font-mono text-[10px] sm:text-xs font-semibold">
-                      {item.metrics}
-                    </span>
-                  )}
-                </div>
-
-                {/* Quote — typographic opening mark, no icon */}
-                <p className="font-body-ui text-sm sm:text-base text-[#0A0A0A] font-normal leading-[1.65]">
-                  <span className="text-[#C5F52A] font-hero-display text-2xl leading-none mr-1 align-text-top">&ldquo;</span>
-                  {item.quote}
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-[#0A0A0A]/[0.06] flex items-center gap-3 group">
-                <div className="w-8 h-8 rounded-full bg-[#F5F3EE] border border-[#0A0A0A]/10 flex items-center justify-center font-mono font-bold text-xs text-[#0A0A0A] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:border-[#C5F52A]">
-                  {item.author.charAt(0)}
-                </div>
-                <div>
-                  <h4 className="font-section-heading text-sm font-bold text-[#0A0A0A]">
-                    {item.author}
-                  </h4>
-                  <p className="text-[11px] font-mono text-[#6B7280]">
-                    {item.role}, <span className="text-[#0A0A0A]/70">{item.company}</span>
-                  </p>
-                </div>
-              </div>
+            <div key={item.id} className="flex w-64 shrink-0 py-2 sm:w-72 lg:w-80">
+              <figure
+                className="flex w-full flex-col gap-3 rounded-xl border border-black/10 bg-[#FFFEFC] p-4 transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none hover:-translate-y-1.5 hover:border-black/20 hover:shadow-sm sm:p-5"
+              >
+                <figcaption className="group flex items-center gap-2.5">
+                  <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full border border-black/10 bg-[#F2F0EA] font-section-heading text-[10px] font-bold transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:border-[#C5F52A]">
+                    {item.author.split(' ').slice(-2).map((name) => name.charAt(0)).join('')}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-section-heading text-sm leading-tight font-bold">{item.author}</p>
+                    <p className="font-body-ui mt-0.5 text-xs leading-snug text-[#4B5563]">{item.company.split(' (')[0]}</p>
+                  </div>
+                </figcaption>
+                <blockquote className="font-body-ui text-sm leading-relaxed text-[#242424]">
+                  <p>&ldquo;{item.excerpt ?? item.quote}&rdquo;</p>
+                </blockquote>
+              </figure>
             </div>
           ))}
         </InfiniteMarquee>
       </div>
     </section>
   );
-};
+}

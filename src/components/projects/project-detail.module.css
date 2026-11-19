@@ -1,0 +1,44 @@
+.dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.dialog::backdrop { background: transparent; }
+
+.pane {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+:global(body):has(.dialog[open]) { overflow: hidden; }
+
+.ghost {
+  position: fixed;
+  z-index: 20;
+  visibility: hidden;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ghost img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+:global(body.custom-cursor-enabled) .dialog,
+:global(body.custom-cursor-enabled) .dialog * { cursor: auto !important; }
+
+:global(body.custom-cursor-enabled) .dialog :is(a, button),
+:global(body.custom-cursor-enabled) .dialog :is(a, button) * { cursor: pointer !important; }

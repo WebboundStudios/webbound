@@ -1,27 +1,39 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useId, useRef, type MouseEvent } from 'react';
 import { MagneticButton } from '@/components/animations/MagneticButton';
-import { TextRoll } from '@/components/animations/TextRoll';
-import { NAV_LINKS } from '@/constants/data';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { NAV_LINKS, SITE_CONFIG } from '@/constants/data';
+import { Menu, X, ArrowRight, ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
+import styles from './Navbar.module.css';
 
-export const Navbar: React.FC = () => {
+const menuGroups = [
+  { title: 'Studio', links: NAV_LINKS.slice(0, 4) },
+  { title: 'Explore', links: NAV_LINKS.slice(4) },
+];
+const contactHref = '/#contact';
+const reducedMotion = '(prefers-reduced-motion: reduce)';
+
+export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [currentLocation, setCurrentLocation] = useState('');
+  const menuId = useId();
   const lastScrollY = useRef(0);
-  const menuOverlayRef = useRef<HTMLDivElement>(null);
-  const menuItemsRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const paneRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const animationRef = useRef<gsap.core.Timeline | gsap.core.Tween | null>(null);
+  const closing = useRef(false);
 
   useEffect(() => {
-    let ticking = false;
+    let frame = 0;
 
     const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
+      if (frame) return;
 
-      requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
         const currentY = window.scrollY;
         const delta = currentY - lastScrollY.current;
 
@@ -33,82 +45,117 @@ export const Navbar: React.FC = () => {
           lastScrollY.current = currentY;
         }
 
-        ticking = false;
+        frame = 0;
       });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-      document.documentElement.style.overflow = 'hidden';
-      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: true } }));
-
-      // Animate menu overlay in
-      if (menuOverlayRef.current) {
-        gsap.fromTo(
-          menuOverlayRef.current,
-          { clipPath: 'inset(100% 0 0 0)' },
-          { clipPath: 'inset(0% 0 0 0)', duration: 0.75, ease: 'expo.inOut' }
-        );
-      }
-
-      // Stagger menu items — slightly tighter stagger + expo.out reads
-      // snappier and more considered than a generic power2 ease.
-      if (menuItemsRef.current) {
-        const items = menuItemsRef.current.querySelectorAll('.menu-item');
-        gsap.fromTo(
-          items,
-          { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, stagger: 0.06, ease: 'expo.out', delay: 0.3 }
-        );
-      }
-    } else {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
-    }
-
+    const dialog = dialogRef.current;
     return () => {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
+      animationRef.current?.kill();
+      if (dialog?.open) {
+        dialog.close();
+        window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
+      }
     };
-  }, [menuOpen]);
+  }, []);
 
-  const closeMenu = () => {
-    if (menuOverlayRef.current) {
-      gsap.to(menuOverlayRef.current, {
-        clipPath: 'inset(0 0 100% 0)',
-        duration: 0.55,
-        ease: 'expo.inOut',
-        onComplete: () => setMenuOpen(false),
-      });
-    } else {
-      setMenuOpen(false);
+  function openMenu() {
+    const dialog = dialogRef.current;
+    const pane = paneRef.current;
+    if (!dialog || !pane || dialog.open) return;
+
+    setCurrentLocation(window.location.pathname + window.location.hash);
+    dialog.showModal();
+    dialog.scrollTop = 0;
+    closeRef.current?.focus({ preventScroll: true });
+    setMenuOpen(true);
+    window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: true } }));
+
+    const links = pane.querySelectorAll('[data-menu-link]');
+    if (window.matchMedia(reducedMotion).matches) {
+      gsap.set([pane, ...links], { clearProps: 'clipPath,opacity,transform' });
+      return;
     }
-  };
+
+    animationRef.current = gsap.timeline()
+      .fromTo(pane,
+        { clipPath: 'inset(100% 0 0 0)' },
+        { clipPath: 'inset(0% 0 0 0)', duration: 0.56, ease: 'power3.inOut', clearProps: 'clipPath' },
+      )
+      .fromTo(links,
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.43, stagger: 0.035, ease: 'power3.out', clearProps: 'opacity,transform' },
+        0.21,
+      );
+  }
+
+  function closeMenu(destination?: string) {
+    const dialog = dialogRef.current;
+    const pane = paneRef.current;
+    if (!dialog?.open || !pane || closing.current) return;
+    closing.current = true;
+    animationRef.current?.kill();
+
+    const finish = () => {
+      dialog.close();
+      closing.current = false;
+      setMenuOpen(false);
+      triggerRef.current?.focus({ preventScroll: true });
+      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
+      if (destination) window.location.assign(destination);
+    };
+
+    if (window.matchMedia(reducedMotion).matches) {
+      finish();
+      return;
+    }
+
+    animationRef.current = gsap.to(pane, {
+      clipPath: 'inset(0% 0 100% 0)',
+      duration: 0.36,
+      ease: 'power3.inOut',
+      onComplete: finish,
+    });
+  }
+
+  function followMenuLink(event: MouseEvent<HTMLAnchorElement>) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+
+    const { href, hash } = event.currentTarget;
+    closeMenu(href !== window.location.href || hash ? href : undefined);
+  }
 
   return (
     <>
       {/* Bottom-Docked Floating Capsule Navbar */}
       <nav
-        className={`fixed bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-[650ms] ease-[cubic-bezier(0.16,1,0.3,1)] w-max max-w-[calc(100vw-1.5rem)] ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+        aria-label="Quick navigation"
+        className={`fixed bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-[650ms] ease-[cubic-bezier(0.16,1,0.3,1)] w-max max-w-[calc(100vw-1.5rem)] motion-reduce:transition-none ${
+          isVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-12 opacity-0 focus-within:pointer-events-auto focus-within:translate-y-0 focus-within:opacity-100'
         }`}
       >
         <div className="flex items-center justify-between gap-1 sm:gap-1.5 bg-[#11110f]/95 backdrop-blur-xl rounded-full p-1 sm:p-1.5 border border-white/15 shadow-[0_18px_55px_rgba(0,0,0,0.24)] max-w-full">
           {/* Menu Toggle */}
           <button
-            onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
+            ref={triggerRef}
+            type="button"
+            onClick={openMenu}
             className="flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-xs sm:text-sm font-body-ui font-medium transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 shrink-0"
-            aria-label="Toggle Menu"
+            aria-haspopup="dialog"
+            aria-controls={menuId}
+            aria-expanded={menuOpen}
           >
-            {menuOpen ? <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Menu className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-            <span className="text-[10px] sm:text-xs tracking-wider uppercase">{menuOpen ? 'Close' : 'Menu'}</span>
+            <Menu className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+            <span className="text-[10px] sm:text-xs tracking-wider uppercase">Menu</span>
           </button>
 
           {/* Center Brand Name */}
@@ -117,7 +164,7 @@ export const Navbar: React.FC = () => {
           </span>
 
           {/* CTA Button */}
-          <a href="#contact" className="shrink-0">
+          <a href={contactHref} className="shrink-0">
             <MagneticButton variant="primary" size="sm" className="!px-3.5 !py-2 sm:!px-5 sm:!py-2.5 !text-[10px] sm:!text-xs whitespace-nowrap">
               <span>Contact Us</span>
             </MagneticButton>
@@ -125,50 +172,61 @@ export const Navbar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Full-Screen Menu Overlay */}
-      {menuOpen && (
-        <div
-          ref={menuOverlayRef}
-          data-lenis-prevent
-          data-lenis-prevent-wheel
-          data-lenis-prevent-touch
-          className="fixed inset-0 z-40 min-h-0 bg-[#0A0A0A] flex flex-col justify-start p-6 sm:p-12 md:p-16 pb-28 sm:pb-36 overflow-y-auto overscroll-contain touch-pan-y max-h-screen scrollbar-none"
-          style={{ clipPath: 'inset(100% 0 0 0)' }}
-        >
-          {/* Top Row */}
-          <div className="flex items-center justify-between max-w-7xl mx-auto w-full shrink-0 mb-6">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#6B7280]">
-              NAVIGATION
-            </span>
-            <span className="text-xs font-mono uppercase tracking-widest text-[#6B7280]">
-              WEBBOUND STUDIOS
-            </span>
-          </div>
-
-          {/* Center Menu Items */}
-          <div ref={menuItemsRef} className="flex flex-col items-start gap-1 sm:gap-2 mt-12 mb-12 max-w-4xl mx-auto w-full py-4 shrink-0">
-            {NAV_LINKS.map((link, idx) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={closeMenu}
-                className="menu-item group flex items-center gap-4 sm:gap-6 w-full py-2 sm:py-3 border-b border-white/5 hover:border-[#C5F52A]/40 hover:pl-2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              >
-                <span className="text-xs font-mono text-[#6B7280] group-hover:text-[#C5F52A] group-hover:tracking-[0.15em] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] w-7 sm:w-8 shrink-0">
-                  0{idx + 1}
-                </span>
-                <TextRoll
-                  center
-                  className="font-hero-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white group-hover:text-[#C5F52A] transition-colors duration-500 tracking-tight uppercase"
-                >
-                  {link.label}
-                </TextRoll>
-                <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#6B7280] group-hover:text-[#C5F52A] ml-auto opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shrink-0" />
+      <dialog
+        ref={dialogRef}
+        id={menuId}
+        aria-label="Site menu"
+        className={styles.dialog}
+        data-lenis-prevent
+        onCancel={(event) => {
+          event.preventDefault();
+          closeMenu();
+        }}
+      >
+        <div ref={paneRef} className={styles.pane}>
+          <div className={styles.layout}>
+            <div className={styles.header}>
+              <a href="/" aria-label="Webbound home" onClick={followMenuLink} className={styles.wordmark}>
+                WEBBOUND<span>.</span>
               </a>
-            ))}
+              <button ref={closeRef} type="button" onClick={() => closeMenu()} className={styles.close}>
+                Close <X size={17} aria-hidden="true" />
+              </button>
+            </div>
+
+            <nav aria-label="Main navigation" className={styles.navigation}>
+              {menuGroups.map(({ title, links }, groupIndex) => (
+                <div key={title} className={groupIndex === 0 ? styles.primary : styles.secondary}>
+                  <h2 className={styles.groupTitle}>{title}</h2>
+                  <ul>
+                    {links.map((link) => (
+                      <li key={link.href}>
+                        <a
+                          href={link.href}
+                          onClick={followMenuLink}
+                          aria-current={currentLocation === link.href ? (link.href.includes('#') ? 'location' : 'page') : undefined}
+                          className={styles.link}
+                          data-menu-link
+                        >
+                          <span>{link.label}</span>
+                          <ArrowRight aria-hidden="true" className={styles.arrow} />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </nav>
+
+            <div className={styles.contact}>
+              <a href={`mailto:${SITE_CONFIG.email}`} className={styles.email}>{SITE_CONFIG.email}</a>
+              <a href={contactHref} onClick={followMenuLink} className={styles.inquiry}>
+                Start a project <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+            </div>
           </div>
         </div>
-      )}
+      </dialog>
     </>
   );
-};
+}

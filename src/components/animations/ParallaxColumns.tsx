@@ -74,7 +74,7 @@ type ColumnProps = {
 const Column = ({ images, y }: ColumnProps) => {
   return (
     <motion.div
-      className="relative flex w-1/4 flex-col gap-2.5 sm:gap-4 -mt-36 sm:-mt-52 md:-mt-64 shrink-0"
+      className="relative flex min-w-0 flex-1 flex-col gap-2.5 sm:gap-4 -mt-36 sm:-mt-52 md:-mt-64"
       style={{ y }}
     >
       {images.map((src, i) => (

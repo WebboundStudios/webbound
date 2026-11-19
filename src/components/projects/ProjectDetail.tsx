@@ -1,196 +1,213 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import Lenis from 'lenis';
-import { ProjectItem } from '@/types';
-import { ArrowUpRight, X, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { MagneticButton } from '@/components/animations/MagneticButton';
-import { TextRoll } from '@/components/animations/TextRoll';
+import { useId, useLayoutEffect, useRef } from 'react';
+import Image from 'next/image';
+import gsap from 'gsap';
+import { Flip } from 'gsap/Flip';
+import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import type { ProjectItem } from '@/types';
+import styles from './project-detail.module.css';
 
-export interface ProjectDetailProps {
-  project: ProjectItem;
-  onClose: () => void;
-  heroImageContainerRef: React.RefObject<HTMLDivElement | null>;
-  contentRef: React.RefObject<HTMLDivElement | null>;
-  detailScrollRef?: React.RefObject<HTMLDivElement | null>;
-  imageElement?: React.ReactNode;
+if (typeof window !== 'undefined') gsap.registerPlugin(Flip);
+
+const reducedMotion = '(prefers-reduced-motion: reduce)';
+
+function measureCover(element: HTMLElement) {
+  const { left, top, width, height, right, bottom } = element.getBoundingClientRect();
+  if (!width || !height || bottom <= 0 || right <= 0 || top >= innerHeight || left >= innerWidth) return null;
+
+  return { left, top, width, height, borderRadius: getComputedStyle(element).borderRadius };
 }
 
-export const ProjectDetail: React.FC<ProjectDetailProps> = ({
-  project,
-  onClose,
-  heroImageContainerRef,
-  contentRef,
-  detailScrollRef,
-}) => {
-  useEffect(() => {
-    const el = detailScrollRef?.current;
-    if (!el) return;
+function readCover(element: HTMLElement) {
+  const frame = measureCover(element);
+  const photo = element.querySelector('img');
+  if (!frame || !photo?.complete || !photo.naturalWidth) return null;
 
-    document.body.style.overflow = 'hidden';
+  return { frame, src: photo.currentSrc || photo.src };
+}
 
-    // Dedicated Lenis smooth scroll engine for modal overlay container
-    const modalLenis = new Lenis({
-      wrapper: el,
-      content: (el.firstElementChild as HTMLElement) || el,
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-    });
+function playCoverFlip(
+  ghost: HTMLDivElement,
+  source: ReturnType<typeof readCover>,
+  target: ReturnType<typeof measureCover>,
+) {
+  if (!source || !target) return null;
 
-    let rafId: number;
-    const raf = (time: number) => {
-      modalLenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
+  const copy = document.createElement('img');
+  copy.alt = '';
+  copy.src = source.src;
+  ghost.replaceChildren(copy);
+
+  // Only the overlay changes geometry. The card and dialog keep their own image nodes.
+  gsap.set(ghost, { clearProps: 'transform' });
+  gsap.set(ghost, { ...source.frame, visibility: 'visible' });
+  const state = Flip.getState(ghost, { props: 'borderRadius' });
+  gsap.set(ghost, target);
+
+  return Flip.from(state, { duration: 0.5, ease: 'power3.inOut', props: 'borderRadius', scale: false });
+}
+
+type ProjectDetailProps = {
+  project: ProjectItem;
+  trigger: HTMLButtonElement;
+  cover: HTMLDivElement;
+  onClose: () => void;
+};
+
+export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetailProps) {
+  const titleId = useId();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const paneRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const ghostRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const timeline = useRef<gsap.core.Timeline | null>(null);
+  const closing = useRef(false);
+  const flying = useRef(false);
+
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    const pane = paneRef.current;
+    const image = imageRef.current;
+    const ghost = ghostRef.current;
+    if (!dialog || !pane || !image || !ghost) return;
+
+    dialog.showModal();
+    window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: true } }));
+    closeRef.current?.focus({ preventScroll: true });
+
+    if (!window.matchMedia(reducedMotion).matches) {
+      const flip = playCoverFlip(ghost, readCover(cover), measureCover(image));
+      const entrance = gsap.timeline();
+      if (flip) {
+        flying.current = true;
+        gsap.set(image, { visibility: 'hidden' });
+        entrance.add(flip, 0);
+      }
+      entrance.fromTo(pane, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, 0);
+      entrance.call(() => {
+        flying.current = false;
+        gsap.set(image, { clearProps: 'visibility' });
+        gsap.set(ghost, { visibility: 'hidden' });
+        ghost.replaceChildren();
+      });
+      timeline.current = entrance;
+    }
 
     return () => {
-      document.body.style.overflow = '';
-      cancelAnimationFrame(rafId);
-      modalLenis.destroy();
+      timeline.current?.kill();
+      flying.current = false;
+      if (dialog.open) dialog.close();
+      gsap.set([pane, image], { clearProps: 'opacity,visibility' });
+      gsap.set(ghost, { visibility: 'hidden' });
+      ghost.replaceChildren();
+      window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
+      trigger.focus({ preventScroll: true });
     };
-  }, [detailScrollRef]);
+  }, [cover, trigger]);
+
+  function close() {
+    if (closing.current) return;
+    closing.current = true;
+
+    const pane = paneRef.current;
+    const image = imageRef.current;
+    const ghost = ghostRef.current;
+
+    if (!pane || !image || !ghost || window.matchMedia(reducedMotion).matches) {
+      onClose();
+      return;
+    }
+
+    // If the close button is used mid-flight, start the return at the image's current position.
+    const from = flying.current ? ghost : image;
+    timeline.current?.pause();
+    const source = readCover(from);
+    const target = measureCover(cover);
+    timeline.current?.kill();
+
+    const flip = playCoverFlip(ghost, source, target);
+    if (flip) gsap.set(image, { visibility: 'hidden' });
+    else gsap.set(ghost, { visibility: 'hidden' });
+
+    const exit = gsap.timeline({ onComplete: onClose });
+    if (flip) exit.add(flip, 0);
+    exit.to(pane, { opacity: 0, duration: 0.24, ease: 'power2.in' }, 0);
+    timeline.current = exit;
+  }
 
   return (
-    <div
-      ref={detailScrollRef}
-      data-lenis-prevent="true"
-      className="fixed inset-0 z-[99980] w-full h-full bg-[#0A0A0A] text-white p-6 sm:p-10 md:p-14 overflow-y-auto select-none flex flex-col justify-between"
+    <dialog
+      ref={dialogRef}
+      aria-labelledby={titleId}
+      className={styles.dialog + ' text-white'}
+      onCancel={(event) => {
+        event.preventDefault();
+        close();
+      }}
     >
-      <div className="max-w-7xl mx-auto w-full min-h-full flex flex-col justify-between my-auto py-6 pb-20 md:pb-32">
-        {/* Main 2-Column Split Layout matching Reference Portfolio */}
-        <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch my-auto">
-          {/* Left Column: Close Button, Title, Subheading, Live Link & Hero Image Box */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
-            <div className="space-y-6">
-              {/* Close / Return to Home Button */}
-              <div className="detail-anim-item" style={{ opacity: 0 }}>
-                <button
-                  onClick={onClose}
-                  data-cursor="Close"
-                  className="closeBtn group inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/10 border border-white/15 text-white hover:bg-[#C5F52A] hover:text-[#0A0A0A] hover:border-[#C5F52A] hover:tracking-[0.15em] transition-all duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] font-mono text-xs uppercase tracking-widest cursor-pointer shadow-lg active:scale-90"
-                >
-                  <span>Return To Home</span>
-                  <X className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" />
-                </button>
-              </div>
-
-              {/* Title, Subheading & Year */}
-              <div className="space-y-3 detail-anim-item" style={{ opacity: 0 }}>
-                <h1 className="projecttitle font-section-heading text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-[-0.02em] leading-[0.95]">
-                  {project.title}
-                </h1>
-                <div className="subheading flex items-center gap-4 pt-1">
-                  <span className="projectyear font-mono text-lg text-[#C5F52A] font-semibold">
-                    {project.year}
-                  </span>
-                  <span className="h-px w-6 bg-[#C5F52A]/40" />
-                  <span className="projectshorttag font-mono text-xs sm:text-sm text-white/60 uppercase tracking-widest truncate">
-                    {project.category}
-                  </span>
-                </div>
-              </div>
-
-              {/* Live Link Button */}
-              {project.link && (
-                <div className="livelink detail-anim-item" style={{ opacity: 0 }}>
-                  <a href={project.link} target="_blank" rel="noopener noreferrer">
-                    <MagneticButton variant="primary" size="md">
-                      <TextRoll center>Live Link</TextRoll>
-                      <ArrowUpRight className="w-4 h-4 ml-1" />
-                    </MagneticButton>
-                  </a>
-                </div>
-              )}
-            </div>
-
-            {/* Left Hero Flip Target Container (.projectflip) */}
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="projectflip w-full aspect-[16/10] rounded-2xl bg-[#141414] border border-white/10 overflow-hidden shadow-2xl relative mt-4"
+      <div ref={paneRef} className={styles.pane + ' bg-[#0A0A0A]'} data-lenis-prevent>
+        <header className="sticky top-0 z-10 border-b border-white/15 bg-[#0A0A0A] px-6 md:px-12 lg:px-20">
+          <div className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-x-4">
+            <button
+              ref={closeRef}
+              type="button"
+              onClick={close}
+              aria-label="Close case study"
+              className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white hover:text-[#C5F52A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C5F52A]"
             >
-              <div
-                ref={heroImageContainerRef}
-                className="w-full h-full relative overflow-hidden bg-[#141414]"
+              <ArrowLeft size={17} aria-hidden="true" /> Selected work
+            </button>
+            {project.link && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[#C5F52A] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C5F52A]"
+              >
+                Visit website <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            )}
+          </div>
+        </header>
+
+        <div className="mx-auto max-w-360 px-6 pt-10 pb-20 md:px-12 md:pt-14 lg:px-20">
+          <p className="font-body-ui mb-3 text-sm text-white/70">{project.category} · {project.year}</p>
+          <h2 id={titleId} className="font-section-heading max-w-5xl text-[clamp(2.5rem,6vw,5.5rem)] leading-none font-bold tracking-[-0.045em] text-balance">
+            {project.title}
+          </h2>
+
+          <div className="mt-8 grid gap-7 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-10">
+            <div ref={imageRef} style={{ aspectRatio: project.coverAspectRatio }} className="relative aspect-video overflow-hidden rounded-lg bg-[#1B1B1B]" data-project-detail-cover>
+              <Image
+                src={project.image}
+                alt=""
+                fill
+                loading="eager"
+                sizes="(max-width: 1023px) calc(100vw - 48px), (max-width: 1439px) 60vw, 840px"
+                className="object-cover"
               />
             </div>
+            <dl className="font-body-ui self-start divide-y divide-white/15 border-y border-white/15 text-sm lg:text-base">
+              <div className="py-3"><dt className="text-white/65">Client</dt><dd className="mt-1 font-semibold">{project.client}</dd></div>
+              {project.role && <div className="py-3"><dt className="text-white/65">Role</dt><dd className="mt-1 font-semibold">{project.role}</dd></div>}
+              <div className="py-3"><dt className="text-white/65">Deliverable</dt><dd className="mt-1 font-semibold">{project.impact}</dd></div>
+              <div className="py-3"><dt className="text-white/65">Technology</dt><dd className="mt-1 font-semibold">{project.tags.join(' · ')}</dd></div>
+            </dl>
           </div>
 
-          {/* Right Column: Description, Tech Stack & Highlights */}
-          <div className="lg:col-span-7 flex flex-col justify-end space-y-10 pl-0 lg:pl-8 pt-6 lg:pt-0">
-            <div className="right-part-wrapper space-y-8">
-              {/* Description Section */}
-              <div className="description space-y-3 detail-anim-item" style={{ opacity: 0 }}>
-                <h2 className="font-mono text-xs uppercase tracking-widest text-[#C5F52A]">
-                  Description
-                </h2>
-                <p className="font-body-ui text-base sm:text-lg text-white/80 font-light leading-relaxed">
-                  {project.longDescription || project.description}
-                </p>
-              </div>
-
-              {/* Tech Stack & Highlights Grid */}
-              <div className="techstackandhighlights grid grid-cols-1 sm:grid-cols-12 gap-8 border-t border-white/10 pt-8">
-                {/* Tech Stack Column (5 Cols) */}
-                <div className="sm:col-span-5 space-y-3 detail-anim-item" style={{ opacity: 0 }}>
-                  <h2 className="font-mono text-xs uppercase tracking-widest text-[#C5F52A]">
-                    Tech Stack
-                  </h2>
-                  <div className="tech flex flex-col gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="group/tag font-mono text-xs sm:text-sm text-white/90 flex items-center gap-2 w-fit transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-x-1.5"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#C5F52A] transition-transform duration-300 group-hover/tag:scale-125" />
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Highlights Column (7 Cols) */}
-                <div className="sm:col-span-7 space-y-3 detail-anim-item" style={{ opacity: 0 }}>
-                  <h2 className="font-mono text-xs uppercase tracking-widest text-[#C5F52A]">
-                    Highlights
-                  </h2>
-                  <div className="tech flex flex-col gap-3">
-                    <div className="flex items-start gap-2.5">
-                      <Sparkles className="w-4 h-4 text-[#C5F52A] shrink-0 mt-0.5" />
-                      <span className="font-body-ui text-xs sm:text-sm text-white/90">
-                        {project.impact}
-                      </span>
-                    </div>
-                    {project.challenge && (
-                      <div className="flex items-start gap-2.5">
-                        <ShieldCheck className="w-4 h-4 text-white/40 shrink-0 mt-0.5" />
-                        <span className="font-body-ui text-xs sm:text-sm text-white/75 font-light">
-                          {project.challenge}
-                        </span>
-                      </div>
-                    )}
-                    {project.solution && (
-                      <div className="flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-[#C5F52A] shrink-0 mt-0.5" />
-                        <span className="font-body-ui text-xs sm:text-sm text-white/85 font-light">
-                          {project.solution}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+          <div className="mt-11 grid gap-7 border-t border-white/15 pt-7 lg:grid-cols-3 lg:gap-10">
+            <div>
+              <h3 className="font-section-heading mb-2 text-xl font-bold">Overview</h3>
+              <p className="font-body-ui leading-relaxed text-white/75">{project.longDescription || project.description}</p>
             </div>
+            {project.challenge && <div><h3 className="font-section-heading mb-2 text-xl font-bold">The challenge</h3><p className="font-body-ui leading-relaxed text-white/75">{project.challenge}</p></div>}
+            {project.solution && <div><h3 className="font-section-heading mb-2 text-xl font-bold">The approach</h3><p className="font-body-ui leading-relaxed text-white/75">{project.solution}</p></div>}
           </div>
         </div>
-        {/* Explicit Bottom Breathing Room Spacer */}
-        <div className="w-full h-15 sm:h-25 md:h-35 shrink-0 pointer-events-none" aria-hidden="true" />
       </div>
-    </div>
+      <div ref={ghostRef} className={styles.ghost} aria-hidden="true" data-project-flight />
+    </dialog>
   );
-};
+}

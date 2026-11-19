@@ -20,6 +20,7 @@ export interface ProjectItem {
   client: string;
   impact: string;
   image: string;
+  coverAspectRatio?: number;
   images?: string[];
   videoUrl?: string;
   tags: string[];
@@ -36,6 +37,7 @@ export interface ProjectItem {
 export interface TestimonialItem {
   id: string;
   quote: string;
+  excerpt?: string;
   author: string;
   role: string;
   company: string;

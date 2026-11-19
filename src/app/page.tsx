@@ -1,5 +1,4 @@
 import React from 'react';
-import { LoadingScreen } from '@/components/animations/LoadingScreen';
 import { CustomCursor } from '@/components/common/CustomCursor';
 import { Navbar } from '@/components/common/Navbar';
 import { ScrollThemeController } from '@/components/animations/ScrollThemeController';
@@ -20,9 +19,6 @@ export default function Home() {
     <main className="site-shell relative min-h-screen bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] transition-colors duration-500">
       {/* Scroll Background Morph Controller */}
       <ScrollThemeController />
-
-      {/* Preloader Screen */}
-      <LoadingScreen />
 
       {/* Interactive Custom Cursor Follower */}
       <CustomCursor />

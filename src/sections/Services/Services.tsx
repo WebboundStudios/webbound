@@ -1,179 +1,244 @@
 'use client';
 
-import React, { useState } from 'react';
-import { SERVICES } from '@/constants/data';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { ArrowUpRight, Check, Database, Edit3, Layers, Layout, Plus } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextReveal } from '@/components/animations/TextReveal';
-import { TextRoll } from '@/components/animations/TextRoll';
-import { Layout, Edit3, Layers, Database, ChevronDown, ArrowUpRight, Check } from 'lucide-react';
+import { SERVICES } from '@/constants/data';
+import styles from './Services.module.css';
 
-const iconMap: Record<string, React.ReactNode> = {
-  Layout: <Layout className="w-5 h-5" />,
-  Edit3: <Edit3 className="w-5 h-5" />,
-  Layers: <Layers className="w-5 h-5" />,
-  Database: <Database className="w-5 h-5" />,
-};
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
-// Distinct editorial colorways for each service tier
-const TIER_STYLES = [
-  {
-    bg: 'bg-white',
-    text: 'text-[#0A0A0A]',
-    border: 'border-[#0A0A0A]/10',
-    subtext: 'text-[#6B7280]',
-    tagBg: 'bg-[#0A0A0A]/5 border-[#0A0A0A]/10 text-[#0A0A0A]',
-    accent: '#C5F52A',
-    badge: 'STARTER STUDIO TIER',
-  },
-  {
-    bg: 'bg-[#141414]',
-    text: 'text-white',
-    border: 'border-white/10',
-    subtext: 'text-[#9CA3AF]',
-    tagBg: 'bg-white/10 border-white/10 text-white',
-    accent: '#C5F52A',
-    badge: 'DYNAMIC CMS TIER',
-  },
-  {
-    bg: 'bg-[#181520]',
-    text: 'text-white',
-    border: 'border-white/10',
-    subtext: 'text-[#A1A1AA]',
-    tagBg: 'bg-white/10 border-white/10 text-[#E4D9FF]',
-    accent: '#A78BFA',
-    badge: 'SIGNATURE SPATIAL TIER',
-  },
-  {
-    bg: 'bg-white',
-    text: 'text-[#0A0A0A]',
-    border: 'border-[#0A0A0A]/15',
-    subtext: 'text-[#6B7280]',
-    tagBg: 'bg-[#0A0A0A]/5 border-[#0A0A0A]/10 text-[#0A0A0A]',
-    accent: '#C5F52A',
-    badge: 'CUSTOM APPLICATION TIER',
-  },
-];
+const serviceIcons = { Layout, Edit3, Layers, Database } as const;
+const splitMedia = '(min-width: 1024px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)';
 
-export const Services: React.FC = () => {
+function ServiceCoverArtwork() {
+  return (
+    <div className={styles.coverArtwork}>
+      <p className={`${styles.coverTitle} font-section-heading`}>
+        <span>Websites &amp;</span>
+        <span>web apps.</span>
+      </p>
+      <ul className={`${styles.coverIndex} font-body-ui`}>
+        {SERVICES.map(({ id, title, iconName }) => {
+          const Icon = serviceIcons[iconName as keyof typeof serviceIcons] ?? Layout;
+
+          return (
+            <li key={id}>
+              <Icon aria-hidden="true" className={styles.coverIcon} strokeWidth={1.65} />
+              <span>{title}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+export function Services() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<gsap.core.Timeline | null>(null);
 
-  const toggleExpand = (id: string) => {
-    setExpandedId((prev) => (prev === id ? null : id));
-  };
+  useLayoutEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const media = gsap.matchMedia();
+    media.add(splitMedia, () => {
+      const panels = Array.from(stage.querySelectorAll('[data-service-panel]'));
+      const faces = stage.querySelectorAll('[data-service-face]');
+      const cue = stage.querySelector('[data-service-cue]');
+      stage.setAttribute('data-split-active', '');
+
+      const syncScene = (animation: gsap.core.Animation) => {
+        stage.toggleAttribute('data-split-started', animation.time() >= 0.035);
+        stage.toggleAttribute('data-split-revealed', animation.progress() >= 0.86);
+      };
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          id: 'services-reveal',
+          trigger: stage,
+          start: 'center center',
+          end: () => '+=' + Math.round(window.innerHeight * 1.12),
+          pin: true,
+          scrub: 0.35,
+          invalidateOnRefresh: true,
+          onRefresh: ({ animation }) => {
+            if (animation) syncScene(animation);
+          },
+        },
+      });
+      animationRef.current = timeline;
+
+      timeline
+        .to(panels, { x: (index) => (index - (panels.length - 1) / 2) * 17, scale: 0.975, duration: 0.34, ease: 'power2.inOut' }, 0)
+        .to(faces, { borderRadius: 14, duration: 0.27, ease: 'power2.out' }, 0.05)
+        .to(cue, { opacity: 0, y: 8, duration: 0.16 }, 0.02)
+        .to(panels, { rotationY: 180, duration: 0.52, stagger: 0.055, ease: 'power2.inOut' }, 0.27)
+        .to(panels, { rotationZ: (index) => (index - (panels.length - 1) / 2) * 1.65, duration: 0.28, ease: 'power2.out' }, 0.49)
+        .to(panels, { rotationZ: 0, scale: 1, duration: 0.26, ease: 'power2.inOut' }, 0.95)
+        .to({}, { duration: 0.18 });
+
+      timeline.eventCallback('onUpdate', () => syncScene(timeline));
+      syncScene(timeline);
+
+      return () => {
+        animationRef.current = null;
+        stage.removeAttribute('data-split-active');
+        stage.removeAttribute('data-split-started');
+        stage.removeAttribute('data-split-revealed');
+      };
+    });
+
+    return () => media.revert();
+  }, []);
+
+  function revealOnFocus() {
+    const animation = animationRef.current;
+    const trigger = animation?.scrollTrigger;
+    if (!trigger || stageRef.current?.hasAttribute('data-split-revealed')) return;
+
+    trigger.scroll(trigger.end);
+    animation.progress(1);
+  }
+
+  function toggleScope(id: string) {
+    setExpandedId((current) => (current === id ? null : id));
+
+    if (!animationRef.current && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      requestAnimationFrame(() => ScrollTrigger.refresh(true));
+    }
+  }
 
   return (
-    <section id="services" data-theme-bg="#F5F3EE" className="relative py-28 sm:py-36 px-6 md:px-12 lg:px-20 text-[#0A0A0A] transition-colors duration-500">
-      <div className="max-w-7xl mx-auto">
-        {/* Editorial Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 pb-8 border-b border-[#0A0A0A]/[0.08]">
-          <div className="flex flex-col space-y-3 max-w-3xl">
-            <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-[#0A0A0A]" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B7280]">
-                Capabilities &bull; What We Deliver
-              </span>
-            </div>
+    <section
+      id="services"
+      aria-labelledby="services-heading"
+      data-theme-bg="#F5F3EE"
+      className="px-6 py-16 text-[#0A0A0A] sm:py-24 md:px-12 lg:px-20 lg:py-28"
+    >
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8 grid gap-4 md:mb-12 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:items-end md:gap-10">
+          <div id="services-heading">
             <TextReveal
               as="h2"
-              className="font-section-heading text-4xl sm:text-5xl lg:text-6xl font-black text-[#0A0A0A] tracking-[-0.03em] leading-[1.05]"
+              className="font-section-heading text-[clamp(2.75rem,6vw,5.5rem)] leading-none font-bold tracking-[-0.045em] [&>div:not(:last-child)]:mr-[0.08em]!"
             >
-              Tailored engineering for every brand scale.
+              What we build
             </TextReveal>
           </div>
-
-          <p className="font-body-ui text-sm sm:text-base text-[#6B7280] font-light leading-relaxed max-w-md">
-            Whether you need a sub-second single-page flagship or an enterprise multi-page headless architecture — every tier is engineered from scratch with zero template bloat.
-          </p>
+          <div>
+            <p className="font-body-ui max-w-[38ch] text-base leading-relaxed text-[#4B5563] sm:text-lg">
+              See what’s included in each service.
+            </p>
+            <a
+              href="#contact"
+              className="group mt-2 inline-flex min-h-10 items-center gap-2 rounded-sm text-sm font-semibold underline decoration-black/30 underline-offset-4 transition-colors hover:text-[#425110] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514]"
+            >
+              Discuss your project
+              <ArrowUpRight size={16} aria-hidden="true" className="text-[#536514] transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+            </a>
+          </div>
         </div>
 
-        {/* Asymmetric 12-Column Grid Flow */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {SERVICES.map((service, index) => {
-            const isExpanded = expandedId === service.id;
-            const style = TIER_STYLES[index % TIER_STYLES.length];
-            // Alternating column span rhythm: 7-5, then 5-7
-            const colSpan = (index === 0 || index === 3) ? 'lg:col-span-7' : 'lg:col-span-5';
+        <div ref={stageRef} className={styles.stage} onFocusCapture={revealOnFocus}>
+          <div data-service-cover aria-hidden="true" className={styles.cover}>
+            <ServiceCoverArtwork />
+          </div>
+          <div className={`${styles.grid} grid gap-3 sm:gap-4 md:grid-cols-2`}>
+            {SERVICES.map((service, index) => {
+              const isExpanded = expandedId === service.id;
+              const isPortfolio = service.id === 'type-3-multipage-cms';
+              const Icon = serviceIcons[service.iconName as keyof typeof serviceIcons] ?? Layout;
+              const titleId = `${service.id}-title`;
+              const scopeId = `${service.id}-scope`;
+              const toggleId = `${service.id}-toggle`;
+              const cardColor = isPortfolio ? 'border-white/12 bg-[#141414] text-[#F5F3EE]' : 'border-black/14 bg-[#FFFEFC]';
+              const muted = isPortfolio ? 'text-[#C5C6BD]' : 'text-[#4B5563]';
+              const divider = isPortfolio ? 'border-white/16' : 'border-black/12';
 
-            return (
-              <div
-                key={service.id}
-                onClick={() => toggleExpand(service.id)}
-                className={`${colSpan} relative p-8 sm:p-10 rounded-[32px] ${style.bg} ${style.text} border ${style.border} shadow-sm hover:shadow-xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer group flex flex-col justify-between`}
-                data-cursor="Details"
-              >
-                {/* Card Header */}
-                <div>
-                  <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-current/10">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-current/5">
-                        {iconMap[service.iconName] || <Layout className="w-5 h-5" />}
-                      </div>
-                      <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] opacity-70">
-                        0{index + 1} // {style.badge}
-                      </span>
+              return (
+                <div key={service.id} data-service-panel className={styles.panel}>
+                  <div data-service-face aria-hidden="true" className={styles.face}>
+                    <div className={styles.slice} style={{ left: `${index * -100}%` }}>
+                      <ServiceCoverArtwork />
                     </div>
-                    {service.tierBadge && (
-                      <span className="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider font-semibold bg-[#C5F52A] text-[#0A0A0A]">
-                        {service.tierBadge}
-                      </span>
-                    )}
                   </div>
-
-                  {/* Title & Subtitle */}
-                  <h3 className="font-section-heading text-2xl sm:text-3xl font-bold tracking-tight leading-snug">
-                    {service.title}
-                  </h3>
-                  <p className={`text-xs font-mono uppercase tracking-wider mt-2 ${style.subtext}`}>
-                    {service.subtitle}
-                  </p>
-
-                  {/* Description */}
-                  <p className={`mt-4 font-body-ui text-sm sm:text-base font-light leading-relaxed ${style.subtext}`}>
-                    {service.description}
-                  </p>
-
-                  {/* Expandable Deliverables List */}
-                  <div
-                    className={`overflow-hidden transition-all duration-400 ease-out ${
-                      isExpanded ? 'max-h-96 opacity-100 mt-6 pt-6 border-t border-current/10' : 'max-h-0 opacity-0'
-                    }`}
+                  <article
+                    aria-labelledby={titleId}
+                    data-scope-open={isExpanded ? '' : undefined}
+                    className={`${styles.card} group relative flex min-w-0 flex-col rounded-xl border px-5 pt-5 pb-2 sm:px-7 sm:pt-7 sm:pb-3 lg:px-9 lg:pt-9 ${cardColor}`}
                   >
-                    <span className="text-[11px] uppercase font-mono tracking-widest font-bold block mb-3 opacity-90">
-                      Deliverable Scope:
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {service.deliverables.map((item, i) => (
-                        <div key={i} className="flex items-start gap-2 text-xs font-body-ui opacity-80">
-                          <Check className="w-3.5 h-3.5 text-[#C5F52A] shrink-0 mt-0.5" />
-                          <span>{item}</span>
-                        </div>
-                      ))}
+                    <div className={`${styles.cardMain} flex-1 pb-5 sm:pb-7`}>
+                      <div className={`${styles.cardHeader} flex items-start justify-between gap-3 sm:gap-5`}>
+                        <h3 id={titleId} className={`${styles.title} font-section-heading max-w-[21ch] text-[clamp(1.75rem,3.1vw,3rem)] leading-[1.03] font-bold tracking-[-0.035em] text-balance`}>
+                          {service.title}
+                        </h3>
+                        <span
+                          aria-hidden="true"
+                          className={`grid size-10 shrink-0 place-items-center rounded-lg sm:size-12 ${isPortfolio ? 'bg-[#C5F52A] text-[#0A0A0A]' : 'bg-[#EFEEE8] text-[#536514]'}`}
+                        >
+                          <Icon size={21} strokeWidth={1.7} />
+                        </span>
+                      </div>
+                      <p className={`${styles.description} font-body-ui mt-3 max-w-[46ch] text-base leading-relaxed sm:mt-4 ${muted}`}>
+                        {service.description}
+                      </p>
                     </div>
-                  </div>
-                </div>
 
-                {/* Card Footer */}
-                <div className="pt-6 mt-6 border-t border-current/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex flex-wrap gap-1.5">
-                    {service.tags.slice(0, 3).map((tag, i) => (
-                      <span
-                        key={i}
-                        className={`px-2.5 py-0.5 rounded-full border text-[10px] font-mono tracking-wide ${style.tagBg}`}
+                    <div className={`${styles.details} border-t ${divider}`}>
+                      <button
+                        id={toggleId}
+                        type="button"
+                        aria-expanded={isExpanded}
+                        aria-controls={scopeId}
+                        aria-labelledby={`${toggleId} ${titleId}`}
+                        data-cursor="Details"
+                        onClick={() => toggleScope(service.id)}
+                        className={`font-body-ui flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 rounded-md text-left text-sm font-bold ${isExpanded ? '' : 'after:absolute after:inset-0 after:rounded-xl'}`}
                       >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold tracking-wider shrink-0">
-                    <TextRoll center>{isExpanded ? 'Collapse Scope' : 'View Full Scope'}</TextRoll>
-                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-                  </div>
+                        {isExpanded ? 'Hide scope' : 'View scope'}
+                        <span className={`grid size-8 shrink-0 place-items-center rounded-full border transition-colors group-hover:border-[#C5F52A] group-hover:bg-[#C5F52A] group-hover:text-[#0A0A0A] group-focus-within:border-[#C5F52A] group-focus-within:bg-[#C5F52A] group-focus-within:text-[#0A0A0A] ${isExpanded ? 'border-[#C5F52A] bg-[#C5F52A] text-[#0A0A0A]' : divider}`}>
+                          <Plus
+                            size={16}
+                            aria-hidden="true"
+                            className={`transition-transform duration-300 motion-reduce:transition-none ${isExpanded ? 'rotate-45' : ''}`}
+                          />
+                        </span>
+                      </button>
+                      <div
+                        id={scopeId}
+                        aria-hidden={!isExpanded}
+                        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                        onTransitionEnd={(event) => {
+                          if (!animationRef.current && event.target === event.currentTarget && event.propertyName === 'grid-template-rows') {
+                            ScrollTrigger.refresh(true);
+                          }
+                        }}
+                      >
+                        <div className="min-h-0 overflow-hidden">
+                          <ul data-lenis-prevent className={`${styles.scopeList} grid gap-x-5 gap-y-2.5 pt-2 pb-5 xl:grid-cols-2 ${muted}`}>
+                            {service.deliverables.map((item) => (
+                              <li key={item} className="font-body-ui flex items-start gap-2 text-sm leading-snug">
+                                <Check size={15} aria-hidden="true" className={`mt-0.5 shrink-0 ${isPortfolio ? 'text-[#C5F52A]' : 'text-[#536514]'}`} />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+          <p data-service-cue className={`${styles.cue} font-body-ui text-sm font-semibold text-[#4B5563]`}>Scroll to reveal the services</p>
         </div>
       </div>
     </section>
   );
-};
+}

@@ -1,74 +1,86 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Select } from '@base-ui/react/select';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { MagneticButton } from '@/components/animations/MagneticButton';
-import { TextRoll } from '@/components/animations/TextRoll';
-import { Send, CheckCircle2, AlertCircle, Loader2, ChevronDown, Check } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-
+import { AlertCircle, ArrowUpRight, Check, ChevronDown, Loader2 } from 'lucide-react';
 import Lottie from 'lottie-react';
 import contactFormAnimation from '../../../public/contact-form.json';
 
 const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  company: z.string().optional(),
-  budget: z.string().min(1, 'Please select a package tier'),
-  message: z.string().min(10, 'Project description must be at least 10 characters'),
+  name: z.string().trim().min(2, 'Enter your name.'),
+  email: z.string().trim().email('Enter a valid email address.'),
+  company: z.string().trim().optional(),
+  budget: z.string().min(1, 'Choose a project type.'),
+  message: z.string().trim().min(10, 'Share a little more about your project.'),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-const BUDGET_OPTIONS = [
-  { label: 'Single-Page Flagship (3–5 Days)', value: 'Single-Page Flagship' },
-  { label: 'Dynamic CMS Studio (7–10 Days)', value: 'Dynamic CMS Studio' },
-  { label: 'Multi-Page Spatial Platform (10–14 Days)', value: 'Multi-Page Spatial Platform' },
-  { label: 'Custom Web Application (Bespoke Timeline)', value: 'Custom Web Application' },
+const PROJECT_TYPES = [
+  { label: 'Single-page website', value: 'Single-Page Flagship' },
+  { label: 'Website with a CMS', value: 'Dynamic CMS Studio' },
+  { label: 'Multi-page studio website', value: 'Multi-Page Spatial Platform' },
+  { label: 'Custom web application', value: 'Custom Web Application' },
 ];
 
-export const ContactForm: React.FC = () => {
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedBudget, setSelectedBudget] = useState(BUDGET_OPTIONS[0]);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+const fieldClassName =
+  'font-body-ui block min-h-14 w-full rounded-[0.65rem] border-0 bg-[#FFFEFC] px-4 py-3.5 text-base text-[#0A0A0A] placeholder:text-[#676B60] focus-visible:outline-none! focus-visible:shadow-[inset_0_-2px_0_#42453D]! forced-colors:focus-visible:[outline:2px_solid_CanvasText]!';
 
+interface FieldProps {
+  name: keyof ContactFormData;
+  label: string;
+  optional?: boolean;
+  error?: string;
+  children: ReactNode;
+}
+
+function Field({ name, label, optional, error, children }: FieldProps) {
+  return (
+    <div className="min-w-0 space-y-2">
+      <label id={`contact-${name}-label`} htmlFor={`contact-${name}`} className="font-section-heading flex items-baseline justify-between gap-2 text-[0.9375rem] font-bold">
+        {label}
+        {optional && <span className="font-body-ui text-xs font-normal text-[#595E54]">Optional</span>}
+      </label>
+      {children}
+      {error && <p id={`contact-${name}-error`} className="font-body-ui text-sm text-[#962D26]">{error}</p>}
+    </div>
+  );
+}
+
+export function ContactForm() {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const submitting = useRef(false);
+  const successHeading = useRef<HTMLHeadingElement>(null);
   const {
+    control,
     register,
     handleSubmit,
-    setValue,
     reset,
+    setFocus,
     formState: { errors },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
-    defaultValues: {
-      budget: BUDGET_OPTIONS[0].value,
-    },
+    defaultValues: { budget: '' },
   });
 
-  // Close custom dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (status === 'success') successHeading.current?.focus();
+  }, [status]);
 
-  const handleSelectOption = (option: typeof BUDGET_OPTIONS[0]) => {
-    setSelectedBudget(option);
-    setValue('budget', option.value, { shouldValidate: true });
-    setDropdownOpen(false);
-  };
+  const fieldProps = (name: keyof ContactFormData) => ({
+    ...register(name),
+    id: `contact-${name}`,
+    'aria-invalid': Boolean(errors[name]),
+    'aria-describedby': errors[name] ? `contact-${name}-error` : undefined,
+  });
 
   const onSubmit = async (data: ContactFormData) => {
-    setStatus('submitting');
-    setErrorMessage('');
+    if (submitting.current) return;
+    submitting.current = true;
+    setStatus('sending');
 
     try {
       const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID || 'mdaqlpza';
@@ -82,229 +94,156 @@ export const ContactForm: React.FC = () => {
       });
 
       if (response.ok) {
-        setStatus('success');
         reset();
+        setStatus('success');
       } else {
-        throw new Error('Failed to submit form. Please try again later.');
+        setStatus('error');
       }
-    } catch (err: unknown) {
-      console.error('Form submission error:', err);
+    } catch {
       setStatus('error');
-      setErrorMessage((err as Error).message || 'An error occurred during submission.');
+    } finally {
+      submitting.current = false;
     }
   };
 
   return (
-    <div id="contact" className="w-full max-w-2xl mx-auto p-7 sm:p-10 rounded-[1.25rem] bg-[#151513] border border-white/[0.12] shadow-[0_24px_80px_rgba(10,10,10,0.18)] space-y-8">
-      <div>
-        <h3 className="font-section-heading text-2xl sm:text-3xl font-bold text-white tracking-[-0.01em]">
-          Initiate Project Inquiry
+    <div
+      id="contact"
+      className="min-w-0 scroll-mt-8 text-[#0A0A0A] lg:pt-5"
+    >
+      <div className="mb-6 sm:mb-7">
+        <h3 id="project-inquiry-heading" className="font-section-heading text-2xl leading-none font-bold tracking-[-0.025em] sm:text-3xl">
+          Project inquiry
         </h3>
-        <p className="font-body-ui text-sm text-[#9CA3AF] mt-2 font-light">
-          Tell me about your brand vision, target launch timeline, and package preference.
-        </p>
       </div>
 
       {status === 'success' ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center py-6 text-center relative overflow-hidden"
-        >
-          {/* Paper plane Lottie animation with flight path matching reference */}
-          <motion.div
-            animate={{ 
-              x: [0, -15, 400, 1200],
-              y: [0, 15, -400, -1200],
-              scale: [1, 1.05, 0.7, 0.3],
-              opacity: [1, 1, 0.8, 0]
+        <div className="flex min-h-60 flex-col items-start justify-center gap-4 py-4">
+          <div aria-hidden="true" className="size-16 motion-reduce:hidden">
+            <Lottie animationData={contactFormAnimation} loop={false} className="size-full" />
+          </div>
+          <div>
+            <h4 ref={successHeading} tabIndex={-1} className="font-section-heading text-2xl font-bold">Inquiry sent</h4>
+            <p className="font-body-ui mt-2 text-sm text-[#4B5563]">Thanks for sharing your project. We’ll be in touch by email.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setStatus('idle');
+              requestAnimationFrame(() => setFocus('name'));
             }}
-            transition={{
-              delay: 1.5,
-              duration: 1.2,
-              ease: [0.25, 0.1, 0.25, 1]
-            }}
-            className="w-48 h-48 sm:w-56 sm:h-56 mx-auto"
+            className="font-body-ui cursor-pointer rounded-sm text-sm font-bold text-[#425110] underline underline-offset-4 hover:text-[#0A0A0A] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514]"
           >
-            <Lottie
-              animationData={contactFormAnimation}
-              loop={false}
-              className="w-full h-full"
-            />
-          </motion.div>
-          
-          {/* Staggered text reveal after flight animation */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.2, duration: 0.5 }}
-            className="space-y-4 mt-2"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C5F52A]/10 border border-[#C5F52A]/30 text-[#C5F52A] font-mono text-xs font-semibold uppercase tracking-wider">
-              <CheckCircle2 className="w-4 h-4 text-[#C5F52A]" />
-              <span>INQUIRY DELIVERED</span>
-            </div>
-
-            <h3 className="font-section-heading text-3xl sm:text-4xl font-bold text-white tracking-tight">Message Sent!</h3>
-            <p className="font-body-ui text-sm sm:text-base text-[#9CA3AF] max-w-md mx-auto font-light leading-relaxed">
-              Thank you for reaching out. The paper plane has left the hangar, and I'll review your project requirements and respond within 24 hours!
-            </p>
-
-            <div className="pt-3">
-              <button
-                onClick={() => setStatus('idle')}
-                className="px-6 py-2.5 rounded-full bg-white/10 border border-white/15 text-xs font-mono text-white hover:bg-[#C5F52A] hover:text-[#0A0A0A] hover:border-[#C5F52A] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-lg active:scale-90"
-              >
-                Send Another Inquiry
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
+            Send another inquiry
+          </button>
+        </div>
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Hidden input for RHF validation */}
-          <input type="hidden" {...register('budget')} />
+        <form
+          aria-labelledby="project-inquiry-heading"
+          aria-busy={status === 'sending'}
+          noValidate
+          onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+          className="space-y-5 sm:space-y-6"
+        >
+          <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2 sm:gap-y-6">
+            <Field name="name" label="Full name" error={errors.name?.message}>
+              <input {...fieldProps('name')} autoComplete="name" required placeholder="Your name" className={fieldClassName} />
+            </Field>
 
-          {/* Name & Email Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
-                YOUR NAME *
-              </label>
-              <input
-                {...register('name')}
-                placeholder="Ananya Singhania"
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              />
-              {errors.name && (
-                <p className="text-xs text-red-400 font-mono">{errors.name.message}</p>
-              )}
-            </div>
+            <Field name="email" label="Email address" error={errors.email?.message}>
+              <input {...fieldProps('email')} type="email" autoComplete="email" required placeholder="you@studio.com" className={fieldClassName} />
+            </Field>
 
-            <div className="space-y-2">
-              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
-                EMAIL ADDRESS *
-              </label>
-              <input
-                {...register('email')}
-                type="email"
-                placeholder="ananya@brand.in"
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              />
-              {errors.email && (
-                <p className="text-xs text-red-400 font-mono">{errors.email.message}</p>
-              )}
-            </div>
-          </div>
+            <Field name="company" label="Company" optional error={errors.company?.message}>
+              <input {...fieldProps('company')} autoComplete="organization" placeholder="Studio or business name" className={fieldClassName} />
+            </Field>
 
-          {/* Company & Custom Dropdown Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
-                COMPANY / ORGANISATION
-              </label>
-              <input
-                {...register('company')}
-                placeholder="Vedic Couture / ZenoPay"
-                className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              />
-            </div>
-
-            {/* Custom Stylish Dropdown */}
-            <div className="space-y-2 relative" ref={dropdownRef}>
-              <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
-                PACKAGE & SERVICE TIER *
-              </label>
-
-              {/* Trigger Button */}
-              <button
-                type="button"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className={`w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border text-left flex items-center justify-between text-xs sm:text-sm font-body-ui transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                  dropdownOpen ? 'border-[#C5F52A] ring-1 ring-[#C5F52A] text-white -translate-y-0.5' : 'border-white/10 text-white hover:border-white/25'
-                }`}
-              >
-                <span className="truncate pr-2 font-medium">{selectedBudget.label}</span>
-                <ChevronDown className={`w-4 h-4 text-[#C5F52A] shrink-0 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Dropdown Options Popover */}
-              <AnimatePresence>
-                {dropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                    transition={{ duration: 0.15, ease: 'easeOut' }}
-                    className="absolute top-full left-0 right-0 mt-2 z-50 p-1.5 rounded-2xl bg-[#1A1A1A] border border-white/15 shadow-2xl space-y-1"
+            <Field name="budget" label="Project type" error={errors.budget?.message}>
+              <Controller
+                name="budget"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Select.Root
+                    name={field.name}
+                    items={PROJECT_TYPES}
+                    value={field.value || null}
+                    onValueChange={(value) => field.onChange(value ?? '')}
+                    modal={false}
+                    required
                   >
-                    {BUDGET_OPTIONS.map((opt) => {
-                      const isSelected = selectedBudget.value === opt.value;
-                      return (
-                        <div
-                          key={opt.value}
-                          onClick={() => handleSelectOption(opt)}
-                          className={`flex items-center justify-between px-3.5 py-3 rounded-xl cursor-pointer text-xs font-mono transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-x-1 ${
-                            isSelected
-                              ? 'bg-[#C5F52A] text-[#0A0A0A] font-bold'
-                              : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'
-                          }`}
-                        >
-                          <span className="truncate pr-2">{opt.label}</span>
-                          {isSelected && <Check className="w-4 h-4 text-[#0A0A0A] shrink-0" />}
-                        </div>
-                      );
-                    })}
-                  </motion.div>
+                    <Select.Trigger
+                      id="contact-budget"
+                      ref={field.ref}
+                      onBlur={field.onBlur}
+                      aria-labelledby="contact-budget-label"
+                      aria-invalid={fieldState.invalid}
+                      aria-describedby={fieldState.error ? 'contact-budget-error' : undefined}
+                      className={`${fieldClassName} group relative cursor-pointer pr-11 text-left data-placeholder:text-[#676B60]`}
+                    >
+                      <Select.Value placeholder="Choose a project type" />
+                      <ChevronDown size={17} aria-hidden="true" className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#536514] transition-transform group-data-popup-open:rotate-180" />
+                    </Select.Trigger>
+                    <Select.Portal>
+                      <Select.Positioner align="start" sideOffset={7} alignItemWithTrigger={false} className="z-[60]">
+                        <Select.Popup className="w-[var(--anchor-width)] origin-[var(--transform-origin)] rounded-xl bg-[#FFFEFC] p-1.5 shadow-[0_7px_24px_rgba(10,10,10,0.16)] transition-[opacity,translate] duration-150 ease-out data-starting-style:-translate-y-1 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none">
+                          <Select.List data-lenis-prevent className="max-h-[calc(var(--available-height)-0.75rem)] overflow-y-auto overscroll-contain">
+                            {PROJECT_TYPES.map(({ label, value }) => (
+                              <Select.Item
+                                key={value}
+                                value={value}
+                                className="font-body-ui grid min-h-11 cursor-pointer grid-cols-[minmax(0,1fr)_1rem] items-center gap-2 rounded-md px-3 py-2 text-sm text-[#0A0A0A] outline-none data-highlighted:bg-[#EFEEE8] data-selected:bg-[#EEF6D4] sm:text-base"
+                              >
+                                <Select.ItemText>{label}</Select.ItemText>
+                                <Select.ItemIndicator className="text-[#536514]">
+                                  <Check size={16} aria-hidden="true" />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+                            ))}
+                          </Select.List>
+                        </Select.Popup>
+                      </Select.Positioner>
+                    </Select.Portal>
+                  </Select.Root>
                 )}
-              </AnimatePresence>
-            </div>
+              />
+            </Field>
           </div>
 
-          {/* Message textarea */}
-          <div className="space-y-2">
-            <label className="text-xs font-mono uppercase tracking-[0.08em] text-[#9CA3AF] block">
-              PROJECT OVERVIEW & GOALS *
-            </label>
+          <Field name="message" label="About your project" error={errors.message?.message}>
             <textarea
-              {...register('message')}
+              {...fieldProps('message')}
               rows={4}
-              placeholder="Describe your brand, desired launch timeline, custom animation ideas, or specific technical requirements..."
-              className="w-full px-4 py-3.5 rounded-xl bg-[#0A0A0A] border border-white/10 text-white font-body-ui text-sm focus:border-[#C5F52A] focus:ring-1 focus:ring-[#C5F52A] focus:-translate-y-0.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] resize-none"
+              required
+              placeholder="Tell us what you’d like to build and when you’d like it ready."
+              className={`${fieldClassName} min-h-32 resize-y`}
             />
-            {errors.message && (
-              <p className="text-xs text-red-400 font-mono">{errors.message.message}</p>
-            )}
-          </div>
+          </Field>
 
           {status === 'error' && (
-            <div className="flex items-center gap-2 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400 font-mono">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
+            <p role="alert" className="font-body-ui flex items-start gap-2 rounded-lg border border-[#962D26]/25 bg-[#FFFEFC] px-3 py-2.5 text-sm text-[#962D26]">
+              <AlertCircle size={16} aria-hidden="true" className="mt-0.5 shrink-0" />
+              Your inquiry couldn’t be sent. Please try again.
+            </p>
           )}
 
-          <MagneticButton
-            variant="primary"
-            size="lg"
-            type="submit"
-            disabled={status === 'submitting'}
-            className="w-full"
-          >
-            {status === 'submitting' ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>SUBMITTING INQUIRY...</span>
-              </>
-            ) : (
-              <>
-                <TextRoll center>SEND PROJECT INQUIRY</TextRoll>
-                <Send className="w-4 h-4 ml-1" />
-              </>
-            )}
-          </MagneticButton>
+          <div className="flex justify-end border-t border-black/16 pt-5 sm:pt-6">
+            <button
+              type="submit"
+              disabled={status === 'sending'}
+              className="group font-section-heading flex min-h-13 w-full cursor-pointer items-center justify-between gap-5 rounded-full border border-[#6D8718] bg-[#C5F52A] py-2.5 pr-2.5 pl-5 text-base font-bold text-[#0A0A0A] transition-colors hover:bg-[#D6FA70] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514] disabled:cursor-wait disabled:opacity-75 sm:w-auto"
+            >
+              {status === 'sending' ? 'Sending inquiry' : 'Send inquiry'}
+              <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] text-[#C5F52A]">
+                {status === 'sending' ? (
+                  <Loader2 size={16} className="motion-safe:animate-spin" />
+                ) : (
+                  <ArrowUpRight size={17} className="transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+                )}
+              </span>
+            </button>
+          </div>
         </form>
       )}
     </div>
   );
-};
+}
