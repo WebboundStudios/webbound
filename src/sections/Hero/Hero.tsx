@@ -98,18 +98,19 @@ export const Hero: React.FC = () => {
             <div className="@container" style={{ perspective: '800px' }}>
               <h1
                 ref={headlineRef}
-                className="font-hero-display text-[clamp(1rem,7.85cqw,4.5rem)] font-black tracking-[-0.035em] [word-spacing:0.09em] text-[#0A0A0A] leading-[0.98] min-[295px]:whitespace-nowrap"
-                aria-label="Websites for architects and interior designers"
+                className="font-hero-display text-[clamp(1rem,8.25cqw,4.75rem)] font-black tracking-[-0.035em] [word-spacing:0.09em] text-[#0A0A0A] leading-[0.95] min-[295px]:whitespace-nowrap"
+                aria-label="Digital platforms built for longevity."
                 data-cursor="Explore"
               >
-                <span className="block" aria-hidden="true">
-                  <span data-headline-part>WEBSITES</span>{' '}
-                  <span className="inline-block -rotate-1 rounded-lg bg-[#0A0A0A] px-[0.14em] py-0.5 text-[#C5F52A]" data-headline-accent>
-                    FOR
+                <span className="block" data-headline-part aria-hidden="true">DIGITAL PLATFORMS</span>{' '}
+                <span className="mt-[0.1em] block" aria-hidden="true">
+                  <span className="inline-block align-middle" data-headline-accent>
+                    <TextRoll center className="text-[#C5F52A] bg-[#0A0A0A] px-[0.14em] py-0.5 rounded-lg -rotate-1 shadow-sm">
+                      BUILT
+                    </TextRoll>
                   </span>{' '}
-                </span>{' '}
-                <span className="mt-[0.1em] block" data-headline-part aria-hidden="true">ARCHITECTS &amp;</span>{' '}
-                <span className="mt-[0.1em] block" data-headline-part aria-hidden="true">INTERIOR DESIGNERS.</span>
+                  <span className="inline-block align-middle" data-headline-part>FOR LONGEVITY.</span>
+                </span>
               </h1>
             </div>
 
