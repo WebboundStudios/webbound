@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { motion, MotionValue, useScroll, useTransform } from 'framer-motion';
 
 const defaultImages = [
@@ -74,15 +75,17 @@ type ColumnProps = {
 const Column = ({ images, y }: ColumnProps) => {
   return (
     <motion.div
-      className="relative flex min-w-0 flex-1 flex-col gap-2.5 sm:gap-4 -mt-36 sm:-mt-52 md:-mt-64"
+      className="relative -my-36 flex min-w-0 flex-1 flex-col gap-2.5 sm:-my-52 sm:gap-4 md:-my-64"
       style={{ y }}
     >
       {images.map((src, i) => (
-        <div key={i} className="relative h-40 sm:h-56 md:h-64 w-full overflow-hidden rounded-xl border border-white/10 shadow-xl shrink-0">
-          <img
+        <div key={i} className="relative min-h-40 w-full flex-1 overflow-hidden rounded-xl border border-white/10 bg-[#252820] shadow-xl sm:min-h-56 md:min-h-64">
+          <Image
             src={src}
-            alt="Parallax Showcase"
-            className="pointer-events-none w-full h-full object-cover"
+            alt=""
+            fill
+            unoptimized
+            className="pointer-events-none object-cover"
           />
         </div>
       ))}

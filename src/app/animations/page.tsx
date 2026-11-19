@@ -3,7 +3,7 @@
 import { useId, useState } from 'react';
 import Link from 'next/link';
 import { MotionConfig, useReducedMotion } from 'framer-motion';
-import { ArrowDown, ArrowLeft, ArrowUpRight, Maximize2, Pause, Play, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Maximize2, Pause, Play, RotateCcw } from 'lucide-react';
 import { Navbar } from '@/components/common/Navbar';
 import { CustomCursor } from '@/components/common/CustomCursor';
 import { Footer } from '@/sections/Footer/Footer';
@@ -21,7 +21,7 @@ import {
 import styles from './MotionLab.module.css';
 
 const filters = {
-  all: 'All effects',
+  all: 'All',
   ...EFFECT_CATEGORIES,
 };
 
@@ -118,28 +118,13 @@ export default function AnimationsLabPage() {
               Studio home
             </Link>
 
-            <div className={styles.heroGrid}>
-              <div className={styles.heroCopy}>
-                <h1 className="font-hero-display text-[clamp(3.5rem,8.3vw,8rem)] leading-[0.9] font-bold tracking-[-0.06em]">
-                  Motion Lab<span className={styles.headingDot} aria-hidden="true">.</span>
-                </h1>
-                <p className="font-body-ui mt-5 max-w-[32ch] text-base leading-relaxed text-[#4d4e46] sm:mt-6 sm:text-lg">
-                  Try kinetic type, magnetic buttons, and scroll-driven motion.
-                </p>
-                <a href="#experiments" className={styles.browseLink}>
-                  Explore the effects <ArrowDown size={16} aria-hidden="true" />
-                </a>
-              </div>
-
-              <div className={styles.heroArt} aria-hidden="true">
-                <div className={styles.orbitField}>
-                  <span className={styles.orbit} />
-                  <span className={styles.orbit} />
-                  <span className={styles.orbit} />
-                  <span className={styles.orbit} />
-                  <span className={styles.orbitCore} />
-                </div>
-              </div>
+            <div className={styles.heroIntro}>
+              <h1 className={`font-hero-display ${styles.heroTitle}`}>
+                Motion Lab<span className={styles.headingDot} aria-hidden="true">.</span>
+              </h1>
+              <p className="font-body-ui max-w-[29ch] text-base leading-relaxed text-[#4d4e46] sm:text-lg">
+                Try kinetic type, magnetic buttons, and scroll-driven motion.
+              </p>
             </div>
           </header>
 

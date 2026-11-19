@@ -8,11 +8,10 @@
 }
 
 .hero {
-  padding-block: clamp(1.5rem, 4.5vw, 3.25rem) clamp(2.25rem, 5vw, 4.25rem);
+  padding-block: clamp(0.875rem, 3vw, 2rem) clamp(1.5rem, 4.25vw, 3.75rem);
 }
 
 .backLink,
-.browseLink,
 .previewButton,
 .contactLink,
 .stageControl {
@@ -35,150 +34,32 @@
   color: var(--lab-ink);
 }
 
-.heroGrid {
-  display: grid;
-  align-items: center;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  margin-top: clamp(1rem, 3vw, 2.5rem);
+.heroIntro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  column-gap: 2rem;
+  row-gap: clamp(0.85rem, 2.7vw, 1.5rem);
+  margin-top: clamp(0.875rem, 3.5vw, 3.25rem);
 }
 
-.heroCopy {
-  min-width: 0;
+.heroTitle {
+  font-size: clamp(2.75rem, 8.25vw, 7.875rem);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.044em;
+  word-spacing: 0.08em;
 }
 
 .headingDot {
   color: #58710f;
 }
 
-.browseLink {
-  margin-top: 1.375rem;
-  padding-inline: 1rem;
-  border: 1px solid var(--lab-line);
-  border-radius: 999px;
-}
-
-.browseLink:hover,
 .previewButton:hover {
   border-color: var(--lab-ink);
   background: var(--lab-ink);
   color: #fff;
-}
-
-.heroArt {
-  display: grid;
-  position: relative;
-  isolation: isolate;
-  place-items: center;
-  min-height: clamp(10rem, 24vw, 21rem);
-  overflow: hidden;
-  border: 1px solid #252b1c;
-  border-radius: 1.25rem;
-  background:
-    radial-gradient(ellipse at 50% 50%, #2b3716 0%, #161b10 48%, transparent 78%),
-    #10120f;
-}
-
-.heroArt::before,
-.heroArt::after {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  content: '';
-}
-
-.heroArt::before {
-  background: radial-gradient(circle, rgb(216 241 164 / 30%) 1px, transparent 1.4px) center / 17px 17px;
-  mask-image: radial-gradient(ellipse, #000, transparent 75%);
-}
-
-.heroArt::after {
-  inset: 0.75rem;
-  border: 1px solid rgb(231 246 205 / 13%);
-  border-radius: 0.8rem;
-  background: linear-gradient(90deg, transparent calc(50% - 0.5px), #d3e4aa1e 50%, transparent calc(50% + 0.5px));
-}
-
-.orbitField {
-  display: grid;
-  place-items: center;
-  width: min(85%, clamp(14rem, 29vw, 24rem));
-  aspect-ratio: 1.5;
-  animation: orbit-entrance 1.5s cubic-bezier(0.15, 0.7, 0.2, 1) both;
-}
-
-.orbit {
-  grid-area: 1 / 1;
-  position: relative;
-  width: 91%;
-  height: 40%;
-  border: 1px solid #d6f97b;
-  border-radius: 50%;
-  transform: rotate(var(--angle));
-  box-shadow: 0 0 12px #c5f52a30, inset 0 0 10px #c5f52a21;
-}
-
-.orbit::after {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 0.48rem;
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: #f7ffde;
-  box-shadow: 0 0 14px 3px #c5f52a80;
-  content: '';
-}
-
-.orbit:nth-child(1) {
-  --angle: -27deg;
-}
-
-.orbit:nth-child(2) {
-  --angle: 28deg;
-  width: 94%;
-  height: 48%;
-  border-color: #c6ed6780;
-}
-
-.orbit:nth-child(2)::after {
-  right: 0;
-  left: auto;
-  translate: 50% -50%;
-}
-
-.orbit:nth-child(3) {
-  --angle: 82deg;
-  width: 68%;
-  border-color: #c6ed6780;
-}
-
-.orbit:nth-child(4) {
-  --angle: 0deg;
-  width: 74%;
-  height: 74%;
-  border-color: #c6ed6740;
-  box-shadow: none;
-}
-
-.orbit:nth-child(4)::after {
-  display: none;
-}
-
-.orbitCore {
-  grid-area: 1 / 1;
-  width: clamp(1.1rem, 2.4vw, 1.875rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle at 37% 30%, #f7ffdf 0%, #dcfa8a 28%, #a9c941 61%, #546622 100%);
-  box-shadow: 0 0 2.25rem 0.2rem #c5f52a80;
-}
-
-@keyframes orbit-entrance {
-  from {
-    opacity: 0;
-    transform: scale(0.82) rotate(-17deg);
-  }
 }
 
 .gallery {
@@ -392,13 +273,13 @@
     order: 1;
     width: 100%;
   }
+
+  .filters button {
+    padding-inline: 0.68rem;
+  }
 }
 
 @media (min-width: 42rem) {
-  .heroGrid {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  }
-
   .effectGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -411,7 +292,10 @@
 @media (min-width: 60rem) {
   .cardDetails {
     flex-direction: row;
-    align-items: flex-end;
+  }
+
+  .previewButton {
+    align-self: flex-end;
   }
 
   .effectCard:has(.stage[data-effect='parallax-gallery']) {
@@ -421,14 +305,11 @@
 
   .effectCard:has(.stage[data-effect='parallax-gallery']) .cardDetails {
     flex-direction: column;
-    align-items: flex-start;
     justify-content: center;
     padding-inline: clamp(1.5rem, 3vw, 3rem);
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .orbitField {
-    animation: none;
+  .effectCard:has(.stage[data-effect='parallax-gallery']) .previewButton {
+    align-self: flex-start;
   }
 }
