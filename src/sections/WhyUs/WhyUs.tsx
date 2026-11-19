@@ -1,10 +1,4 @@
-'use client';
-
-import { useLayoutEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+import type { CSSProperties } from 'react';
 
 const benefits = [
   {
@@ -55,102 +49,6 @@ const benefits = [
 ];
 
 export function WhyUs() {
-  const sceneRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const scene = sceneRef.current;
-    const spacer = scene?.parentElement;
-    const stack = scene?.querySelector<HTMLElement>('.card-stack');
-    if (!scene || !spacer || !stack) return;
-
-    const cards = Array.from(stack.querySelectorAll<HTMLElement>('.card-stack__item'));
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let context: gsap.Context | null = null;
-    let frame = 0;
-
-    const reset = () => {
-      context?.revert();
-      context = null;
-      cards.forEach((card) => card.style.removeProperty('transform'));
-      scene.removeAttribute('data-stack-pinned');
-    };
-
-    const update = () => {
-      const wasPinned = !!context;
-      if (reducedMotion.matches) {
-        reset();
-        if (wasPinned) ScrollTrigger.refresh();
-        return;
-      }
-
-      scene.setAttribute('data-stack-pinned', '');
-      const style = getComputedStyle(scene);
-      const contentHeight = stack.offsetHeight + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
-
-      if (contentHeight > window.innerHeight + 1) {
-        reset();
-        if (wasPinned) ScrollTrigger.refresh();
-        return;
-      }
-
-      if (!context) {
-        context = gsap.context(() => {
-          const peek = () => gsap.utils.clamp(8, window.innerWidth < 768 ? 10 : 14, window.innerHeight * 0.015);
-          const timeline = gsap.timeline({
-            defaults: { duration: 0.76, ease: 'power1.inOut' },
-            scrollTrigger: {
-              id: 'why-us-stack',
-              trigger: scene,
-              start: 'top top',
-              end: () => '+=' + Math.round((cards.length - 1) * Math.max(320, window.innerHeight * 0.72)),
-              pin: true,
-              pinSpacer: spacer,
-              pinSpacing: true,
-              scrub: true,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-            },
-          });
-
-          cards.slice(1).forEach((card, index) => {
-            const position = index + 0.24;
-            timeline.fromTo(card, { y: () => window.innerHeight }, { y: 0, immediateRender: true }, position);
-
-            cards.slice(0, index + 1).forEach((previous, previousIndex) => {
-              const depth = index + 1 - previousIndex;
-              timeline.to(previous, { y: () => -depth * peek(), scale: 1 - depth * 0.025 }, position);
-            });
-          });
-
-          // Reserve scroll distance for the final card once the stack settles.
-          timeline.to({}, { duration: 0.28 });
-        }, scene);
-      }
-      ScrollTrigger.refresh();
-    };
-
-    const schedule = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        update();
-      });
-    };
-    const observer = new ResizeObserver(schedule);
-    observer.observe(stack);
-    window.addEventListener('resize', schedule);
-    reducedMotion.addEventListener('change', update);
-    update();
-
-    return () => {
-      window.removeEventListener('resize', schedule);
-      reducedMotion.removeEventListener('change', update);
-      observer.disconnect();
-      cancelAnimationFrame(frame);
-      reset();
-    };
-  }, []);
-
   return (
     <section id="why-us" aria-labelledby="why-us-heading" data-theme-bg="#F5F3EE" className="relative bg-[#F5F3EE] pt-24 text-[#0A0A0A]">
       <div className="mx-auto mb-9 max-w-7xl px-4 text-center sm:mb-12 sm:px-8 md:px-12">
@@ -163,11 +61,15 @@ export function WhyUs() {
         </h2>
       </div>
 
-      <div>
-        <div ref={sceneRef} className="card-stack-scene bg-[#F5F3EE] px-4 pb-24 sm:px-8 md:px-12">
-          <div className="card-stack">
-            {benefits.map(({ label, title, description, details }, index) => (
-              <article key={label} aria-labelledby={'why-us-card-' + index} className="card-stack__item">
+      <div className="px-4 pb-24 sm:px-8 md:px-12">
+        <div className="card-stack">
+          {benefits.map(({ label, title, description, details }, index) => (
+            <article
+              key={label}
+              aria-labelledby={'why-us-card-' + index}
+              className="card-stack__item"
+              style={{ '--card-offset': `${index * 12}px` } as CSSProperties}
+            >
                 <header className="font-body-ui flex items-center justify-between gap-4 border-b border-black/15 pb-3.5 text-sm font-semibold sm:pb-5">
                   <span>{label}</span>
                   <span className="text-xs font-medium tabular-nums opacity-70" aria-label={'Card ' + (index + 1) + ' of ' + benefits.length}>
@@ -190,9 +92,8 @@ export function WhyUs() {
                     ))}
                   </dl>
                 </div>
-              </article>
-            ))}
-          </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

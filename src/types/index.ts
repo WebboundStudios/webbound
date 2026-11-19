@@ -14,12 +14,14 @@ export interface ServiceItem {
 export interface ProjectItem {
   id: string;
   title: string;
+  focus: 'architecture' | 'interiors';
   category: string;
   year: string;
   description: string;
   client: string;
   impact: string;
   image: string;
+  imageAlt: string;
   coverAspectRatio?: number;
   images?: string[];
   videoUrl?: string;

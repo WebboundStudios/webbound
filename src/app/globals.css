@@ -146,13 +146,14 @@
     background-color: #F5F3EE;
     color: #0A0A0A;
     font-family: var(--font-body), system-ui, sans-serif;
-    overflow-x: hidden;
+    overflow-x: clip;
+    scrollbar-gutter: stable;
   }
 
   body {
     background-color: #F2EFE8;
     color: #0A0A0A;
-    overflow-x: hidden;
+    overflow-x: clip;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -333,25 +334,10 @@ select:focus-visible {
   margin: 0 auto;
 }
 
-.card-stack-scene[data-stack-pinned] {
-  display: grid;
-  align-content: center;
-  min-height: 100svh;
-  padding-block: clamp(3rem, 6.5svh, 4rem) clamp(4rem, 9.5svh, 6rem);
-  overflow: clip;
-}
-
-[data-stack-pinned] .card-stack__item {
-  grid-area: 1 / 1;
-  min-height: clamp(19rem, 50svh, 29.5rem);
-  will-change: transform;
-}
-
 .card-stack__item {
   display: flex;
   flex-direction: column;
   gap: clamp(1.25rem, 3vw, 2.5rem);
-  transform-origin: 50% 0;
   color: #2b1a12;
   background-color: #ead4c8;
   border: 1px solid rgb(10 10 10 / 10%);
@@ -390,12 +376,14 @@ select:focus-visible {
   line-height: 0.99;
 }
 
-@media screen and (max-width: 767px) {
-  .card-stack-scene[data-stack-pinned] {
-    padding-block: 2.75rem 3.5rem;
+@media (min-width: 1024px) and (min-height: 740px) and (prefers-reduced-motion: no-preference) {
+  .card-stack {
+    gap: clamp(4rem, 12svh, 8rem);
   }
 
-  [data-stack-pinned] .card-stack__item {
-    min-height: 0;
+  .card-stack__item {
+    position: sticky;
+    top: calc(clamp(3rem, 11svh, 7rem) + var(--card-offset));
+    min-height: clamp(19rem, 50svh, 28rem);
   }
 }

@@ -279,10 +279,16 @@ export function Process() {
       reveal.disconnect();
     }, { threshold: 0.1 });
 
-    resize.observe(canvas);
+    const approach = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      resize.observe(canvas);
+      approach.disconnect();
+    }, { rootMargin: '400px 0px' });
+    approach.observe(canvas);
     reveal.observe(canvas);
 
     return () => {
+      approach.disconnect();
       resize.disconnect();
       reveal.disconnect();
       cancelAnimationFrame(frameIds.move);

@@ -27,92 +27,47 @@ export const Hero: React.FC = () => {
   const scrollIndicatorRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     let cancelled = false;
     let headlineSplit: SplitText | undefined;
-    let headlineTween: gsap.core.Tween | undefined;
+    let animation: gsap.Context | undefined;
 
-    document.fonts.ready.then(() => {
+    void document.fonts.ready.then(() => {
       if (cancelled) return;
 
-      // Headline entrance with 3D perspective
-      const headline = headlineRef.current;
-      if (headline && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        headlineSplit = new SplitText(headline.querySelectorAll('[data-headline-part]'), {
-          type: 'words,chars',
-          tag: 'span',
-          charsClass: 'hero-headline-char',
-          aria: 'none',
-        });
-        headlineTween = gsap.fromTo(
-          headline.querySelectorAll('.hero-headline-char, [data-headline-accent]'),
-          { opacity: 0, y: 60, rotateX: -45 },
-          {
-            opacity: 1, y: 0, rotateX: 0,
-            duration: 1.2, stagger: 0.025, ease: 'expo.out', delay: 0.25,
-          }
-        );
-      }
+      animation = gsap.context(() => {
+        const headline = headlineRef.current;
+        if (headline) {
+          headlineSplit = new SplitText(headline.querySelectorAll('[data-headline-part]'), {
+            type: 'words,chars',
+            tag: 'span',
+            charsClass: 'hero-headline-char',
+            aria: 'none',
+          });
+          gsap.from(headline.querySelectorAll('.hero-headline-char, [data-headline-accent]'), {
+            y: 12,
+            rotateX: -15,
+            duration: 0.7,
+            stagger: 0.013,
+            ease: 'power3.out',
+            clearProps: 'transform',
+          });
+        }
 
-      // Description
-      if (subtextRef.current) {
-        gsap.fromTo(
-          subtextRef.current,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 1, delay: 1.1, ease: 'expo.out' }
-        );
-      }
+        const highlights = Array.from(bottomBarRef.current?.querySelectorAll('[data-hero-highlight]') ?? []);
+        const details = [subtextRef.current, ctaRef.current, ...highlights, scrollIndicatorRef.current].filter(Boolean);
+        gsap.from(details, { y: 8, duration: 0.55, stagger: 0.05, ease: 'power2.out', clearProps: 'transform' });
 
-      // CTAs
-      if (ctaRef.current) {
-        gsap.fromTo(
-          ctaRef.current,
-          { opacity: 0, y: 24 },
-          { opacity: 1, y: 0, duration: 0.9, delay: 1.3, ease: 'expo.out' }
-        );
-      }
-
-      // Staggered highlight entrances in the bottom bar
-      if (bottomBarRef.current) {
-        const highlights = bottomBarRef.current.querySelectorAll('[data-hero-highlight]');
-        gsap.fromTo(
-          highlights,
-          { opacity: 0, y: 28 },
-          {
-            opacity: 1, y: 0,
-            duration: 0.8, stagger: 0.1, ease: 'expo.out', delay: 1.5,
-          }
-        );
-      }
-
-      // Scroll indicator
-      if (scrollIndicatorRef.current) {
-        gsap.fromTo(
-          scrollIndicatorRef.current,
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.7, delay: 1.8, ease: 'power2.out' }
-        );
-      }
-
-      // Sine-wave drift for the floating accent orb
-      if (orbRef.current) {
-        gsap.set(orbRef.current, { opacity: 0 });
-        gsap.to(orbRef.current, {
-          opacity: 1, duration: 2, delay: 0.8, ease: 'power1.inOut',
-        });
-        gsap.to(orbRef.current, {
-          x: 40, y: -30, duration: 6,
-          ease: 'sine.inOut', repeat: -1, yoyo: true,
-        });
-        gsap.to(orbRef.current, {
-          scale: 1.15, duration: 4,
-          ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 1,
-        });
-      }
+        if (orbRef.current) {
+          gsap.to(orbRef.current, { x: 30, y: -20, duration: 7, ease: 'sine.inOut', repeat: -1, yoyo: true });
+        }
+      });
     });
 
     return () => {
       cancelled = true;
-      headlineTween?.kill();
+      animation?.revert();
       headlineSplit?.revert();
     };
   }, []);
@@ -123,7 +78,7 @@ export const Hero: React.FC = () => {
       {/* Floating accent orb */}
       <div
         ref={orbRef}
-        className="absolute top-[15%] left-[10%] w-[280px] h-[280px] md:w-[420px] md:h-[420px] rounded-full pointer-events-none opacity-0"
+        className="absolute top-[15%] left-[10%] w-[280px] h-[280px] md:w-[420px] md:h-[420px] rounded-full pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(197, 245, 42, 0.12) 0%, rgba(197, 245, 42, 0.04) 50%, transparent 70%)',
           filter: 'blur(60px)',
@@ -143,19 +98,18 @@ export const Hero: React.FC = () => {
             <div className="@container" style={{ perspective: '800px' }}>
               <h1
                 ref={headlineRef}
-                className="font-hero-display text-[clamp(1rem,8.25cqw,4.75rem)] font-black tracking-[-0.035em] [word-spacing:0.09em] text-[#0A0A0A] leading-[0.95] min-[295px]:whitespace-nowrap"
-                aria-label="Digital platforms built for longevity."
+                className="font-hero-display text-[clamp(1rem,7.85cqw,4.5rem)] font-black tracking-[-0.035em] [word-spacing:0.09em] text-[#0A0A0A] leading-[0.98] min-[295px]:whitespace-nowrap"
+                aria-label="Websites for architects and interior designers"
                 data-cursor="Explore"
               >
-                <span className="block" data-headline-part aria-hidden="true">DIGITAL PLATFORMS</span>
-                <span className="mt-[0.1em] block" aria-hidden="true">
-                  <span className="inline-block align-middle" data-headline-accent>
-                    <TextRoll center className="text-[#C5F52A] bg-[#0A0A0A] px-[0.14em] py-0.5 rounded-lg -rotate-1 shadow-sm">
-                      BUILT
-                    </TextRoll>
+                <span className="block" aria-hidden="true">
+                  <span data-headline-part>WEBSITES</span>{' '}
+                  <span className="inline-block -rotate-1 rounded-lg bg-[#0A0A0A] px-[0.14em] py-0.5 text-[#C5F52A]" data-headline-accent>
+                    FOR
                   </span>{' '}
-                  <span className="inline-block align-middle" data-headline-part>FOR LONGEVITY.</span>
-                </span>
+                </span>{' '}
+                <span className="mt-[0.1em] block" data-headline-part aria-hidden="true">ARCHITECTS &amp;</span>{' '}
+                <span className="mt-[0.1em] block" data-headline-part aria-hidden="true">INTERIOR DESIGNERS.</span>
               </h1>
             </div>
 
@@ -163,7 +117,7 @@ export const Hero: React.FC = () => {
               ref={subtextRef}
               className="font-body-ui text-sm sm:text-base md:text-lg text-[#4B5563] font-light leading-relaxed max-w-xl"
             >
-              I design and build websites for architecture and interior design studios, with project galleries and content you can update yourself.
+              I build portfolio websites with project galleries and a CMS you can update yourself, plus one year of support after launch.
             </p>
 
             <div ref={ctaRef} className="pt-1">
@@ -215,7 +169,7 @@ export const Hero: React.FC = () => {
         <a
           ref={scrollIndicatorRef}
           href="#about"
-          className="hidden md:flex items-center gap-2.5 text-[11px] uppercase tracking-[0.2em] text-[#6B7280] hover:text-[#0A0A0A] transition-colors duration-300 font-mono group opacity-0"
+          className="hidden md:flex items-center gap-2.5 text-[11px] uppercase tracking-[0.2em] text-[#6B7280] hover:text-[#0A0A0A] transition-colors duration-300 font-mono group"
         >
           <span className="group-hover:translate-y-px transition-transform duration-200">Scroll</span>
           <span className="flex items-center justify-center w-7 h-7 rounded-full border border-[#0A0A0A]/15 group-hover:border-[#0A0A0A]/40 transition-all duration-300">

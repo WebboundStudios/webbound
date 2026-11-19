@@ -1,7 +1,6 @@
 import React from 'react';
 import { CustomCursor } from '@/components/common/CustomCursor';
 import { Navbar } from '@/components/common/Navbar';
-import { ScrollThemeController } from '@/components/animations/ScrollThemeController';
 import { Hero } from '@/sections/Hero/Hero';
 import { About } from '@/sections/About/About';
 import { Services } from '@/sections/Services/Services';
@@ -13,12 +12,45 @@ import { Testimonials } from '@/sections/Testimonials/Testimonials';
 import { FAQ } from '@/sections/FAQ/FAQ';
 import { CTA } from '@/sections/CTA/CTA';
 import { Footer } from '@/sections/Footer/Footer';
+import { JsonLd } from '@/components/common/JsonLd';
+import { SITE_CONFIG } from '@/constants/site';
+import { absoluteUrl, organizationId, pageMetadata, websiteId } from '@/lib/seo';
+
+export const metadata = pageMetadata({
+  path: '/',
+  title: SITE_CONFIG.title,
+  description: SITE_CONFIG.description,
+});
+
+const homeSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': organizationId,
+      name: SITE_CONFIG.name,
+      alternateName: SITE_CONFIG.alternateName,
+      url: absoluteUrl('/'),
+      logo: absoluteUrl('/android-chrome-512x512.png'),
+      email: SITE_CONFIG.email,
+      description: SITE_CONFIG.description,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      name: SITE_CONFIG.name,
+      alternateName: SITE_CONFIG.alternateName,
+      url: absoluteUrl('/'),
+      inLanguage: SITE_CONFIG.language,
+      publisher: { '@id': organizationId },
+    },
+  ],
+};
 
 export default function Home() {
   return (
     <main className="site-shell relative min-h-screen bg-[#F5F3EE] text-[#0A0A0A] selection:bg-[#C5F52A] selection:text-[#0A0A0A] transition-colors duration-500">
-      {/* Scroll Background Morph Controller */}
-      <ScrollThemeController />
+      <JsonLd value={homeSchema} />
 
       {/* Interactive Custom Cursor Follower */}
       <CustomCursor />

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useId, useRef, type MouseEvent } from 'react';
+import Link from 'next/link';
 import { MagneticButton } from '@/components/animations/MagneticButton';
 import { NAV_LINKS, SITE_CONFIG } from '@/constants/data';
 import { Menu, X, ArrowRight, ArrowUpRight } from 'lucide-react';
@@ -186,9 +187,9 @@ export function Navbar() {
         <div ref={paneRef} className={styles.pane}>
           <div className={styles.layout}>
             <div className={styles.header}>
-              <a href="/" aria-label="Webbound home" onClick={followMenuLink} className={styles.wordmark}>
+              <Link href="/" aria-label="Webbound home" onClick={followMenuLink} className={styles.wordmark}>
                 WEBBOUND<span>.</span>
-              </a>
+              </Link>
               <button ref={closeRef} type="button" onClick={() => closeMenu()} className={styles.close}>
                 Close <X size={17} aria-hidden="true" />
               </button>

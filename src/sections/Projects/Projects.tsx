@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { ProjectDetail } from '@/components/projects/ProjectDetail';
 import { PROJECTS } from '@/constants/data';
 import type { ProjectItem } from '@/types';
+
+const ProjectDetail = dynamic(() => import('@/components/projects/ProjectDetail').then((module) => module.ProjectDetail), { ssr: false });
 
 type OpenCase = {
   project: ProjectItem;
@@ -32,12 +35,12 @@ export function Projects() {
             <p className="font-body-ui text-base leading-relaxed text-white/70 md:text-lg">
               Websites and content platforms for architecture and interiors studios.
             </p>
-            <a
-              href="#contact"
+            <Link
+              href="/work"
               className="mt-3 inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-[#C5F52A] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C5F52A]"
             >
-              Request portfolio <ArrowUpRight size={16} aria-hidden="true" />
-            </a>
+              See all website case studies <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
           </div>
         </div>
 
@@ -48,7 +51,7 @@ export function Projects() {
                 <div data-case-cover style={{ aspectRatio: project.coverAspectRatio }} className="relative aspect-video overflow-hidden rounded-md bg-[#1B1B1B]">
                   <Image
                     src={project.image}
-                    alt=""
+                    alt={project.imageAlt}
                     fill
                     sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1023px) calc(100vw - 96px), (max-width: 1439px) 52vw, 724px"
                     className="object-cover"
@@ -61,24 +64,29 @@ export function Projects() {
                   {project.title}
                 </h3>
                 <p className="font-body-ui mt-4 max-w-[42ch] text-base leading-relaxed text-white/70">{project.description}</p>
-                <span aria-hidden="true" className="mt-5 inline-flex min-h-11 items-center gap-3 text-sm font-semibold transition-colors group-hover:text-[#C5F52A] group-focus-within:text-[#C5F52A] motion-reduce:transition-none">
-                  <span className="grid size-11 place-items-center rounded-full border border-white/25 transition-colors group-hover:border-[#C5F52A] group-hover:bg-[#C5F52A] group-hover:text-black group-focus-within:border-[#C5F52A] group-focus-within:bg-[#C5F52A] group-focus-within:text-black motion-reduce:transition-none">
-                    <ArrowUpRight size={19} />
-                  </span>
-                  Read case study
-                </span>
+                <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
+                  <Link
+                    href={`/work/${project.id}`}
+                    prefetch={false}
+                    className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[#C5F52A] underline-offset-4 after:absolute after:inset-0 after:rounded-lg hover:underline focus-visible:after:outline-2 focus-visible:after:outline-offset-4 focus-visible:after:outline-[#C5F52A]"
+                  >
+                    Read case study<span className="sr-only"> for {project.title}</span>
+                    <ArrowUpRight size={17} aria-hidden="true" />
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label={'Quick preview of ' + project.title}
+                    aria-haspopup="dialog"
+                    className="relative z-10 min-h-11 rounded-full border border-white/25 px-4 text-sm font-semibold hover:border-[#C5F52A] hover:text-[#C5F52A]"
+                    onClick={({ currentTarget: trigger }) => {
+                      const cover = trigger.closest('article')?.querySelector<HTMLDivElement>('[data-case-cover]');
+                      if (cover) setOpenCase((current) => current ?? { project, trigger, cover });
+                    }}
+                  >
+                    Quick preview
+                  </button>
+                </div>
               </div>
-              <button
-                type="button"
-                aria-label={'View case study for ' + project.title}
-                aria-haspopup="dialog"
-                data-cursor="View"
-                className="absolute inset-0 cursor-pointer rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C5F52A]"
-                onClick={({ currentTarget: trigger }) => {
-                  const cover = trigger.parentElement?.querySelector<HTMLDivElement>('[data-case-cover]');
-                  if (cover) setOpenCase((current) => current ?? { project, trigger, cover });
-                }}
-              />
             </article>
           ))}
         </div>

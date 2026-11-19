@@ -2,11 +2,10 @@
 
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+  gsap.registerPlugin(SplitText);
 }
 
 interface TextRevealProps {
@@ -34,41 +33,45 @@ export const TextReveal: React.FC<TextRevealProps> = ({
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    // Wait until fonts are loaded
-    document.fonts.ready.then(() => {
-      const split = new SplitText(el, {
-        type: type,
-        wordsClass: 'inline-block mr-[0.25em] last:mr-0',
-      });
-      const targets = type === 'chars' ? split.chars : type === 'words' ? split.words : split.lines;
+    let cancelled = false;
+    let split: SplitText | undefined;
+    let tween: gsap.core.Tween | undefined;
 
-      gsap.fromTo(
-        targets,
-        {
-          opacity: 0,
-          y: 40,
-          rotateX: -30,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          duration: duration,
-          stagger: stagger,
-          delay: delay,
+    function prepare(target: HTMLElement) {
+      void document.fonts.ready.then(() => {
+        if (cancelled) return;
+        split = new SplitText(target, { type });
+        const targets = type === 'chars' ? split.chars : type === 'words' ? split.words : split.lines;
+
+        tween = gsap.from(targets, {
+          y: 14,
+          rotateX: -15,
+          duration,
+          stagger,
+          delay,
           ease: 'power3.out',
-          scrollTrigger: scrollTrigger
-            ? {
-                trigger: el,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              }
-            : undefined,
-        }
-      );
-    });
+          clearProps: 'transform',
+        });
+      });
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      prepare(el);
+    }, { rootMargin: '0px 0px -12% 0px' });
+
+    if (scrollTrigger) observer.observe(el);
+    else prepare(el);
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+      tween?.kill();
+      split?.revert();
+    };
   }, [type, stagger, delay, duration, scrollTrigger]);
 
   return (

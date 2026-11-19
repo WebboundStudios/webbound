@@ -2,10 +2,12 @@
 
 import { useId, useLayoutEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import type { ProjectItem } from '@/types';
+import { ProjectStory } from './ProjectStory';
 import styles from './project-detail.module.css';
 
 if (typeof window !== 'undefined') gsap.registerPlugin(Flip);
@@ -182,7 +184,7 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
             <div ref={imageRef} style={{ aspectRatio: project.coverAspectRatio }} className="relative aspect-video overflow-hidden rounded-lg bg-[#1B1B1B]" data-project-detail-cover>
               <Image
                 src={project.image}
-                alt=""
+                alt={project.imageAlt}
                 fill
                 loading="eager"
                 sizes="(max-width: 1023px) calc(100vw - 48px), (max-width: 1439px) 60vw, 840px"
@@ -197,14 +199,10 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
             </dl>
           </div>
 
-          <div className="mt-11 grid gap-7 border-t border-white/15 pt-7 lg:grid-cols-3 lg:gap-10">
-            <div>
-              <h3 className="font-section-heading mb-2 text-xl font-bold">Overview</h3>
-              <p className="font-body-ui leading-relaxed text-white/75">{project.longDescription || project.description}</p>
-            </div>
-            {project.challenge && <div><h3 className="font-section-heading mb-2 text-xl font-bold">The challenge</h3><p className="font-body-ui leading-relaxed text-white/75">{project.challenge}</p></div>}
-            {project.solution && <div><h3 className="font-section-heading mb-2 text-xl font-bold">The approach</h3><p className="font-body-ui leading-relaxed text-white/75">{project.solution}</p></div>}
-          </div>
+          <ProjectStory project={project} inDialog />
+          <Link href={`/work/${project.id}`} className="mt-8 inline-flex min-h-11 items-center gap-2 font-semibold text-[#C5F52A] underline-offset-4 hover:underline">
+            Open case study page <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
         </div>
       </div>
       <div ref={ghostRef} className={styles.ghost} aria-hidden="true" data-project-flight />

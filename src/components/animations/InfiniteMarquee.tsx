@@ -40,9 +40,6 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
 
   // 1 = right-to-left (standard for 'left'), -1 = left-to-right (standard for 'right')
   const baseDir = direction === 'left' ? 1 : -1;
-  const baseDirRef = useRef<number>(baseDir);
-  baseDirRef.current = baseDir;
-
   const targetDirection = useRef<number>(baseDir);
   const currentDirection = useRef<number>(baseDir);
   const scrollVelocity = useRef<number>(0);
@@ -82,9 +79,9 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
 
         if (Math.abs(deltaY) > 0.5) {
           if (deltaY > 0) {
-            targetDirection.current = baseDirRef.current;
+            targetDirection.current = baseDir;
           } else {
-            targetDirection.current = -baseDirRef.current;
+            targetDirection.current = -baseDir;
           }
 
           const v = (deltaY / deltaTime) * 0.02;
@@ -99,7 +96,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> = ({
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [interactiveScroll, isInView]);
+  }, [baseDir, interactiveScroll, isInView]);
 
   useAnimationFrame((_, delta) => {
     if (!isInView || paused || (pauseOnHover && isHovered.current)) return;

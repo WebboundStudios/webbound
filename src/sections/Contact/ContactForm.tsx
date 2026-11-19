@@ -1,23 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Select } from '@base-ui/react/select';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { AlertCircle, ArrowUpRight, Check, ChevronDown, Loader2 } from 'lucide-react';
-import Lottie from 'lottie-react';
-import contactFormAnimation from '../../../public/contact-form.json';
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+import dynamic from 'next/dynamic';
+import { AlertCircle, ArrowUpRight, ChevronDown, Loader2 } from 'lucide-react';
 
-const contactSchema = z.object({
-  name: z.string().trim().min(2, 'Enter your name.'),
-  email: z.string().trim().email('Enter a valid email address.'),
-  company: z.string().trim().optional(),
-  budget: z.string().min(1, 'Choose a project type.'),
-  message: z.string().trim().min(10, 'Share a little more about your project.'),
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
+const InquirySuccessAnimation = dynamic(() => import('./InquirySuccessAnimation'), { ssr: false });
 
 const PROJECT_TYPES = [
   { label: 'Single-page website', value: 'Single-Page Flagship' },
@@ -26,11 +13,26 @@ const PROJECT_TYPES = [
   { label: 'Custom web application', value: 'Custom Web Application' },
 ];
 
+const fieldNames = ['name', 'email', 'company', 'budget', 'message'] as const;
+type FieldName = (typeof fieldNames)[number];
+type FieldErrors = Partial<Record<FieldName, string>>;
+
+const emailPattern = /^(?!\.)(?!.*\.\.)[A-Za-z0-9_'+.-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/;
+const fieldError: Record<FieldName, (value: string) => string | undefined> = {
+  name: (value) => value.length < 2 ? 'Enter your name.' : undefined,
+  email: (value) => emailPattern.test(value) ? undefined : 'Enter a valid email address.',
+  company: () => undefined,
+  budget: (value) => PROJECT_TYPES.some((project) => project.value === value) ? undefined : 'Choose a project type.',
+  message: (value) => value.length < 10 ? 'Share a little more about your project.' : undefined,
+};
+
+const formEndpoint = 'https://formspree.io/f/' + (process.env.NEXT_PUBLIC_FORMSPREE_ID || 'mdaqlpza');
+
 const fieldClassName =
   'font-body-ui block min-h-14 w-full rounded-[0.65rem] border-0 bg-[#FFFEFC] px-4 py-3.5 text-base text-[#0A0A0A] placeholder:text-[#676B60] focus-visible:outline-none! focus-visible:shadow-[inset_0_-2px_0_#42453D]! forced-colors:focus-visible:[outline:2px_solid_CanvasText]!';
 
 interface FieldProps {
-  name: keyof ContactFormData;
+  name: FieldName;
   label: string;
   optional?: boolean;
   error?: string;
@@ -40,7 +42,7 @@ interface FieldProps {
 function Field({ name, label, optional, error, children }: FieldProps) {
   return (
     <div className="min-w-0 space-y-2">
-      <label id={`contact-${name}-label`} htmlFor={`contact-${name}`} className="font-section-heading flex items-baseline justify-between gap-2 text-[0.9375rem] font-bold">
+      <label htmlFor={'contact-' + name} className="font-section-heading flex items-baseline justify-between gap-2 text-[0.9375rem] font-bold">
         {label}
         {optional && <span className="font-body-ui text-xs font-normal text-[#595E54]">Optional</span>}
       </label>
@@ -52,39 +54,56 @@ function Field({ name, label, optional, error, children }: FieldProps) {
 
 export function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errors, setErrors] = useState<FieldErrors>({});
   const submitting = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const successHeading = useRef<HTMLHeadingElement>(null);
-  const {
-    control,
-    register,
-    handleSubmit,
-    reset,
-    setFocus,
-    formState: { errors },
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
-    defaultValues: { budget: '' },
-  });
 
   useEffect(() => {
     if (status === 'success') successHeading.current?.focus();
   }, [status]);
 
-  const fieldProps = (name: keyof ContactFormData) => ({
-    ...register(name),
-    id: `contact-${name}`,
+  const fieldProps = (name: FieldName) => ({
+    name,
+    id: 'contact-' + name,
     'aria-invalid': Boolean(errors[name]),
-    'aria-describedby': errors[name] ? `contact-${name}-error` : undefined,
+    'aria-describedby': errors[name] ? 'contact-' + name + '-error' : undefined,
+    onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      if (!errors[name]) return;
+      const error = fieldError[name](event.currentTarget.value.trim());
+      setErrors((current) => ({ ...current, [name]: error }));
+    },
   });
 
-  const onSubmit = async (data: ContactFormData) => {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (submitting.current) return;
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const data: Record<FieldName, string> = {
+      name: String(formData.get('name') ?? '').trim(),
+      email: String(formData.get('email') ?? '').trim(),
+      company: String(formData.get('company') ?? '').trim(),
+      budget: String(formData.get('budget') ?? '').trim(),
+      message: String(formData.get('message') ?? '').trim(),
+    };
+    const invalidFields: FieldErrors = {};
+    for (const name of fieldNames) {
+      const error = fieldError[name](data[name]);
+      if (error) invalidFields[name] = error;
+    }
+    setErrors(invalidFields);
+    const firstInvalid = fieldNames.find((name) => invalidFields[name]);
+    if (firstInvalid) {
+      requestAnimationFrame(() => form.querySelector<HTMLElement>('#contact-' + firstInvalid)?.focus());
+      return;
+    }
+
     submitting.current = true;
     setStatus('sending');
 
     try {
-      const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID || 'mdaqlpza';
-      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+      const response = await fetch(formEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,18 +112,13 @@ export function ContactForm() {
         body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        reset();
-        setStatus('success');
-      } else {
-        setStatus('error');
-      }
+      setStatus(response.ok ? 'success' : 'error');
     } catch {
       setStatus('error');
     } finally {
       submitting.current = false;
     }
-  };
+  }
 
   return (
     <div
@@ -120,7 +134,7 @@ export function ContactForm() {
       {status === 'success' ? (
         <div className="flex min-h-60 flex-col items-start justify-center gap-4 py-4">
           <div aria-hidden="true" className="size-16 motion-reduce:hidden">
-            <Lottie animationData={contactFormAnimation} loop={false} className="size-full" />
+            <InquirySuccessAnimation />
           </div>
           <div>
             <h4 ref={successHeading} tabIndex={-1} className="font-section-heading text-2xl font-bold">Inquiry sent</h4>
@@ -130,7 +144,7 @@ export function ContactForm() {
             type="button"
             onClick={() => {
               setStatus('idle');
-              requestAnimationFrame(() => setFocus('name'));
+              requestAnimationFrame(() => formRef.current?.querySelector<HTMLInputElement>('#contact-name')?.focus());
             }}
             className="font-body-ui cursor-pointer rounded-sm text-sm font-bold text-[#425110] underline underline-offset-4 hover:text-[#0A0A0A] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514]"
           >
@@ -139,77 +153,45 @@ export function ContactForm() {
         </div>
       ) : (
         <form
+          ref={formRef}
+          action={formEndpoint}
+          method="post"
           aria-labelledby="project-inquiry-heading"
           aria-busy={status === 'sending'}
           noValidate
-          onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+          onSubmit={(event) => void onSubmit(event)}
           className="space-y-5 sm:space-y-6"
         >
           <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2 sm:gap-y-6">
-            <Field name="name" label="Full name" error={errors.name?.message}>
+            <Field name="name" label="Full name" error={errors.name}>
               <input {...fieldProps('name')} autoComplete="name" required placeholder="Your name" className={fieldClassName} />
             </Field>
 
-            <Field name="email" label="Email address" error={errors.email?.message}>
+            <Field name="email" label="Email address" error={errors.email}>
               <input {...fieldProps('email')} type="email" autoComplete="email" required placeholder="you@studio.com" className={fieldClassName} />
             </Field>
 
-            <Field name="company" label="Company" optional error={errors.company?.message}>
+            <Field name="company" label="Company" optional>
               <input {...fieldProps('company')} autoComplete="organization" placeholder="Studio or business name" className={fieldClassName} />
             </Field>
 
-            <Field name="budget" label="Project type" error={errors.budget?.message}>
-              <Controller
-                name="budget"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Select.Root
-                    name={field.name}
-                    items={PROJECT_TYPES}
-                    value={field.value || null}
-                    onValueChange={(value) => field.onChange(value ?? '')}
-                    modal={false}
-                    required
-                  >
-                    <Select.Trigger
-                      id="contact-budget"
-                      ref={field.ref}
-                      onBlur={field.onBlur}
-                      aria-labelledby="contact-budget-label"
-                      aria-invalid={fieldState.invalid}
-                      aria-describedby={fieldState.error ? 'contact-budget-error' : undefined}
-                      className={`${fieldClassName} group relative cursor-pointer pr-11 text-left data-placeholder:text-[#676B60]`}
-                    >
-                      <Select.Value placeholder="Choose a project type" />
-                      <ChevronDown size={17} aria-hidden="true" className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#536514] transition-transform group-data-popup-open:rotate-180" />
-                    </Select.Trigger>
-                    <Select.Portal>
-                      <Select.Positioner align="start" sideOffset={7} alignItemWithTrigger={false} className="z-[60]">
-                        <Select.Popup className="w-[var(--anchor-width)] origin-[var(--transform-origin)] rounded-xl bg-[#FFFEFC] p-1.5 shadow-[0_7px_24px_rgba(10,10,10,0.16)] transition-[opacity,translate] duration-150 ease-out data-starting-style:-translate-y-1 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none">
-                          <Select.List data-lenis-prevent className="max-h-[calc(var(--available-height)-0.75rem)] overflow-y-auto overscroll-contain">
-                            {PROJECT_TYPES.map(({ label, value }) => (
-                              <Select.Item
-                                key={value}
-                                value={value}
-                                className="font-body-ui grid min-h-11 cursor-pointer grid-cols-[minmax(0,1fr)_1rem] items-center gap-2 rounded-md px-3 py-2 text-sm text-[#0A0A0A] outline-none data-highlighted:bg-[#EFEEE8] data-selected:bg-[#EEF6D4] sm:text-base"
-                              >
-                                <Select.ItemText>{label}</Select.ItemText>
-                                <Select.ItemIndicator className="text-[#536514]">
-                                  <Check size={16} aria-hidden="true" />
-                                </Select.ItemIndicator>
-                              </Select.Item>
-                            ))}
-                          </Select.List>
-                        </Select.Popup>
-                      </Select.Positioner>
-                    </Select.Portal>
-                  </Select.Root>
-                )}
-              />
+            <Field name="budget" label="Project type" error={errors.budget}>
+              <div className="relative">
+                <select
+                  {...fieldProps('budget')}
+                  defaultValue=""
+                  required
+                  className={fieldClassName + ' cursor-pointer appearance-none pr-11 invalid:text-[#676B60]'}
+                >
+                  <option value="" disabled>Choose a project type</option>
+                  {PROJECT_TYPES.map(({ label, value }) => <option key={value} value={value}>{label}</option>)}
+                </select>
+                <ChevronDown size={17} aria-hidden="true" className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#536514]" />
+              </div>
             </Field>
           </div>
 
-          <Field name="message" label="About your project" error={errors.message?.message}>
+          <Field name="message" label="About your project" error={errors.message}>
             <textarea
               {...fieldProps('message')}
               rows={4}

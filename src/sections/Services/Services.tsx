@@ -1,6 +1,7 @@
 'use client';
 
 import { useLayoutEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { ArrowUpRight, Check, Database, Edit3, Layers, Layout, Plus } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -134,13 +135,13 @@ export function Services() {
             <p className="font-body-ui max-w-[38ch] text-base leading-relaxed text-[#4B5563] sm:text-lg">
               See what’s included in each service.
             </p>
-            <a
-              href="#contact"
+            <Link
+              href="/services"
               className="group mt-2 inline-flex min-h-10 items-center gap-2 rounded-sm text-sm font-semibold underline decoration-black/30 underline-offset-4 transition-colors hover:text-[#425110] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514]"
             >
-              Discuss your project
+              Explore website design services
               <ArrowUpRight size={16} aria-hidden="true" className="text-[#536514] transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
-            </a>
+            </Link>
           </div>
         </div>
 

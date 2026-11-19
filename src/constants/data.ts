@@ -1,13 +1,6 @@
 import { ServiceItem, ProjectItem, TestimonialItem, FAQItem, TechItem, ProcessStep, WhyUsItem } from '@/types';
 
-export const SITE_CONFIG = {
-  name: 'Webbound',
-  tagline: 'High-Craft Digital Engineering & Creative Direction',
-  description: 'Independent web design and development for architecture studios, interior designers, and brands with work to show.',
-  url: 'https://webbound-nine.vercel.app',
-  email: 'hello.webbound@gmail.com',
-  location: 'India',
-};
+export { SITE_CONFIG } from './site';
 
 export const SERVICES: ServiceItem[] = [
   {
@@ -102,6 +95,7 @@ export const PROJECTS: ProjectItem[] = [
   {
     id: 'the-trusted-wall',
     title: 'The Trusted Wall Architecture',
+    focus: 'architecture',
     category: 'Architecture & Luxury Interiors',
     year: '2026',
     tier: 'Type 3: Multi-Page Dynamic CMS Platform',
@@ -113,6 +107,7 @@ export const PROJECTS: ProjectItem[] = [
     client: 'The Trusted Wall Studio (Agra)',
     impact: 'Type 3 Multi-Page CMS Flagship',
     image: '/projects/the-trusted-wall.webp',
+    imageAlt: 'The Trusted Wall architecture studio website homepage',
     coverAspectRatio: 1680 / 853,
     tags: ['Type 3 Package', 'Sanity CMS', 'React 19', 'GSAP', 'Vite'],
     link: 'https://thetrustedwall.com/',
@@ -121,6 +116,7 @@ export const PROJECTS: ProjectItem[] = [
   {
     id: 'tdid-interiors',
     title: 'TDID Interiors Luxury Studio',
+    focus: 'interiors',
     category: 'Luxury Interior Design & Turnkey',
     year: '2026',
     tier: 'Type 1: Single-Page Flagship',
@@ -132,6 +128,7 @@ export const PROJECTS: ProjectItem[] = [
     client: 'TDID Interiors (Delhi NCR)',
     impact: 'Type 1 Single-Page Flagship',
     image: '/projects/tdid-interiors.webp',
+    imageAlt: 'TDID Interiors studio website homepage',
     coverAspectRatio: 1680 / 854,
     tags: ['Type 1 Package', 'React 19', 'Lenis Scroll', 'GSAP', 'Formspree'],
     link: 'https://tdidinteriors.com/',
@@ -140,6 +137,7 @@ export const PROJECTS: ProjectItem[] = [
   {
     id: 'studio-kalagya',
     title: 'Studio Kalagya Architecture & Interiors',
+    focus: 'architecture',
     category: 'Architecture & Spatial Interiors',
     year: '2026',
     tier: 'Type 2: Dynamic CMS Website',
@@ -151,6 +149,7 @@ export const PROJECTS: ProjectItem[] = [
     client: 'Studio Kalagya (Jabalpur, MP)',
     impact: 'Type 2 Dynamic CMS Portal',
     image: '/projects/studio-kalagya.webp',
+    imageAlt: 'Studio Kalagya architecture and interiors portfolio website',
     tags: ['Type 2 Package', 'Headless CMS', 'Architecture', 'React 19', 'GSAP'],
     link: 'https://www.studiokalagya.in/',
     featured: true,
@@ -158,6 +157,7 @@ export const PROJECTS: ProjectItem[] = [
   {
     id: 'forever-interior',
     title: 'Forever Interior Spatial Studio',
+    focus: 'interiors',
     category: 'Modular Kitchen & Spatial Interiors',
     year: '2026',
     tier: 'Type 3: Multi-Page Dynamic CMS Platform',
@@ -169,6 +169,7 @@ export const PROJECTS: ProjectItem[] = [
     client: 'Forever Interior (Jaipur, Rajasthan)',
     impact: 'Type 3 Multi-Page CMS Flagship',
     image: '/projects/forever-interior.webp',
+    imageAlt: 'Forever Interior modular kitchen and interiors website',
     tags: ['Type 3 Package', 'Sanity CMS', 'React 19', 'GSAP', 'Next.js 15'],
     link: 'https://foreverinterio.in/',
     featured: true,
@@ -336,8 +337,8 @@ export const FAQS: FAQItem[] = [
 
 export const NAV_LINKS = [
   { label: 'About', href: '/#about' },
-  { label: 'Services', href: '/#services' },
-  { label: 'Work', href: '/#projects' },
+  { label: 'Services', href: '/services' },
+  { label: 'Work', href: '/work' },
   { label: 'Process', href: '/#process' },
   { label: 'Tech Stack', href: '/#tech' },
   { label: 'Motion Lab', href: '/animations' },
