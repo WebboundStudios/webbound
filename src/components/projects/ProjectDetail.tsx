@@ -1,18 +1,18 @@
 'use client';
 
 import { useId, useLayoutEffect, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import type { ProjectItem } from '@/types';
+import { SERVICE_PAGES } from '@/constants/service-pages';
 import { ProjectStory } from './ProjectStory';
+import { ProjectFrame } from './ProjectFrame';
 import styles from './project-detail.module.css';
 
-if (typeof window !== 'undefined') gsap.registerPlugin(Flip);
-
 const reducedMotion = '(prefers-reduced-motion: reduce)';
+gsap.registerPlugin(Flip);
 
 function measureCover(element: HTMLElement) {
   const { left, top, width, height, right, bottom } = element.getBoundingClientRect();
@@ -36,18 +36,20 @@ function playCoverFlip(
 ) {
   if (!source || !target) return null;
 
-  const copy = document.createElement('img');
-  copy.alt = '';
-  copy.src = source.src;
-  ghost.replaceChildren(copy);
+  let copy = ghost.querySelector('img');
+  if (!copy) {
+    copy = document.createElement('img');
+    copy.alt = '';
+    ghost.append(copy);
+  }
+  if (copy.src !== source.src) copy.src = source.src;
 
-  // Only the overlay changes geometry. The card and dialog keep their own image nodes.
+  // Capture the visible frame, including the current position of an interrupted flight.
   gsap.set(ghost, { clearProps: 'transform' });
   gsap.set(ghost, { ...source.frame, visibility: 'visible' });
-  const state = Flip.getState(ghost, { props: 'borderRadius' });
-  gsap.set(ghost, target);
-
-  return Flip.from(state, { duration: 0.5, ease: 'power3.inOut', props: 'borderRadius', scale: false });
+  const first = Flip.getState(ghost, { simple: true, props: 'borderRadius' });
+  gsap.set(ghost, { ...target, transformOrigin: '0 0', visibility: 'visible' });
+  return Flip.from(first, { simple: true, scale: true, props: 'borderRadius', duration: 0.68, ease: 'power2.inOut' });
 }
 
 type ProjectDetailProps = {
@@ -59,6 +61,7 @@ type ProjectDetailProps = {
 
 export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetailProps) {
   const titleId = useId();
+  const service = SERVICE_PAGES.find(({ focus }) => focus === project.focus);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const paneRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -75,19 +78,22 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
     const ghost = ghostRef.current;
     if (!dialog || !pane || !image || !ghost) return;
 
+    const source = readCover(cover);
     dialog.showModal();
     window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: true } }));
     closeRef.current?.focus({ preventScroll: true });
 
     if (!window.matchMedia(reducedMotion).matches) {
-      const flip = playCoverFlip(ghost, readCover(cover), measureCover(image));
+      const flip = playCoverFlip(ghost, source, measureCover(image));
       const entrance = gsap.timeline();
-      if (flip) {
+      if (flip && source) {
         flying.current = true;
-        gsap.set(image, { visibility: 'hidden' });
+        gsap.set([cover, image], { visibility: 'hidden' });
+        // Keep the thumbnail visible on landing while the larger image loads.
+        image.style.backgroundImage = `url(${JSON.stringify(source.src)})`;
         entrance.add(flip, 0);
       }
-      entrance.fromTo(pane, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, 0);
+      entrance.fromTo(pane, { opacity: 0 }, { opacity: 1, duration: flip ? 0.5 : 0.3, ease: 'sine.inOut' }, flip ? 0.08 : 0);
       entrance.call(() => {
         flying.current = false;
         gsap.set(image, { clearProps: 'visibility' });
@@ -101,7 +107,8 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
       timeline.current?.kill();
       flying.current = false;
       if (dialog.open) dialog.close();
-      gsap.set([pane, image], { clearProps: 'opacity,visibility' });
+      gsap.set([pane, image, cover], { clearProps: 'opacity,visibility' });
+      image.style.removeProperty('background-image');
       gsap.set(ghost, { visibility: 'hidden' });
       ghost.replaceChildren();
       window.dispatchEvent(new CustomEvent('webbound:scroll-lock', { detail: { open: false } }));
@@ -125,23 +132,29 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
     // If the close button is used mid-flight, start the return at the image's current position.
     const from = flying.current ? ghost : image;
     timeline.current?.pause();
-    const source = readCover(from);
+    const frame = measureCover(from);
+    const thumbnail = readCover(cover);
+    const source = readCover(from) ?? (frame && thumbnail && { frame, src: thumbnail.src });
     const target = measureCover(cover);
     timeline.current?.kill();
 
     const flip = playCoverFlip(ghost, source, target);
-    if (flip) gsap.set(image, { visibility: 'hidden' });
-    else gsap.set(ghost, { visibility: 'hidden' });
+    if (flip) gsap.set([cover, image], { visibility: 'hidden' });
+    else {
+      gsap.set(ghost, { visibility: 'hidden' });
+      gsap.set(cover, { clearProps: 'visibility' });
+    }
 
     const exit = gsap.timeline({ onComplete: onClose });
     if (flip) exit.add(flip, 0);
-    exit.to(pane, { opacity: 0, duration: 0.24, ease: 'power2.in' }, 0);
+    exit.to(pane, { opacity: 0, duration: flip ? 0.48 : 0.24, ease: 'sine.inOut' }, 0);
     timeline.current = exit;
   }
 
   return (
     <dialog
       ref={dialogRef}
+      data-project-detail
       aria-labelledby={titleId}
       className={styles.dialog + ' text-white'}
       onCancel={(event) => {
@@ -159,7 +172,7 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
               aria-label="Close case study"
               className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white hover:text-[#C5F52A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C5F52A]"
             >
-              <ArrowLeft size={17} aria-hidden="true" /> Selected work
+              <ArrowLeft size={17} aria-hidden="true" /> Back
             </button>
             {project.link && (
               <a
@@ -179,18 +192,10 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
           <h2 id={titleId} className="font-section-heading max-w-5xl text-[clamp(2.5rem,6vw,5.5rem)] leading-none font-bold tracking-[-0.045em] text-balance">
             {project.title}
           </h2>
+          <p className="font-body-ui mt-4 max-w-[62ch] leading-relaxed text-white/70">{project.description}</p>
 
           <div className="mt-8 grid gap-7 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-10">
-            <div ref={imageRef} style={{ aspectRatio: project.coverAspectRatio }} className="relative aspect-video overflow-hidden rounded-lg bg-[#1B1B1B]" data-project-detail-cover>
-              <Image
-                src={project.image}
-                alt={project.imageAlt}
-                fill
-                loading="eager"
-                sizes="(max-width: 1023px) calc(100vw - 48px), (max-width: 1439px) 60vw, 840px"
-                className="object-cover"
-              />
-            </div>
+            <ProjectFrame project={project} detailRef={imageRef} sizes="(max-width: 1023px) calc(100vw - 48px), (max-width: 1439px) 60vw, 840px" />
             <dl className="font-body-ui self-start divide-y divide-white/15 border-y border-white/15 text-sm lg:text-base">
               <div className="py-3"><dt className="text-white/65">Client</dt><dd className="mt-1 font-semibold">{project.client}</dd></div>
               {project.role && <div className="py-3"><dt className="text-white/65">Role</dt><dd className="mt-1 font-semibold">{project.role}</dd></div>}
@@ -200,9 +205,16 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
           </div>
 
           <ProjectStory project={project} inDialog />
-          <Link href={`/work/${project.id}`} className="mt-8 inline-flex min-h-11 items-center gap-2 font-semibold text-[#C5F52A] underline-offset-4 hover:underline">
-            Open case study page <ArrowUpRight size={16} aria-hidden="true" />
-          </Link>
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+            <Link href="/#contact" onNavigate={onClose} className="inline-flex min-h-11 items-center gap-2 font-semibold text-[#C5F52A] underline-offset-4 hover:underline">
+              Discuss a similar website <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+            {service && (
+              <Link href={`/services/${service.slug}`} onNavigate={onClose} className="inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline">
+                {service.name}
+              </Link>
+            )}
+          </div>
         </div>
       </div>
       <div ref={ghostRef} className={styles.ghost} aria-hidden="true" data-project-flight />

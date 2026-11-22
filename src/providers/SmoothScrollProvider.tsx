@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,9 +10,20 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+function nativeScrollTo(top: number, immediate: boolean) {
+  window.scrollTo({ top, behavior: immediate ? 'instant' : 'smooth' });
+}
+
+const PageScrollContext = createContext(nativeScrollTo);
+export const usePageScrollTo = () => useContext(PageScrollContext);
+
 export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const lenisRef = useRef<Lenis | null>(null);
   const pathname = usePathname();
+  const scrollTo = useCallback((top: number, immediate: boolean) => {
+    if (lenisRef.current) lenisRef.current.scrollTo(top, { immediate });
+    else nativeScrollTo(top, immediate);
+  }, []);
 
   useEffect(() => {
     // Check reduced motion preference
@@ -91,5 +102,5 @@ export const SmoothScrollProvider: React.FC<{ children: React.ReactNode }> = ({ 
     ScrollTrigger.refresh();
   }, [pathname]);
 
-  return <>{children}</>;
+  return <PageScrollContext.Provider value={scrollTo}>{children}</PageScrollContext.Provider>;
 };

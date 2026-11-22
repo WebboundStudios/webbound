@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useSyncExternalStore } from 'react';
-import { motion, useAnimationFrame, useMotionValue, useTransform, useSpring, wrap } from 'framer-motion';
+import React, { useRef, useSyncExternalStore } from 'react';
+import { motion, useInView, useMotionValue, useTransform, useSpring, wrap } from 'framer-motion';
+import { useMarqueeFrame } from '@/hooks/useMarqueeFrame';
 import { ArrowUpRight } from 'lucide-react';
 import { SITE_CONFIG } from '@/constants/data';
 
@@ -25,7 +26,7 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
   className = '',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
+  const isInView = useInView(containerRef);
   const prefersReducedMotion = useSyncExternalStore(
     subscribeToReducedMotion,
     () => window.matchMedia(reducedMotionQuery).matches,
@@ -43,57 +44,13 @@ export const TiltedMarquee: React.FC<TiltedMarqueeProps> = ({
   const rawArrowRot = useMotionValue(0);
   const arrowRotDeg = useSpring(rawArrowRot, { stiffness: 220, damping: 22 });
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { rootMargin: '150px 0px' }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isInView || prefersReducedMotion) return;
-
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-
-      requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY;
-        const deltaY = currentScrollY - lastScrollY;
-
-        if (Math.abs(deltaY) > 0.5) {
-          if (deltaY > 0) {
-            targetDir.current = 1; // Down -> right to left
-            rawTilt.set(-3);
-            rawArrowRot.set(185);
-          } else {
-            targetDir.current = -1; // Up -> left to right
-            rawTilt.set(3);
-            rawArrowRot.set(90);
-          }
-        }
-        lastScrollY = currentScrollY;
-        ticking = false;
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isInView, prefersReducedMotion, rawTilt, rawArrowRot]);
-
-  useAnimationFrame((_, delta) => {
-    if (!isInView || prefersReducedMotion) return;
+  useMarqueeFrame(isInView && !prefersReducedMotion, (delta, scrollDelta) => {
+    if (Math.abs(scrollDelta) > 0.5) {
+      const down = scrollDelta > 0;
+      targetDir.current = down ? 1 : -1;
+      rawTilt.set(down ? -3 : 3);
+      rawArrowRot.set(down ? 185 : 90);
+    }
     currentDir.current += (targetDir.current - currentDir.current) * 0.08;
     const moveStep = 0.05 * currentDir.current * (delta / 16.66);
     baseX.set(baseX.get() - moveStep);

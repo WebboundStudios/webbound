@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { CaseStudyButton } from '@/components/projects/CaseStudyButton';
 import { notFound } from 'next/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { JsonLd } from '@/components/common/JsonLd';
@@ -41,7 +43,7 @@ export default async function StudioServicePage({ params }: ServicePageProps) {
     <StudioPage
       title={service.title}
       introduction={service.introduction}
-      breadcrumbs={[{ name: 'Services', path: '/services' }, { name: service.name, path }]}
+      breadcrumbs={[{ name: 'Services', path: '/#services' }, { name: service.name, path }]}
     >
       <JsonLd value={{
         '@context': 'https://schema.org',
@@ -71,10 +73,17 @@ export default async function StudioServicePage({ params }: ServicePageProps) {
         <ul className="divide-y divide-black/12 border-y border-black/12">
           {examples.map((project) => (
             <li key={project.id} className="py-4">
-              <Link href={`/work/${project.id}`} className="inline-flex min-h-9 items-center gap-2 font-semibold underline decoration-black/25 underline-offset-4 hover:decoration-black">
-                {project.title} <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>
-              <p className="text-[#4B5563]">{project.description}</p>
+              <article className="relative flex items-center gap-4">
+                <div data-case-cover style={{ aspectRatio: project.coverAspectRatio }} className="relative aspect-video w-24 shrink-0 overflow-hidden rounded-md sm:w-40">
+                  <Image src={project.image} alt={project.imageAlt} fill sizes="(min-width: 640px) 160px, 96px" className="object-cover" />
+                </div>
+                <div>
+                  <CaseStudyButton project={project} className="inline-flex min-h-9 items-center gap-2 text-left font-semibold underline decoration-black/25 underline-offset-4 after:absolute after:inset-0 hover:decoration-black">
+                    {project.title} <ArrowUpRight size={16} aria-hidden="true" />
+                  </CaseStudyButton>
+                  <p className="text-[#4B5563]">{project.description}</p>
+                </div>
+              </article>
             </li>
           ))}
         </ul>

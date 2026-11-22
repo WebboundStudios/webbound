@@ -23,7 +23,6 @@ export const Hero: React.FC = () => {
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const bottomBarRef = useRef<HTMLDivElement>(null);
-  const orbRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
@@ -59,9 +58,6 @@ export const Hero: React.FC = () => {
         const details = [subtextRef.current, ctaRef.current, ...highlights, scrollIndicatorRef.current].filter(Boolean);
         gsap.from(details, { y: 8, duration: 0.55, stagger: 0.05, ease: 'power2.out', clearProps: 'transform' });
 
-        if (orbRef.current) {
-          gsap.to(orbRef.current, { x: 30, y: -20, duration: 7, ease: 'sine.inOut', repeat: -1, yoyo: true });
-        }
       });
     });
 
@@ -75,13 +71,11 @@ export const Hero: React.FC = () => {
   return (
     <section data-theme-bg="#F5F3EE" className="relative min-h-screen bg-[#F5F3EE] flex flex-col justify-between pt-6 md:pt-10 pb-6 md:pb-10 px-6 md:px-12 lg:px-16 xl:min-h-[calc(100svh_-_6rem)] xl:justify-start xl:gap-12 overflow-hidden text-[#0A0A0A] transition-colors duration-300">
 
-      {/* Floating accent orb */}
       <div
-        ref={orbRef}
+        aria-hidden="true"
         className="absolute top-[15%] left-[10%] w-[280px] h-[280px] md:w-[420px] md:h-[420px] rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(197, 245, 42, 0.12) 0%, rgba(197, 245, 42, 0.04) 50%, transparent 70%)',
-          filter: 'blur(60px)',
+          background: 'radial-gradient(closest-side, rgb(197 245 42 / 9%), rgb(197 245 42 / 4%) 48%, transparent)',
         }}
       />
 

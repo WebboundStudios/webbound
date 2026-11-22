@@ -107,6 +107,46 @@
   min-width: 0;
 }
 
+.stage[data-vertical-split] .cover {
+  position: absolute;
+  visibility: hidden;
+}
+
+.stage[data-vertical-split] .panel {
+  position: relative;
+  perspective: 900px;
+  perspective-origin: center top;
+}
+
+.stage[data-vertical-split] .face,
+.stage[data-vertical-split] .card {
+  transform-origin: center top;
+  backface-visibility: hidden;
+}
+
+.stage[data-vertical-split] .face {
+  position: absolute;
+  inset: 0 0 auto;
+  display: block;
+  height: var(--strip-height);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.stage[data-vertical-split] .panel:first-child .face {
+  border-radius: .875rem .875rem 0 0;
+}
+
+.stage[data-vertical-split] .panel:last-child .face {
+  border-radius: 0 0 .875rem .875rem;
+}
+
+.stage[data-vertical-split] .slice {
+  inset: var(--slice-offset) 0 auto;
+  width: 100%;
+  height: calc(var(--strip-height) * var(--slice-count));
+}
+
 .card {
   width: 100%;
 }
@@ -175,6 +215,7 @@
 
 .slice {
   position: absolute;
+  left: var(--slice-offset);
   inset-block: 0;
   width: 400%;
 }

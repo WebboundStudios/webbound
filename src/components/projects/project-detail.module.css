@@ -36,9 +36,3 @@
   height: 100%;
   object-fit: cover;
 }
-
-:global(body.custom-cursor-enabled) .dialog,
-:global(body.custom-cursor-enabled) .dialog * { cursor: auto !important; }
-
-:global(body.custom-cursor-enabled) .dialog :is(a, button),
-:global(body.custom-cursor-enabled) .dialog :is(a, button) * { cursor: pointer !important; }

@@ -1,8 +1,7 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { ArrowUpRight, Check, Database, Edit3, Layers, Layout, Plus } from 'lucide-react';
+import { type CSSProperties, useLayoutEffect, useRef, useState } from 'react';
+import { Check, Database, Edit3, Layers, Layout, Plus } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextReveal } from '@/components/animations/TextReveal';
@@ -47,6 +46,73 @@ export function Services() {
     if (!stage) return;
 
     const media = gsap.matchMedia();
+    media.add('(max-width: 767px) and (prefers-reduced-motion: no-preference)', () => {
+      const cover = stage.querySelector<HTMLElement>('[data-service-cover]')!;
+      const panels = Array.from(stage.querySelectorAll<HTMLElement>('[data-service-panel]'));
+      stage.setAttribute('data-vertical-split', '');
+      const measure = () => stage.style.setProperty('--strip-height', (cover.offsetHeight / panels.length) + 'px');
+      measure();
+
+      const pinStart = () => {
+        const visibleHeight = Math.max(cover.offsetHeight, panels[0].offsetHeight);
+        return 'top ' + Math.max(16, (window.innerHeight - visibleHeight) * 0.45) + 'px';
+      };
+      const scrollUnit = () => stage.offsetHeight / panels.length;
+      const firstCardHoldEnd = 1.65;
+      const flipStart = (index: number) => index === 0 ? 0 : firstCardHoldEnd + (index - 1) * 0.9;
+      const flipDuration = 1.06;
+      const pin = ScrollTrigger.create({
+        trigger: stage,
+        start: pinStart,
+        end: () => '+=' + scrollUnit() * firstCardHoldEnd,
+        pin: true,
+      });
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: stage,
+          start: () => pin.start,
+          end: () => pin.start + scrollUnit() * (flipStart(panels.length - 1) + flipDuration),
+          scrub: 0.22,
+          invalidateOnRefresh: true,
+          onRefreshInit: measure,
+        },
+      });
+      panels.forEach((panel, index) => {
+        const face = panel.querySelector('[data-service-face]');
+        const card = panel.querySelector('article');
+        const start = flipStart(index);
+        // Keep the unopened strips together as each preceding card claims its space.
+        const stackedY = (firstClosed: number) =>
+          panels[firstClosed].offsetTop - panel.offsetTop +
+          (index - firstClosed) * cover.offsetHeight / panels.length;
+        for (let preceding = 0; preceding < index; preceding++) {
+          timeline.fromTo(panel, { y: () => stackedY(preceding) }, {
+            y: () => stackedY(preceding + 1),
+            duration: 0.64,
+            ease: 'sine.inOut',
+            immediateRender: preceding === 0,
+          }, flipStart(preceding));
+        }
+        timeline
+          .to(face, { rotationX: -90, duration: 0.4, ease: 'sine.inOut' }, start)
+          .fromTo(card, { rotationX: -90 }, { rotationX: 0, duration: flipDuration - 0.4, ease: 'sine.inOut' }, start + 0.4);
+      });
+      timeline.scrollTrigger?.refresh();
+
+      const showFocusedCards = (event: FocusEvent) => {
+        if (!(event.target instanceof HTMLElement) || !event.target.matches(':focus-visible')) return;
+        timeline.scrollTrigger?.disable(false);
+        timeline.progress(1);
+        pin.disable();
+        event.target.scrollIntoView({ block: 'nearest' });
+      };
+      stage.addEventListener('focusin', showFocusedCards);
+      return () => {
+        stage.removeEventListener('focusin', showFocusedCards);
+        stage.removeAttribute('data-vertical-split');
+        stage.style.removeProperty('--strip-height');
+      };
+    });
     media.add(splitMedia, () => {
       const panels = Array.from(stage.querySelectorAll('[data-service-panel]'));
       const faces = stage.querySelectorAll('[data-service-face]');
@@ -135,13 +201,6 @@ export function Services() {
             <p className="font-body-ui max-w-[38ch] text-base leading-relaxed text-[#4B5563] sm:text-lg">
               See what’s included in each service.
             </p>
-            <Link
-              href="/services"
-              className="group mt-2 inline-flex min-h-10 items-center gap-2 rounded-sm text-sm font-semibold underline decoration-black/30 underline-offset-4 transition-colors hover:text-[#425110] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514]"
-            >
-              Explore website design services
-              <ArrowUpRight size={16} aria-hidden="true" className="text-[#536514] transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
-            </Link>
           </div>
         </div>
 
@@ -164,7 +223,7 @@ export function Services() {
               return (
                 <div key={service.id} data-service-panel className={styles.panel}>
                   <div data-service-face aria-hidden="true" className={styles.face}>
-                    <div className={styles.slice} style={{ left: `${index * -100}%` }}>
+                    <div className={styles.slice} style={{ '--slice-offset': `${index * -100}%`, '--slice-count': SERVICES.length } as CSSProperties}>
                       <ServiceCoverArtwork />
                     </div>
                   </div>

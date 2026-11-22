@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
-import { AlertCircle, ArrowUpRight, ChevronDown, Loader2 } from 'lucide-react';
+import { Select } from '@base-ui/react/select';
+import { AlertCircle, ArrowUpRight, Check, ChevronDown, Loader2 } from 'lucide-react';
 
 const InquirySuccessAnimation = dynamic(() => import('./InquirySuccessAnimation'), { ssr: false });
 
@@ -30,6 +31,59 @@ const formEndpoint = 'https://formspree.io/f/' + (process.env.NEXT_PUBLIC_FORMSP
 
 const fieldClassName =
   'font-body-ui block min-h-14 w-full rounded-[0.65rem] border-0 bg-[#FFFEFC] px-4 py-3.5 text-base text-[#0A0A0A] placeholder:text-[#676B60] focus-visible:outline-none! focus-visible:shadow-[inset_0_-2px_0_#42453D]! forced-colors:focus-visible:[outline:2px_solid_CanvasText]!';
+
+const mouseQuery = '(any-pointer: fine)';
+function subscribeToMouse(change: () => void) {
+  const media = window.matchMedia(mouseQuery);
+  media.addEventListener('change', change);
+  return () => media.removeEventListener('change', change);
+}
+
+function ProjectTypeSelect({ error, onChange }: { error?: string; onChange: (value: string) => void }) {
+  const hasMouse = useSyncExternalStore(subscribeToMouse, () => window.matchMedia(mouseQuery).matches, () => false);
+  const [value, setValue] = useState('');
+  const props = {
+    id: 'contact-budget',
+    'aria-invalid': Boolean(error),
+    'aria-describedby': error ? 'contact-budget-error' : undefined,
+  };
+  function choose(next: string | null) {
+    setValue(next ?? '');
+    onChange(next ?? '');
+  }
+  const chevron = <ChevronDown size={17} aria-hidden="true" className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#536514]" />;
+  if (!hasMouse) {
+    return (
+      <div className="relative">
+        <select {...props} name="budget" required value={value} onChange={event => choose(event.target.value)} className={fieldClassName + ' appearance-none pr-11 invalid:text-[#676B60]'}>
+          <option value="" disabled>Choose a project type</option>
+          {PROJECT_TYPES.map(({ label, value }) => <option key={value} value={value}>{label}</option>)}
+        </select>
+        {chevron}
+      </div>
+    );
+  }
+  return (
+    <Select.Root name="budget" required modal={false} items={PROJECT_TYPES} value={value || null} onValueChange={choose}>
+      <Select.Trigger {...props} className={fieldClassName + ' relative pr-11 text-left'}>
+        <Select.Value placeholder="Choose a project type" className="data-placeholder:text-[#676B60]" />
+        {chevron}
+      </Select.Trigger>
+      <Select.Positioner positionMethod="fixed" alignItemWithTrigger={false} sideOffset={4} className="z-50 w-[var(--anchor-width)]">
+        <Select.Popup data-lenis-prevent className="max-h-[var(--available-height)] overflow-auto rounded-lg border border-black/15 bg-[#FFFEFC] p-1 shadow-lg">
+          <Select.List>
+            {PROJECT_TYPES.map(({ label, value }) => (
+              <Select.Item key={value} value={value} className="flex min-h-10 items-center justify-between gap-3 rounded-md px-3 text-sm text-[#0A0A0A] select-none data-highlighted:bg-[#EAF3D1]">
+                <Select.ItemText>{label}</Select.ItemText>
+                <Select.ItemIndicator><Check size={15} aria-hidden="true" /></Select.ItemIndicator>
+              </Select.Item>
+            ))}
+          </Select.List>
+        </Select.Popup>
+      </Select.Positioner>
+    </Select.Root>
+  );
+}
 
 interface FieldProps {
   name: FieldName;
@@ -63,16 +117,16 @@ export function ContactForm() {
     if (status === 'success') successHeading.current?.focus();
   }, [status]);
 
+  function validateChange(name: FieldName, value: string) {
+    if (errors[name]) setErrors(current => ({ ...current, [name]: fieldError[name](value.trim()) }));
+  }
+
   const fieldProps = (name: FieldName) => ({
     name,
     id: 'contact-' + name,
     'aria-invalid': Boolean(errors[name]),
     'aria-describedby': errors[name] ? 'contact-' + name + '-error' : undefined,
-    onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      if (!errors[name]) return;
-      const error = fieldError[name](event.currentTarget.value.trim());
-      setErrors((current) => ({ ...current, [name]: error }));
-    },
+    onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => validateChange(name, event.currentTarget.value),
   });
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -176,18 +230,7 @@ export function ContactForm() {
             </Field>
 
             <Field name="budget" label="Project type" error={errors.budget}>
-              <div className="relative">
-                <select
-                  {...fieldProps('budget')}
-                  defaultValue=""
-                  required
-                  className={fieldClassName + ' cursor-pointer appearance-none pr-11 invalid:text-[#676B60]'}
-                >
-                  <option value="" disabled>Choose a project type</option>
-                  {PROJECT_TYPES.map(({ label, value }) => <option key={value} value={value}>{label}</option>)}
-                </select>
-                <ChevronDown size={17} aria-hidden="true" className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#536514]" />
-              </div>
+              <ProjectTypeSelect error={errors.budget} onChange={value => validateChange('budget', value)} />
             </Field>
           </div>
 

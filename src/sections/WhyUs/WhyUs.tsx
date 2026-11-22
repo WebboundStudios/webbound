@@ -1,4 +1,7 @@
-import type { CSSProperties } from 'react';
+'use client';
+
+import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
 
 const benefits = [
   {
@@ -43,12 +46,62 @@ const benefits = [
     description: 'The same person designs and builds your site. You can ask me about decisions as the work takes shape.',
     details: [
       { label: 'Design reviews', text: 'Figma and a live staging link for feedback.' },
-      { label: 'Communication', text: 'A shared Slack or WhatsApp channel.' },
+      { label: 'Communication', text: 'A shared WhatsApp chat.' },
     ],
   },
 ];
 
+function FlipCard({ index, progress, enabled, children }: {
+  index: number;
+  progress: MotionValue<number>;
+  enabled: boolean;
+  children: ReactNode;
+}) {
+  const last = benefits.length - 1;
+  const transform = useTransform(() => {
+    const step = progress.get() * last;
+    const entry = index === 0 ? 1 : Math.min(1, Math.max(0, (step - index + 1) / 0.7));
+    const exit = index === last ? 0 : Math.min(1, Math.max(0, step - index));
+    const depth = (1 - entry) * Math.min(index * 12, 34);
+    const scale = 1 - (1 - entry) * Math.min(index * 0.012, 0.035);
+    return `translateY(calc(${depth}px - ${exit * 62}% - ${exit * 56}svh)) rotateX(${exit * 22}deg) scale(${scale})`;
+  });
+  return (
+    <motion.article
+      aria-labelledby={'why-us-card-' + index}
+      className="card-stack__item"
+      style={enabled ? { transform, zIndex: benefits.length - index } : undefined}
+    >
+      {children}
+    </motion.article>
+  );
+}
+
 export function WhyUs() {
+  const track = useRef<HTMLDivElement>(null);
+  const deck = useRef<HTMLDivElement>(null);
+  const [enabled, setEnabled] = useState(false);
+  const { scrollYProgress } = useScroll({ target: track, offset: ['start start', 'end end'] });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 22, mass: 0.8, restDelta: 0.0005 });
+
+  useLayoutEffect(() => {
+    const cards = Array.from(deck.current!.children) as HTMLElement[];
+    const preference = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    function update() {
+      const tallest = Math.max(...cards.map(card => card.offsetHeight));
+      setEnabled(preference.matches && tallest + 68 <= window.innerHeight);
+    }
+    update();
+    const observer = new ResizeObserver(update);
+    cards.forEach(card => observer.observe(card));
+    window.addEventListener('resize', update);
+    preference.addEventListener('change', update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', update);
+      preference.removeEventListener('change', update);
+    };
+  }, []);
   return (
     <section id="why-us" aria-labelledby="why-us-heading" data-theme-bg="#F5F3EE" className="relative bg-[#F5F3EE] pt-24 text-[#0A0A0A]">
       <div className="mx-auto mb-9 max-w-7xl px-4 text-center sm:mb-12 sm:px-8 md:px-12">
@@ -61,15 +114,11 @@ export function WhyUs() {
         </h2>
       </div>
 
-      <div className="px-4 pb-24 sm:px-8 md:px-12">
-        <div className="card-stack">
+      <div ref={track} className="card-stack-track" data-flip={enabled || undefined} style={{ '--card-count': benefits.length } as CSSProperties}>
+        <div className="card-stack-stage px-4 sm:px-8 md:px-12">
+        <div ref={deck} className="card-stack">
           {benefits.map(({ label, title, description, details }, index) => (
-            <article
-              key={label}
-              aria-labelledby={'why-us-card-' + index}
-              className="card-stack__item"
-              style={{ '--card-offset': `${index * 12}px` } as CSSProperties}
-            >
+            <FlipCard key={label} index={index} enabled={enabled} progress={progress}>
                 <header className="font-body-ui flex items-center justify-between gap-4 border-b border-black/15 pb-3.5 text-sm font-semibold sm:pb-5">
                   <span>{label}</span>
                   <span className="text-xs font-medium tabular-nums opacity-70" aria-label={'Card ' + (index + 1) + ' of ' + benefits.length}>
@@ -92,8 +141,9 @@ export function WhyUs() {
                     ))}
                   </dl>
                 </div>
-            </article>
+            </FlipCard>
           ))}
+        </div>
         </div>
       </div>
     </section>

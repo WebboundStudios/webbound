@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode, Ref } from 'react';
+import { memo, type ReactNode, type Ref } from 'react';
 import { m, useTransform, type MotionValue } from 'framer-motion';
 import styles from './hero-core.module.css';
 
@@ -728,7 +728,8 @@ const ORBIT_NODES: NodeType[] = [
  */
 const Crystal = ({ size }: { size: number }) => {
   return (
-    <g filter='url(#webbound-core-crystal-shadow)'>
+    <g>
+      <ellipse cy={size * 0.5} rx={size * 0.9} ry={size * 0.7} fill="var(--core-accent-ink)" opacity="0.14" />
       <circle r={size * 1.55} fill='url(#webbound-core-crystal-halo)' />
       <circle r={size} fill='url(#webbound-core-crystal-body)' />
       <circle r={size} fill='url(#webbound-core-crystal-refract)' />
@@ -826,9 +827,6 @@ const CrystalDefs = () => (
       <stop offset='0.5' stopColor='var(--core-accent)' stopOpacity='0.12' />
       <stop offset='1' stopColor='var(--core-accent)' stopOpacity='0' />
     </radialGradient>
-    <filter id='webbound-core-crystal-shadow' x='-80%' y='-80%' width='260%' height='260%'>
-      <feDropShadow dx='0' dy='2.5' stdDeviation='2.5' floodColor='var(--core-accent-ink)' floodOpacity='0.25' />
-    </filter>
   </defs>
 );
 const SyntraParticles = ({ half }: { half: "back" | "front" }) => (
@@ -855,7 +853,7 @@ const SyntraParticles = ({ half }: { half: "back" | "front" }) => (
     })}
   </g>
 );
-export function HeroCoreArtwork({
+export const HeroCoreArtwork = memo(function HeroCoreArtwork({
   svgRef,
   x,
   y,
@@ -874,6 +872,8 @@ export function HeroCoreArtwork({
   const shadowOpacity = useTransform(progress, [0, 1], [1, 0.55]);
   const stackedOpacity = useTransform(progress, [0, 0.04], [1, 0]);
   const explodedOpacity = useTransform(progress, [0, 0.03], [0, 1]);
+  const stackedDisplay = useTransform(stackedOpacity, opacity => opacity > 0 ? 'inline' : 'none');
+  const explodedDisplay = useTransform(explodedOpacity, opacity => opacity > 0 ? 'inline' : 'none');
   return (
     <svg
       ref={svgRef}
@@ -893,11 +893,11 @@ export function HeroCoreArtwork({
         <SyntraParticles half="back" />
       </m.g>
       <m.g style={{ opacity: shadowOpacity }}><SyntraCoreShadow /></m.g>
-      <m.g className={styles.float} style={{ opacity: stackedOpacity }}><SyntraCoreObject /></m.g>
-      <m.g style={{ opacity: explodedOpacity }}><SyntraExplodedCore progress={progress} /></m.g>
+      <m.g className={styles.float} style={{ opacity: stackedOpacity, display: stackedDisplay }}><SyntraCoreObject /></m.g>
+      <m.g style={{ opacity: explodedOpacity, display: explodedDisplay }}><SyntraExplodedCore progress={progress} /></m.g>
       <m.g style={{ x: orbitX, y: orbitY, opacity: orbitOpacity }}>
         <SyntraParticles half="front" />
       </m.g>
     </svg>
   );
-}
+});

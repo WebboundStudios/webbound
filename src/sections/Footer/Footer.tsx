@@ -3,13 +3,8 @@
 import { useEffect, useRef } from 'react';
 import { ArrowUp, ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { NAV_LINKS, SITE_CONFIG } from '@/constants/data';
 import styles from './Footer.module.css';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const curvedWordmarkPath = 'M -350 320 Q 500 -120 1350 320';
 const flatWordmarkPath = 'M 0 140 Q 500 140 1000 140';
@@ -50,31 +45,40 @@ export function Footer() {
 
     const media = gsap.matchMedia();
     media.add('(prefers-reduced-motion: no-preference)', () => {
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: stage,
-          start: () => {
-            const inset = Math.max(0, (stage.clientHeight - wordmark.offsetHeight * initialWordmarkScale) / 2);
-            return `top+=${inset} bottom`;
-          },
-          endTrigger: footer,
-          end: 'bottom bottom',
-          scrub: 0.5,
-          invalidateOnRefresh: true,
-        },
-      });
+      const timeline = gsap.timeline({ paused: true });
 
       timeline
         .fromTo(path, { attr: { d: curvedWordmarkPath } }, { attr: { d: flatWordmarkPath }, ease: 'power1.out' }, 0)
         .fromTo(wordmark, { scale: initialWordmarkScale, transformOrigin: 'center bottom' }, { scale: 1, ease: 'power1.out', force3D: true }, 0);
 
-      let active = true;
-      void document.fonts.ready.then(() => {
-        if (active) timeline.scrollTrigger?.refresh();
+      // Pinned sections above the footer can change its document offset after load.
+      // Measure in viewport coordinates while the footer is visible.
+      const update = (_time: number, deltaMs: number) => {
+        const bounds = stage.getBoundingClientRect();
+        const inset = Math.max(0, (bounds.height - wordmark.offsetHeight * initialWordmarkScale) / 2);
+        const start = bounds.top + inset;
+        const bottom = footer.getBoundingClientRect().bottom;
+        const distance = Math.max(1, bottom - start);
+        const target = bottom <= window.innerHeight + 1 ? 1 :
+          gsap.utils.clamp(0, 1, (window.innerHeight - start) / distance);
+        const remaining = target - timeline.progress();
+        if (remaining === 0) return;
+        timeline.progress(Math.abs(remaining) < 0.001 ? target :
+          target - remaining * Math.exp(-Math.min(deltaMs, 64) / 95));
+      };
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          gsap.ticker.add(update);
+        } else {
+          gsap.ticker.remove(update);
+          timeline.progress(entry.boundingClientRect.bottom <= 0 ? 1 : 0);
+        }
       });
+      observer.observe(footer);
 
       return () => {
-        active = false;
+        observer.disconnect();
+        gsap.ticker.remove(update);
       };
     });
 

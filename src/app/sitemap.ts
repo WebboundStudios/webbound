@@ -5,11 +5,8 @@ import { absoluteUrl } from '@/lib/seo';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    ...['/', '/services', '/work', '/animations'].map((path) => ({ url: absoluteUrl(path) })),
+    ...['/', '/animations'].map((path) => ({ url: absoluteUrl(path) })),
+    { url: absoluteUrl('/work'), images: PROJECTS.map(({ image }) => absoluteUrl(image)) },
     ...SERVICE_PAGES.map(({ slug }) => ({ url: absoluteUrl(`/services/${slug}`) })),
-    ...PROJECTS.map(({ id, image }) => ({
-      url: absoluteUrl(`/work/${id}`),
-      images: [absoluteUrl(image)],
-    })),
   ];
 }

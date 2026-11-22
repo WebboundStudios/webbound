@@ -376,14 +376,41 @@ select:focus-visible {
   line-height: 0.99;
 }
 
-@media (min-width: 1024px) and (min-height: 740px) and (prefers-reduced-motion: no-preference) {
-  .card-stack {
-    gap: clamp(4rem, 12svh, 8rem);
-  }
+.card-stack-track {
+  position: relative;
+  padding-bottom: 6rem;
+}
 
+.card-stack-track[data-flip] {
+  height: calc(var(--card-count) * 100svh);
+  padding-bottom: 0;
+}
+
+.card-stack-track[data-flip] .card-stack-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-items: center;
+  overflow: clip;
+}
+
+.card-stack-track[data-flip] .card-stack {
+  perspective: 800px;
+  gap: 0;
+}
+
+.card-stack-track[data-flip] .card-stack__item {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+}
+
+.card-stack-track:not([data-flip]) .card-stack__item {
+  transform: none !important;
+}
+
+@media (min-width: 1024px) and (min-height: 740px) {
   .card-stack__item {
-    position: sticky;
-    top: calc(clamp(3rem, 11svh, 7rem) + var(--card-offset));
     min-height: clamp(19rem, 50svh, 28rem);
   }
 }

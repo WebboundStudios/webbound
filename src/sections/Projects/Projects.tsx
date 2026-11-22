@@ -1,98 +1,185 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { PROJECTS } from '@/constants/data';
-import type { ProjectItem } from '@/types';
+import { CaseStudyButton } from '@/components/projects/CaseStudyButton';
+import { ProjectFrame } from '@/components/projects/ProjectFrame';
+import { usePageScrollTo } from '@/providers/SmoothScrollProvider';
+import styles from './Projects.module.css';
 
-const ProjectDetail = dynamic(() => import('@/components/projects/ProjectDetail').then((module) => module.ProjectDetail), { ssr: false });
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
-type OpenCase = {
-  project: ProjectItem;
-  trigger: HTMLButtonElement;
-  cover: HTMLDivElement;
+const names: Record<string, string> = {
+  'the-trusted-wall': 'The Trusted Wall',
+  'tdid-interiors': 'TDID Interiors',
+  'studio-kalagya': 'Studio Kalagya',
+  'forever-interior': 'Forever Interior',
 };
 
 export function Projects() {
-  const [openCase, setOpenCase] = useState<OpenCase | null>(null);
+  const scrollTo = usePageScrollTo();
+  const sectionRef = useRef<HTMLElement>(null);
+  const pin = useRef<ScrollTrigger | null>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [desktop, setDesktop] = useState(false);
+  const [selection, setSelection] = useState({ active: 0, previous: 0 });
+  const { active, previous } = selection;
+  function select(index: number) {
+    setSelection(current => current.active === index ? current : { active: index, previous: current.active });
+  }
+
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    const section = sectionRef.current;
+    if (!track || !section) return;
+
+    const media = gsap.matchMedia();
+    media.add({ desktop: '(min-width: 900px)', reduce: '(prefers-reduced-motion: reduce)' }, context => {
+      if (!context.conditions?.desktop) return;
+      setDesktop(true);
+      const warmCovers = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        warmCovers.disconnect();
+        track.querySelectorAll<HTMLImageElement>('[data-case-cover] img').forEach(image => {
+          image.loading = 'eager';
+          void image.decode().catch(() => {});
+        });
+      }, { rootMargin: '75% 0px' });
+      warmCovers.observe(section);
+      let lastWheelTime = -Infinity;
+      let lastDirection = 0;
+      function stepOnWheel(event: WheelEvent) {
+        const trigger = pin.current;
+        if (!trigger || event.ctrlKey || event.shiftKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+        const y = trigger.scroll();
+        if (y < trigger.start - 1 || y > trigger.end + 1) return;
+        const direction = Math.sign(event.deltaY);
+        const now = performance.now();
+        const continuing = direction === lastDirection && now - lastWheelTime < 180;
+        const last = PROJECTS.length - 1;
+        const next = Math.round(trigger.progress * last) + direction;
+        if (next < 0 || next > last) return;
+
+        // Consume the rest of this gesture so trackpad momentum cannot skip a card.
+        event.preventDefault();
+        event.stopPropagation();
+        lastWheelTime = now;
+        lastDirection = direction;
+        if (continuing) return;
+        scrollTo(Math.round(trigger.start + next / last * (trigger.end - trigger.start)), true);
+        ScrollTrigger.update();
+      }
+      if (!context.conditions.reduce) {
+        const last = PROJECTS.length - 1;
+        pin.current = ScrollTrigger.create({
+          trigger: section,
+          start: 'center center',
+          end: () => '+=' + track.clientWidth * last,
+          pin: true,
+          refreshPriority: 1,
+          onUpdate: self => select(Math.round(self.progress * last)),
+          onRefresh: self => select(Math.round(self.progress * last)),
+        });
+        section.addEventListener('wheel', stepOnWheel, { passive: false });
+      }
+      return () => {
+        warmCovers.disconnect();
+        section.removeEventListener('wheel', stepOnWheel);
+        pin.current = null;
+        setSelection({ active: 0, previous: 0 });
+        setDesktop(false);
+      };
+    });
+    return () => media.revert();
+  }, [scrollTo]);
+
+  function slideTo(index: number) {
+    const trigger = pin.current;
+    if (trigger) {
+      const progress = index / (PROJECTS.length - 1);
+      scrollTo(trigger.start + progress * (trigger.end - trigger.start), false);
+    } else {
+      select(index);
+    }
+  }
 
   return (
-    <section
-      id="projects"
-      aria-labelledby="selected-work-heading"
-      data-theme-bg="#0A0A0A"
-      className="bg-[#0A0A0A] px-6 py-20 text-white sm:py-24 md:px-12 lg:px-20 lg:py-28"
-    >
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-10 grid gap-5 md:mb-14 md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] md:items-end md:gap-12">
-          <h2 id="selected-work-heading" className="font-section-heading text-[clamp(3rem,7vw,6rem)] leading-none font-bold tracking-[-0.045em]">
-            Selected work<span className="text-[#C5F52A]">.</span>
-          </h2>
+    <section ref={sectionRef} id="projects" aria-labelledby="selected-work-heading" data-theme-bg="#0A0A0A" className={styles.section}>
+      <div className={styles.gallery}>
+        <header className={styles.header}>
+          <h2 id="selected-work-heading" className="font-hero-display">Selected work<span>.</span></h2>
           <div>
-            <p className="font-body-ui text-base leading-relaxed text-white/70 md:text-lg">
-              Websites and content platforms for architecture and interiors studios.
-            </p>
-            <Link
-              href="/work"
-              className="mt-3 inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-[#C5F52A] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C5F52A]"
-            >
-              See all website case studies <ArrowUpRight size={16} aria-hidden="true" />
-            </Link>
+            <p>Websites and content platforms for architecture and interiors studios.</p>
+            <Link href="/work" className={styles.archive}>All case studies <ArrowUpRight size={16} aria-hidden="true" /></Link>
+          </div>
+        </header>
+
+        <div className={styles.stage}>
+          <div className={styles.corners} aria-hidden="true" />
+          <div ref={trackRef} className={styles.track}
+            onKeyDown={event => {
+              if (!desktop || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+              event.preventDefault();
+              event.currentTarget.focus({ preventScroll: true });
+              slideTo(Math.max(0, Math.min(PROJECTS.length - 1, active + (event.key === 'ArrowRight' ? 1 : -1))));
+            }}
+            tabIndex={desktop ? 0 : undefined} role="region" aria-label="Selected projects">
+            {PROJECTS.map((project, index) => {
+              const name = names[project.id] ?? project.title;
+              function preview(direction: number) {
+                const next = index + direction;
+                const neighbor = PROJECTS[next];
+                if (!neighbor) return null;
+                const label = names[neighbor.id] ?? neighbor.title;
+                return (
+                  <button type="button" className={direction < 0 ? styles.previous : styles.next}
+                    aria-label={'Show ' + label} onClick={() => {
+                      if (!trackRef.current) return;
+                      trackRef.current.focus({ preventScroll: true });
+                      slideTo(next);
+                    }}>
+                    <span className={styles.previewImage}><Image src={neighbor.image} alt="" fill sizes="(min-width: 900px) 16vw, 1px" className="object-cover" /></span>
+                    <span>{direction < 0 && <ArrowLeft size={15} />}{label}{direction > 0 && <ArrowRight size={15} />}</span>
+                  </button>
+                );
+              }
+              return (
+                <article key={project.id} className={styles.project} data-current={index === active || undefined}
+                  style={{ '--cover-x': (index - active) * 100 + '%' } as CSSProperties}
+                  data-switched={active !== previous || undefined}
+                  data-direction={active < previous ? 'back' : 'forward'} inert={desktop && index !== active}>
+                  <div className={styles.images}>
+                    {preview(-1)}
+                    <ProjectFrame className={styles.mainFrame} project={project} sizes="(min-width: 1500px) 700px, (min-width: 900px) 47vw, 90vw">
+                      <CaseStudyButton project={project} className={styles.imageButton}>
+                        <span className="sr-only">Open case study for {project.title}</span>
+                      </CaseStudyButton>
+                    </ProjectFrame>
+                    {preview(1)}
+                  </div>
+                  <div className={styles.caption}>
+                    <div>
+                      <p className={styles.category}>{project.category}</p>
+                      <h3 className={styles.title}><span className={styles.shortTitle}><i>{name.split(' ')[0]}</i>{' ' + name.split(' ').slice(1).join(' ')}</span><span className={styles.fullTitle}>{project.title}</span></h3>
+                    </div>
+                    <div className={styles.summary}>
+                      <p>{project.description}</p>
+                      <CaseStudyButton project={project} className={styles.open}>
+                        Read case study<span className="sr-only"> for {project.title}</span><ArrowUpRight size={18} aria-hidden="true" />
+                      </CaseStudyButton>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
-
-        <div className="border-b border-white/15">
-          {PROJECTS.map((project, index) => (
-            <article className="group relative grid gap-6 border-t border-white/15 py-7 sm:py-10 lg:grid-cols-12 lg:items-center lg:gap-12 lg:py-14" key={project.id}>
-              <div className={'rounded-xl border border-white/12 bg-[#151515] p-2 sm:p-3 lg:col-span-7 ' + (index % 2 ? 'lg:order-2' : '')}>
-                <div data-case-cover style={{ aspectRatio: project.coverAspectRatio }} className="relative aspect-video overflow-hidden rounded-md bg-[#1B1B1B]">
-                  <Image
-                    src={project.image}
-                    alt={project.imageAlt}
-                    fill
-                    sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1023px) calc(100vw - 96px), (max-width: 1439px) 52vw, 724px"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <div className={'lg:col-span-5 ' + (index % 2 ? 'lg:pr-5' : 'lg:pl-5')}>
-                <p className="font-body-ui text-sm text-white/65">{project.category}</p>
-                <h3 className="font-section-heading mt-2 max-w-[18ch] text-3xl leading-[1.04] font-bold tracking-[-0.035em] text-balance sm:text-4xl lg:text-[clamp(2.25rem,3.5vw,3.75rem)]">
-                  {project.title}
-                </h3>
-                <p className="font-body-ui mt-4 max-w-[42ch] text-base leading-relaxed text-white/70">{project.description}</p>
-                <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-                  <Link
-                    href={`/work/${project.id}`}
-                    prefetch={false}
-                    className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[#C5F52A] underline-offset-4 after:absolute after:inset-0 after:rounded-lg hover:underline focus-visible:after:outline-2 focus-visible:after:outline-offset-4 focus-visible:after:outline-[#C5F52A]"
-                  >
-                    Read case study<span className="sr-only"> for {project.title}</span>
-                    <ArrowUpRight size={17} aria-hidden="true" />
-                  </Link>
-                  <button
-                    type="button"
-                    aria-label={'Quick preview of ' + project.title}
-                    aria-haspopup="dialog"
-                    className="relative z-10 min-h-11 rounded-full border border-white/25 px-4 text-sm font-semibold hover:border-[#C5F52A] hover:text-[#C5F52A]"
-                    onClick={({ currentTarget: trigger }) => {
-                      const cover = trigger.closest('article')?.querySelector<HTMLDivElement>('[data-case-cover]');
-                      if (cover) setOpenCase((current) => current ?? { project, trigger, cover });
-                    }}
-                  >
-                    Quick preview
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
       </div>
-
-      {openCase && <ProjectDetail key={openCase.project.id} {...openCase} onClose={() => setOpenCase(null)} />}
     </section>
   );
 }

@@ -330,14 +330,14 @@ export const FAQS: FAQItem[] = [
   {
     id: 'collaboration',
     question: 'How do we work together?',
-    answer: 'You work directly with me over Slack or WhatsApp. We review designs in Figma and use a staging site to test the build before launch.',
+    answer: 'You work directly with me on WhatsApp. We review designs in Figma and use a staging site to test the build before launch.',
     category: 'Process',
   },
 ];
 
 export const NAV_LINKS = [
   { label: 'About', href: '/#about' },
-  { label: 'Services', href: '/services' },
+  { label: 'Services', href: '/#services' },
   { label: 'Work', href: '/work' },
   { label: 'Process', href: '/#process' },
   { label: 'Tech Stack', href: '/#tech' },

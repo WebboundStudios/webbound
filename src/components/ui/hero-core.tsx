@@ -17,6 +17,7 @@ import styles from './hero-core.module.css';
 const pointerSpring = { stiffness: 55, damping: 18, mass: 0.9 };
 const stackSpring = { stiffness: 105, damping: 25, mass: 1 };
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)';
+const mobileCalloutTop = (index: number) => (82 - index * 16) + '%';
 
 const layers = [
   { title: 'Discovery & Strategy', details: 'Goals · Audience · Site plan', icon: Compass, side: 'right' },
@@ -95,6 +96,17 @@ export function HeroCore() {
           <m.div className={styles.tilt} style={reducedMotion ? undefined : { rotateX, rotateY }}>
             <HeroCoreArtwork svgRef={svg} x={x} y={y} progress={progress} />
           </m.div>
+          {expanded && <svg className={styles.mobileLeaders} aria-hidden="true">
+            {layers.map(({ title, side }, index) => {
+              const { top, edge } = heroCoreLayerAnchors[index];
+              const right = side === 'right';
+              return <line key={title}
+                x1={(50 + (right ? edge : -edge)) + '%'}
+                y1={`calc(50% + ${(top - 50) * 800 / 1120}cqw)`}
+                x2={right ? '67%' : '33%'} y2={mobileCalloutTop(index)}
+              />;
+            })}
+          </svg>}
           <button
             type="button"
             className={styles.control}
@@ -139,7 +151,7 @@ export function HeroCore() {
                 key={title}
                 className={styles.layer}
                 data-side={side}
-                style={{ '--layer-top': anchor.top + '%', '--layer-edge': anchor.edge + 'cqw' } as CSSProperties}
+                style={{ '--layer-top': anchor.top + '%', '--layer-edge': anchor.edge + 'cqw', '--mobile-top': mobileCalloutTop(index) } as CSSProperties}
               >
                 <span className={styles.connector} aria-hidden="true" />
                 <div className={styles.layerHeading}>

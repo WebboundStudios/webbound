@@ -1,0 +1,18 @@
+.frame {
+  position: relative;
+  isolation: isolate;
+  align-self: start;
+  min-width: 0;
+}
+
+.photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #181a17 center / cover no-repeat;
+}
+
+.detail {
+  min-width: 0;
+  align-self: start;
+}

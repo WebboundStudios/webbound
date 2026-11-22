@@ -1,12 +1,21 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './CustomCursor.module.css';
 
 const pointerMedia = '(any-pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none)';
-const nativeCursorTargets = 'input, textarea, select, iframe, dialog[open], :disabled, [aria-disabled="true"], [contenteditable]:not([contenteditable="false"])';
+const nativeCursorTargets = 'input, textarea, select, iframe, dialog[open]:not([data-project-detail]), :disabled, [aria-disabled="true"], [contenteditable]:not([contenteditable="false"])';
 const hoverTargets = 'a[href], button, summary, [role="button"], [role="link"], [data-cursor]';
-const maxTrailDistance = 26;
+
+function subscribeToDialogChanges(update: () => void) {
+  window.addEventListener('webbound:scroll-lock', update);
+  return () => window.removeEventListener('webbound:scroll-lock', update);
+}
+
+function getCursorDialog() {
+  return document.querySelector<HTMLDialogElement>('dialog[data-project-detail][open]');
+}
 
 function getCursorTone(element: Element) {
   for (let surface: Element | null = element; surface; surface = surface.parentElement) {
@@ -26,28 +35,25 @@ function getCursorTone(element: Element) {
 }
 
 export function CustomCursor() {
+  const dialog = useSyncExternalStore(subscribeToDialogChanges, getCursorDialog, () => null);
+  const lastPoint = useRef<{ x: number; y: number } | null>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
-  const trailRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const cursor = cursorRef.current;
-    const trail = trailRef.current;
     const label = labelRef.current;
-    if (!cursor || !trail || !label) return;
+    if (!cursor || !label) return;
 
     const media = window.matchMedia(pointerMedia);
     const listeners = new AbortController();
     const options = { passive: true, signal: listeners.signal };
-    let point: { x: number; y: number } | null = null;
+    let point = lastPoint.current;
     let target: Element | null = null;
     let capturedTarget: Element | null = null;
     let active = false;
     let pressed = false;
     let frame = 0;
-    let previousTime = 0;
-    let trailX = 0;
-    let trailY = 0;
 
     const setActive = (next: boolean) => {
       if (next === active) return;
@@ -56,7 +62,7 @@ export function CustomCursor() {
       document.body.classList.toggle('custom-cursor-enabled', next);
     };
 
-    const render = (now: number) => {
+    const render = () => {
       frame = 0;
       if (!point) return;
       const { x, y } = point;
@@ -66,7 +72,6 @@ export function CustomCursor() {
       if (!current || current.closest(nativeCursorTargets)) {
         setActive(false);
         target = null;
-        previousTime = 0;
         return;
       }
 
@@ -80,33 +85,12 @@ export function CustomCursor() {
       }
 
       cursor.toggleAttribute('data-pressed', pressed);
-      const side = x > window.innerWidth - 106 ? 'left' : 'right';
+      const side = x > window.innerWidth - 132 ? 'left' : 'right';
       if (cursor.dataset.side !== side) cursor.dataset.side = side;
+      cursor.toggleAttribute('data-above', y > window.innerHeight - 48);
 
-      if (!active) {
-        trailX = x;
-        trailY = y;
-      } else {
-        const elapsed = previousTime ? now - previousTime : 1000 / 60;
-        const easing = 1 - Math.exp(-elapsed / 34);
-        trailX += (x - trailX) * easing;
-        trailY += (y - trailY) * easing;
-      }
-
-      const offsetX = trailX - x;
-      const offsetY = trailY - y;
-      const distance = Math.hypot(offsetX, offsetY);
-      const ratio = distance > maxTrailDistance ? maxTrailDistance / distance : 1;
-      const moving = distance > 0.25;
-
-      trailX = moving ? x + offsetX * ratio : x;
-      trailY = moving ? y + offsetY * ratio : y;
       cursor.style.transform = `translate3d(${x}px,${y}px,0)`;
-      trail.style.transform = `translate3d(${trailX - x}px,${trailY - y}px,0)`;
       setActive(true);
-
-      previousTime = moving ? now : 0;
-      if (moving) schedule();
     };
 
     function schedule() {
@@ -121,7 +105,6 @@ export function CustomCursor() {
       capturedTarget = null;
       pressed = false;
       frame = 0;
-      previousTime = 0;
     }
 
     function track(event: PointerEvent) {
@@ -154,19 +137,21 @@ export function CustomCursor() {
     document.addEventListener('visibilitychange', reset, options);
     media.addEventListener('change', reset, options);
 
+    if (point && media.matches) render();
     return () => {
+      lastPoint.current = point;
       listeners.abort();
       reset();
     };
-  }, []);
+  }, [dialog]);
 
-  return (
+  const cursor = (
     <div ref={cursorRef} className={styles.cursor} aria-hidden="true">
-      <div ref={trailRef} className={styles.trail}>
-        <span className={styles.ring} />
-      </div>
-      <span className={styles.dot} />
+      <svg className={styles.pointer} width="18" height="22" viewBox="0 0 18 22" focusable="false">
+        <path d="M1 1 16 12.5 9.4 13.2 6.2 19.8Z" fill="var(--cursor-ink)" stroke="var(--cursor-contrast)" strokeWidth="1.4" strokeLinejoin="round" />
+      </svg>
       <span ref={labelRef} className={styles.label} />
     </div>
   );
+  return dialog ? createPortal(cursor, dialog) : cursor;
 }
