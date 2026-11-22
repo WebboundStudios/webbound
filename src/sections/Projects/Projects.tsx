@@ -14,13 +14,6 @@ import styles from './Projects.module.css';
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
-const names: Record<string, string> = {
-  'the-trusted-wall': 'The Trusted Wall',
-  'tdid-interiors': 'TDID Interiors',
-  'studio-kalagya': 'Studio Kalagya',
-  'forever-interior': 'Forever Interior',
-};
-
 export function Projects() {
   const scrollTo = usePageScrollTo();
   const sectionRef = useRef<HTMLElement>(null);
@@ -114,7 +107,7 @@ export function Projects() {
         <header className={styles.header}>
           <h2 id="selected-work-heading" className="font-hero-display">Selected work<span>.</span></h2>
           <div>
-            <p>Websites and content platforms for architecture and interiors studios.</p>
+            <p>Websites for architecture, interiors, and event studios.</p>
             <Link href="/work" className={styles.archive}>All case studies <ArrowUpRight size={16} aria-hidden="true" /></Link>
           </div>
         </header>
@@ -130,12 +123,12 @@ export function Projects() {
             }}
             tabIndex={desktop ? 0 : undefined} role="region" aria-label="Selected projects">
             {PROJECTS.map((project, index) => {
-              const name = names[project.id] ?? project.title;
+              const name = project.shortTitle ?? project.title;
               function preview(direction: number) {
                 const next = index + direction;
                 const neighbor = PROJECTS[next];
                 if (!neighbor) return null;
-                const label = names[neighbor.id] ?? neighbor.title;
+                const label = neighbor.shortTitle ?? neighbor.title;
                 return (
                   <button type="button" className={direction < 0 ? styles.previous : styles.next}
                     aria-label={'Show ' + label} onClick={() => {

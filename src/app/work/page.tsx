@@ -10,15 +10,15 @@ const path = '/work';
 
 export const metadata = pageMetadata({
   path,
-  title: 'Architecture & Interior Design Website Case Studies',
-  description: 'See Webbound’s website case studies for architecture and interiors studios, covering portfolio galleries, CMS publishing, and project enquiries.',
+  title: 'Website Case Studies for Creative Studios',
+  description: 'Explore Webbound’s websites for architecture, interiors, and event studios, from portfolio galleries to project enquiries.',
 });
 
 export default function WorkPage() {
   return (
     <StudioPage indexPage
       title="Website case studies"
-      introduction="A selection of architecture and interior design studio websites. See what each studio needed and how the website was built around its work."
+      introduction="Explore websites for architecture, interiors, and event studios. See how each site presents the studio’s work and helps visitors get in touch."
       breadcrumbs={[{ name: 'Work', path }]}
     >
       <div className="grid items-end gap-y-12 md:grid-cols-12 md:gap-x-8 lg:gap-y-20">

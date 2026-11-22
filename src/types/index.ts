@@ -14,7 +14,8 @@ export interface ServiceItem {
 export interface ProjectItem {
   id: string;
   title: string;
-  focus: 'architecture' | 'interiors';
+  shortTitle?: string;
+  focus: 'architecture' | 'interiors' | 'events';
   category: string;
   year: string;
   description: string;

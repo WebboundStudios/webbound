@@ -1,4 +1,4 @@
-import { ServiceItem, ProjectItem, TestimonialItem, FAQItem, TechItem, ProcessStep, WhyUsItem } from '@/types';
+import { ServiceItem, TestimonialItem, FAQItem, TechItem, ProcessStep, WhyUsItem } from '@/types';
 
 export { SITE_CONFIG } from './site';
 
@@ -91,90 +91,7 @@ export const SERVICES: ServiceItem[] = [
   },
 ];
 
-export const PROJECTS: ProjectItem[] = [
-  {
-    id: 'the-trusted-wall',
-    title: 'The Trusted Wall Architecture',
-    focus: 'architecture',
-    category: 'Architecture & Luxury Interiors',
-    year: '2026',
-    tier: 'Type 3: Multi-Page Dynamic CMS Platform',
-    description: 'A Sanity-powered portfolio and journal for The Trusted Wall, an architecture studio in Agra.',
-    longDescription: 'The Trusted Wall needed a site where the team could publish architecture projects and journal entries. The build includes a project archive, galleries, and a Sanity editing workflow.',
-    challenge: 'The studio needed to show large architectural images clearly on phones and desktops while keeping pages quick to load.',
-    solution: 'I set up responsive WebP images, edge caching, and short GSAP transitions for browsing galleries.',
-    role: 'Lead Creative Engineer & Architect',
-    client: 'The Trusted Wall Studio (Agra)',
-    impact: 'Type 3 Multi-Page CMS Flagship',
-    image: '/projects/the-trusted-wall.webp',
-    imageAlt: 'The Trusted Wall architecture studio website homepage',
-    coverAspectRatio: 1680 / 853,
-    tags: ['Type 3 Package', 'Sanity CMS', 'React 19', 'GSAP', 'Vite'],
-    link: 'https://thetrustedwall.com/',
-    featured: true,
-  },
-  {
-    id: 'tdid-interiors',
-    title: 'TDID Interiors Luxury Studio',
-    focus: 'interiors',
-    category: 'Luxury Interior Design & Turnkey',
-    year: '2026',
-    tier: 'Type 1: Single-Page Flagship',
-    description: 'A single-page website for TDID Interiors, with a modular kitchen lookbook and an inquiry form.',
-    longDescription: 'TDID Interiors needed one site to show its work and receive inquiries from homeowners in Greater Noida and Delhi NCR.',
-    challenge: 'The website had to show enough finished interiors for visitors to understand the studio’s work and find the inquiry form easily.',
-    solution: 'I built the page around project photography, a modular kitchen lookbook, and an inquiry form, with GSAP and Lenis handling motion and scrolling.',
-    role: 'Digital Engineer & UI Director',
-    client: 'TDID Interiors (Delhi NCR)',
-    impact: 'Type 1 Single-Page Flagship',
-    image: '/projects/tdid-interiors.webp',
-    imageAlt: 'TDID Interiors studio website homepage',
-    coverAspectRatio: 1680 / 854,
-    tags: ['Type 1 Package', 'React 19', 'Lenis Scroll', 'GSAP', 'Formspree'],
-    link: 'https://tdidinteriors.com/',
-    featured: true,
-  },
-  {
-    id: 'studio-kalagya',
-    title: 'Studio Kalagya Architecture & Interiors',
-    focus: 'architecture',
-    category: 'Architecture & Spatial Interiors',
-    year: '2026',
-    tier: 'Type 2: Dynamic CMS Website',
-    description: 'A project portfolio and editing system for Studio Kalagya’s architecture, interiors, and installations.',
-    longDescription: 'Studio Kalagya needed a place to publish architecture projects, interior renovations, and custom installations as the team completed them.',
-    challenge: 'The studio needed to update image-heavy galleries without a developer or slowing the mobile site.',
-    solution: 'I set up a headless CMS, reusable gallery layouts, and responsive media delivery for new projects.',
-    role: 'Lead Digital Engineer & UI Architect',
-    client: 'Studio Kalagya (Jabalpur, MP)',
-    impact: 'Type 2 Dynamic CMS Portal',
-    image: '/projects/studio-kalagya.webp',
-    imageAlt: 'Studio Kalagya architecture and interiors portfolio website',
-    tags: ['Type 2 Package', 'Headless CMS', 'Architecture', 'React 19', 'GSAP'],
-    link: 'https://www.studiokalagya.in/',
-    featured: true,
-  },
-  {
-    id: 'forever-interior',
-    title: 'Forever Interior Spatial Studio',
-    focus: 'interiors',
-    category: 'Modular Kitchen & Spatial Interiors',
-    year: '2026',
-    tier: 'Type 3: Multi-Page Dynamic CMS Platform',
-    description: 'A portfolio and quote-request website for Forever Interior, a modular kitchen and interiors studio in Jaipur.',
-    longDescription: 'Forever Interior needed a website to show its kitchens, wardrobes, and living spaces and accept quote requests from homeowners.',
-    challenge: 'Visitors needed to find the right product gallery across several pages, including on smaller screens.',
-    solution: 'I built a multi-page Next.js site with a headless CMS, separate galleries by product, and a guided quote form.',
-    role: 'Lead Digital Engineer & UI Architect',
-    client: 'Forever Interior (Jaipur, Rajasthan)',
-    impact: 'Type 3 Multi-Page CMS Flagship',
-    image: '/projects/forever-interior.webp',
-    imageAlt: 'Forever Interior modular kitchen and interiors website',
-    tags: ['Type 3 Package', 'Sanity CMS', 'React 19', 'GSAP', 'Next.js 15'],
-    link: 'https://foreverinterio.in/',
-    featured: true,
-  },
-];
+export { PROJECTS } from './work-data';
 
 export const PROCESS_STEPS: ProcessStep[] = [
   {
