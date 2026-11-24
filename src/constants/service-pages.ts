@@ -18,7 +18,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: 'Interior design website design',
     title: 'Website Design for Interior Designers',
     description: 'Websites for interior design studios in India with room galleries, lookbooks, a CMS, and enquiry forms tailored to your services.',
-    introduction: 'I build websites for interior designers and design-build studios in India. Show how your spaces come together, explain what you handle, and make it easy for homeowners to send a useful enquiry.',
+    introduction: 'We build websites for interior designers and design-build studios in India. Show how your spaces come together, explain what you handle, and make it easy for homeowners to send a useful enquiry.',
     features: [
       {
         title: 'Lookbooks clients can browse by room',
@@ -30,10 +30,14 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
       {
         title: 'New projects without a rebuild',
-        text: 'A CMS lets you publish a finished home, update a service description, or change gallery photos on your own. I arrange the editing screens around your services and the way your team organises images.',
+        text: 'A CMS lets you publish a finished home, update a service description, or change gallery photos on your own. We arrange the editing screens around your services and the way your team organises images.',
       },
     ],
     questions: [
+      {
+        question: 'How much does an interior design website cost?',
+        answer: 'We quote for the pages, galleries, and editing tools your studio needs. If a single page with selected work and an enquiry form covers what you need to launch, that’s the scope we’ll price.',
+      },
       {
         question: 'Do I need a separate page for every service?',
         answer: 'Give a service its own page when you have enough detail to explain the scope, show examples, and answer common questions. If your offering is narrow, a single page can cover your services, selected work, and enquiry form clearly.',

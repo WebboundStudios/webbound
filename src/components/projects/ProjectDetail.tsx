@@ -205,9 +205,10 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
           </div>
 
           <ProjectStory project={project} inDialog />
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+          <p className="font-body-ui mt-8 leading-relaxed text-white/70">Have a similar project in mind? We’ll quote for what your website needs.</p>
+          <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2">
             <Link href="/#contact" onNavigate={onClose} className="inline-flex min-h-11 items-center gap-2 font-semibold text-[#C5F52A] underline-offset-4 hover:underline">
-              Discuss a similar website <ArrowUpRight size={16} aria-hidden="true" />
+              Get a project quote <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
             {service && (
               <Link href={`/services/${service.slug}`} onNavigate={onClose} className="inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline">

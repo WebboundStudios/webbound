@@ -7,7 +7,7 @@ const benefits = [
   {
     label: 'Delivery',
     title: '7–14 business days',
-    description: 'That’s the usual turnaround for a custom website. We agree on your scope and launch date before work starts.',
+    description: 'That’s the usual turnaround for a custom website. Before work starts, we agree on what to build, what it costs, and when it can launch.',
     details: [
       { label: 'Before the build', text: 'Agree on the site structure and review the design together.' },
       { label: 'Before launch', text: 'Try the site on a staging link and give feedback.' },
@@ -25,7 +25,7 @@ const benefits = [
   {
     label: 'Development',
     title: 'Built for your content',
-    description: 'I design the layout around the work you need to show and build it as custom components.',
+    description: 'We design the layout around the work you need to show and build it as custom components.',
     details: [
       { label: 'Publishing', text: 'A CMS can let your team add projects and edit pages.' },
       { label: 'Motion', text: 'Transitions designed around your galleries and navigation.' },
@@ -34,7 +34,7 @@ const benefits = [
   {
     label: 'Performance',
     title: 'Tested on real devices',
-    description: 'I check the site across screen sizes and connection speeds before it goes live.',
+    description: 'We check the site across screen sizes and connection speeds before it goes live.',
     details: [
       { label: 'Images', text: 'Responsive image sizes and compressed files.' },
       { label: 'Page speed', text: 'Core Web Vitals checks and a review for layout shifts.' },
@@ -42,8 +42,8 @@ const benefits = [
   },
   {
     label: 'Collaboration',
-    title: 'Work directly with me',
-    description: 'The same person designs and builds your site. You can ask me about decisions as the work takes shape.',
+    title: 'Work directly with our team',
+    description: 'Our small team works with you from design through launch. You’ll see your site take shape and share feedback directly with the people building it.',
     details: [
       { label: 'Design reviews', text: 'Figma and a live staging link for feedback.' },
       { label: 'Communication', text: 'A shared WhatsApp chat.' },

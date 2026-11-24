@@ -25,7 +25,7 @@ export function CTA() {
             </TextReveal>
           </div>
           <p className="font-body-ui mt-4 max-w-[38ch] text-base leading-relaxed text-[#4B5563] sm:mt-6 sm:text-lg">
-            Share what you have in mind and when you’d like to launch. We’ll follow up by email to discuss the scope and timeline.
+            Share what you’d like to build and when you’d like to launch. We’ll follow up by email to talk through what you need and put together a quote.
           </p>
 
           <div className="mt-7 max-w-sm border-t border-black/12 pt-5 sm:mt-9 sm:pt-6">

@@ -14,6 +14,8 @@ import styles from './Projects.module.css';
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
+const wheelStepInterval = 420;
+
 export function Projects() {
   const scrollTo = usePageScrollTo();
   const sectionRef = useRef<HTMLElement>(null);
@@ -44,26 +46,26 @@ export function Projects() {
         });
       }, { rootMargin: '75% 0px' });
       warmCovers.observe(section);
-      let lastWheelTime = -Infinity;
-      let lastDirection = 0;
+      let lastStepTime = -Infinity;
+      let lastStepDirection = 0;
       function stepOnWheel(event: WheelEvent) {
         const trigger = pin.current;
-        if (!trigger || event.ctrlKey || event.shiftKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+        if (!trigger || !event.cancelable || event.defaultPrevented || event.ctrlKey || event.shiftKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+        if (event.target instanceof Element && event.target.closest('dialog, [data-lenis-prevent]')) return;
         const y = trigger.scroll();
         if (y < trigger.start - 1 || y > trigger.end + 1) return;
         const direction = Math.sign(event.deltaY);
-        const now = performance.now();
-        const continuing = direction === lastDirection && now - lastWheelTime < 180;
         const last = PROJECTS.length - 1;
         const next = Math.round(trigger.progress * last) + direction;
         if (next < 0 || next > last) return;
 
-        // Consume the rest of this gesture so trackpad momentum cannot skip a card.
+        // Give each transition time to play while allowing sustained scrolling to keep advancing.
         event.preventDefault();
         event.stopPropagation();
-        lastWheelTime = now;
-        lastDirection = direction;
-        if (continuing) return;
+        const now = performance.now();
+        if (direction === lastStepDirection && now - lastStepTime < wheelStepInterval) return;
+        lastStepTime = now;
+        lastStepDirection = direction;
         scrollTo(Math.round(trigger.start + next / last * (trigger.end - trigger.start)), true);
         ScrollTrigger.update();
       }
@@ -78,11 +80,12 @@ export function Projects() {
           onUpdate: self => select(Math.round(self.progress * last)),
           onRefresh: self => select(Math.round(self.progress * last)),
         });
-        section.addEventListener('wheel', stepOnWheel, { passive: false });
+        // Capture wheel input when the active card changes under a stationary pointer.
+        window.addEventListener('wheel', stepOnWheel, { capture: true, passive: false });
       }
       return () => {
         warmCovers.disconnect();
-        section.removeEventListener('wheel', stepOnWheel);
+        window.removeEventListener('wheel', stepOnWheel, true);
         pin.current = null;
         setSelection({ active: 0, previous: 0 });
         setDesktop(false);

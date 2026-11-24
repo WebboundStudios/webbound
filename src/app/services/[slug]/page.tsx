@@ -104,7 +104,7 @@ export default async function StudioServicePage({ params }: ServicePageProps) {
       <div className="mt-10 max-w-[65ch] border-t border-black/15 pt-7">
         <p className="mb-4 leading-relaxed text-[#4B5563]">We review the design and a live staging site together before launch. Your website includes one year of support after launch, including technical maintenance and small content updates.</p>
         <Link href="/#contact" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#C5F52A] px-5 font-bold hover:bg-[#B6E32B]">
-          Discuss your website <ArrowUpRight size={17} aria-hidden="true" />
+          Get a quote for your website <ArrowUpRight size={17} aria-hidden="true" />
         </Link>
       </div>
     </StudioPage>

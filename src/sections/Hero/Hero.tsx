@@ -112,7 +112,7 @@ export const Hero: React.FC = () => {
               ref={subtextRef}
               className="font-body-ui text-sm sm:text-base md:text-lg text-[#4B5563] font-light leading-relaxed max-w-xl"
             >
-              I build portfolio websites with project galleries and a CMS you can update yourself, plus one year of support after launch.
+              We build portfolio websites with project galleries and a CMS you can update yourself, plus one year of support after launch.
             </p>
 
             <div ref={ctaRef} className="pt-1">

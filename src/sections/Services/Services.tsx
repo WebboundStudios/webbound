@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { type CSSProperties, useLayoutEffect, useRef, useState } from 'react';
-import { Check, Database, Edit3, Layers, Layout, Plus } from 'lucide-react';
+import { ArrowUpRight, Check, Database, Edit3, Layers, Layout, Plus, Smartphone } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextReveal } from '@/components/animations/TextReveal';
@@ -10,7 +11,7 @@ import styles from './Services.module.css';
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
-const serviceIcons = { Layout, Edit3, Layers, Database } as const;
+const serviceIcons = { Layout, Edit3, Layers, Database, Smartphone } as const;
 const splitMedia = '(min-width: 1024px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)';
 
 function ServiceCoverArtwork() {
@@ -18,7 +19,7 @@ function ServiceCoverArtwork() {
     <div className={styles.coverArtwork}>
       <p className={`${styles.coverTitle} font-section-heading`}>
         <span>Websites &amp;</span>
-        <span>web apps.</span>
+        <span>apps.</span>
       </p>
       <ul className={`${styles.coverIndex} font-body-ui`}>
         {SERVICES.map(({ id, title, iconName }) => {
@@ -185,7 +186,7 @@ export function Services() {
       id="services"
       aria-labelledby="services-heading"
       data-theme-bg="#F5F3EE"
-      className="px-6 py-16 text-[#0A0A0A] sm:py-24 md:px-12 lg:px-20 lg:py-28"
+      className="px-6 py-16 text-[#0A0A0A] sm:py-24 md:px-12 lg:py-28 xl:px-20"
     >
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 grid gap-4 md:mb-12 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:items-end md:gap-10">
@@ -199,12 +200,15 @@ export function Services() {
           </div>
           <div>
             <p className="font-body-ui max-w-[38ch] text-base leading-relaxed text-[#4B5563] sm:text-lg">
-              See what’s included in each service.
+              Pay only for what your project needs. We’ll help you choose what to build and quote for that scope.
             </p>
+            <Link href="#contact" className="font-body-ui mt-1 inline-flex min-h-11 items-center gap-2 text-sm font-bold underline decoration-black/30 underline-offset-4 hover:decoration-[#536514] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514]">
+              Get a project quote <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
           </div>
         </div>
 
-        <div ref={stageRef} className={styles.stage} onFocusCapture={revealOnFocus}>
+        <div ref={stageRef} className={styles.stage} style={{ '--service-count': SERVICES.length } as CSSProperties} onFocusCapture={revealOnFocus}>
           <div data-service-cover aria-hidden="true" className={styles.cover}>
             <ServiceCoverArtwork />
           </div>
@@ -223,7 +227,7 @@ export function Services() {
               return (
                 <div key={service.id} data-service-panel className={styles.panel}>
                   <div data-service-face aria-hidden="true" className={styles.face}>
-                    <div className={styles.slice} style={{ '--slice-offset': `${index * -100}%`, '--slice-count': SERVICES.length } as CSSProperties}>
+                    <div className={styles.slice} style={{ '--slice-offset': `${index * -100}%` } as CSSProperties}>
                       <ServiceCoverArtwork />
                     </div>
                   </div>

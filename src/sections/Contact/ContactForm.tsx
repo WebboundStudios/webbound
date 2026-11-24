@@ -12,6 +12,7 @@ const PROJECT_TYPES = [
   { label: 'Website with a CMS', value: 'Dynamic CMS Studio' },
   { label: 'Multi-page studio website', value: 'Multi-Page Spatial Platform' },
   { label: 'Custom web application', value: 'Custom Web Application' },
+  { label: 'Android app development', value: 'Android App Development' },
 ];
 
 const fieldNames = ['name', 'email', 'company', 'budget', 'message'] as const;

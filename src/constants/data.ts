@@ -89,6 +89,22 @@ export const SERVICES: ServiceItem[] = [
     ],
     accentColor: '#C5F52A',
   },
+  {
+    id: 'android-app-development',
+    title: 'Android app development',
+    subtitle: 'Custom mobile apps for Android',
+    description: 'Custom Android apps for booking, tracking orders, or managing work on the go.',
+    iconName: 'Smartphone',
+    deliverables: [
+      'App design and development',
+      'Accounts and push notifications',
+      'API and backend integrations',
+      'Testing on Android devices',
+      'Google Play release preparation',
+    ],
+    tags: ['Android', 'Mobile apps'],
+    accentColor: '#C5F52A',
+  },
 ];
 
 export { PROJECTS } from './work-data';
@@ -227,27 +243,33 @@ export const FAQS: FAQItem[] = [
     category: 'Process',
   },
   {
+    id: 'pricing',
+    question: 'How much does a custom website or app cost?',
+    answer: 'Your quote covers only the pages or screens, features, and integrations we agree on. If you’re starting small, we can help you decide what’s worth including at launch. You’ll know what’s included and what it costs before work starts.',
+    category: 'Engagement',
+  },
+  {
     id: 'maintenance',
     question: 'What’s included in the first year of support?',
     answer: 'Support includes technical maintenance, copy edits, image swaps, project uploads, dependency updates, and uptime monitoring.',
     category: 'Services',
   },
   {
-    id: 'pricing',
-    question: 'What kinds of websites do you build?',
-    answer: 'I build single-page websites, CMS sites for publishing projects and articles, larger studio portfolios, and custom web applications.',
+    id: 'project-types',
+    question: 'What kinds of websites and apps do you build?',
+    answer: 'We build single-page websites, CMS sites for publishing projects and articles, larger studio portfolios, custom web apps, and Android apps.',
     category: 'Engagement',
   },
   {
     id: 'performance',
     question: 'How do you make a site load quickly on mobile?',
-    answer: 'I resize and compress images, split the code by page, and load assets as needed. I check the result across devices and connection speeds.',
+    answer: 'We resize and compress images, split the code by page, and load assets as needed. We check the result across devices and connection speeds.',
     category: 'Technical',
   },
   {
     id: 'collaboration',
     question: 'How do we work together?',
-    answer: 'You work directly with me on WhatsApp. We review designs in Figma and use a staging site to test the build before launch.',
+    answer: 'You can reach the team on WhatsApp, review designs with us in Figma, and try a live preview of your site before launch.',
     category: 'Process',
   },
 ];

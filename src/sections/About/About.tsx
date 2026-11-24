@@ -5,7 +5,7 @@ const studioDetails = [
   },
   {
     title: 'Motion design',
-    description: 'I use animation to guide visitors through galleries and make navigation between pages feel natural.',
+    description: 'We use animation to guide visitors through galleries and make navigation between pages feel natural.',
   },
   {
     title: 'After launch',
@@ -30,11 +30,11 @@ export function About() {
             id="about-heading"
             className="font-section-heading max-w-[17ch] text-[clamp(2.5rem,5vw,4.25rem)] leading-[1.02] font-bold tracking-[-0.04em] text-balance"
           >
-            <span className="block">Your designer</span>{' '}
+            <span className="block">A small team</span>{' '}
             <span className="block">builds your site.</span>
           </h2>
           <p className="font-body-ui mt-6 max-w-[48ch] text-base leading-relaxed text-[#4B5563] sm:text-lg lg:mt-7">
-            I design and build websites for architecture studios, interior designers, and brands with work to show.
+            We design and build websites for architecture studios, interior designers, and brands with work to show.
             We review the design and the live build together before launch.
           </p>
         </div>
