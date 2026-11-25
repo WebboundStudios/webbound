@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { ArrowUp, ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
+import { Button } from '@/components/ui/Button';
 import { NAV_LINKS, SITE_CONFIG } from '@/constants/data';
+import { POLICY_LINKS } from '@/constants/policies';
 import styles from './Footer.module.css';
 
 const curvedWordmarkPath = 'M -350 320 Q 500 -120 1350 320';
@@ -174,20 +177,33 @@ export function Footer() {
       </div>
 
       <div className={`${styles.legal} border-t border-white/12 px-6 pt-2 pb-20 sm:pt-3 sm:pb-24 md:px-12 lg:px-20`}>
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1">
           <p suppressHydrationWarning className="font-body-ui text-xs text-[#BDBDB7]">
             © {currentYear} {SITE_CONFIG.name}.
           </p>
-          <button
-            type="button"
+          <nav aria-label="Policies" className="order-last basis-full sm:order-none sm:basis-auto">
+            <ul className="flex flex-wrap gap-x-4 lg:gap-x-6">
+              {POLICY_LINKS.map(({ path, title }) => (
+                <li key={path}>
+                  <Link
+                    href={path}
+                    className="font-body-ui inline-flex min-h-8 items-center text-sm text-[#BDBDB7] underline-offset-4 hover:text-[#C5F52A] hover:underline focus-visible:text-[#C5F52A]"
+                  >
+                    {title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <Button
             onClick={scrollToTop}
-            className="group font-body-ui inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-full py-1 pl-3 text-sm font-semibold text-white transition-colors hover:text-[#C5F52A]"
+            icon={<ArrowUp />}
+            size="sm"
+            variant="dark"
+            className="shrink-0"
           >
             Back to top
-            <span className="flex size-8 items-center justify-center rounded-full border border-white/22 transition-colors group-hover:border-[#C5F52A] group-hover:bg-[#C5F52A] group-hover:text-[#0A0A0A]">
-              <ArrowUp size={15} aria-hidden="true" className="transition-transform motion-safe:group-hover:-translate-y-0.5" />
-            </span>
-          </button>
+          </Button>
         </div>
       </div>
     </footer>

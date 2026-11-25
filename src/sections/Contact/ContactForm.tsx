@@ -2,14 +2,17 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { Select } from '@base-ui/react/select';
-import { AlertCircle, ArrowUpRight, Check, ChevronDown, Loader2 } from 'lucide-react';
+import { AlertCircle, Check, ChevronDown, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { POLICIES } from '@/constants/policies';
 
 const InquirySuccessAnimation = dynamic(() => import('./InquirySuccessAnimation'), { ssr: false });
 
 const PROJECT_TYPES = [
   { label: 'Single-page website', value: 'Single-Page Flagship' },
-  { label: 'Website with a CMS', value: 'Dynamic CMS Studio' },
+  { label: 'Website I can update myself', value: 'Dynamic CMS Studio' },
   { label: 'Multi-page studio website', value: 'Multi-Page Spatial Platform' },
   { label: 'Custom web application', value: 'Custom Web Application' },
   { label: 'Android app development', value: 'Android App Development' },
@@ -195,16 +198,16 @@ export function ContactForm() {
             <h4 ref={successHeading} tabIndex={-1} className="font-section-heading text-2xl font-bold">Inquiry sent</h4>
             <p className="font-body-ui mt-2 text-sm text-[#4B5563]">Thanks for sharing your project. We’ll be in touch by email.</p>
           </div>
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={() => {
               setStatus('idle');
               requestAnimationFrame(() => formRef.current?.querySelector<HTMLInputElement>('#contact-name')?.focus());
             }}
-            className="font-body-ui cursor-pointer rounded-sm text-sm font-bold text-[#425110] underline underline-offset-4 hover:text-[#0A0A0A] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514]"
           >
             Send another inquiry
-          </button>
+          </Button>
         </div>
       ) : (
         <form
@@ -252,21 +255,23 @@ export function ContactForm() {
             </p>
           )}
 
-          <div className="flex justify-end border-t border-black/16 pt-5 sm:pt-6">
-            <button
+          <div className="flex flex-col gap-4 border-t border-black/16 pt-5 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
+            <p className="font-body-ui text-sm text-[#4B5563]">
+              We use your details to reply. See our{' '}
+              <Link href={POLICIES.privacy.path} className="font-semibold text-[#405211] underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4">
+                {POLICIES.privacy.title}
+              </Link>.
+            </p>
+            <Button
               type="submit"
               disabled={status === 'sending'}
-              className="group font-section-heading flex min-h-13 w-full cursor-pointer items-center justify-between gap-5 rounded-full border border-[#6D8718] bg-[#C5F52A] py-2.5 pr-2.5 pl-5 text-base font-bold text-[#0A0A0A] transition-colors hover:bg-[#D6FA70] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#536514] disabled:cursor-wait disabled:opacity-75 sm:w-auto"
+              size="lg"
+              icon={status === 'sending' ? <Loader2 className="motion-safe:animate-spin" /> : undefined}
+              flow={status !== 'sending'}
+              className="w-full shrink-0 disabled:cursor-wait sm:w-auto"
             >
               {status === 'sending' ? 'Sending inquiry' : 'Send inquiry'}
-              <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] text-[#C5F52A]">
-                {status === 'sending' ? (
-                  <Loader2 size={16} className="motion-safe:animate-spin" />
-                ) : (
-                  <ArrowUpRight size={17} className="transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
-                )}
-              </span>
-            </button>
+            </Button>
           </div>
         </form>
       )}

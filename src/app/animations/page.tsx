@@ -4,6 +4,7 @@ import { useId, useState } from 'react';
 import Link from 'next/link';
 import { MotionConfig, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, ArrowUpRight, Maximize2, Pause, Play, RotateCcw } from 'lucide-react';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { Navbar } from '@/components/common/Navbar';
 import { CustomCursor } from '@/components/common/CustomCursor';
 import { Footer } from '@/sections/Footer/Footer';
@@ -12,6 +13,7 @@ import { MagneticButton } from '@/components/animations/MagneticButton';
 import { InfiniteMarquee } from '@/components/animations/InfiniteMarquee';
 import { CounterAnimation } from '@/components/animations/CounterAnimation';
 import { ParallaxColumns } from '@/components/animations/ParallaxColumns';
+import { CurvedText } from '@/components/animations/CurvedText';
 import {
   EFFECT_CATEGORIES,
   PREVIEW_EFFECTS,
@@ -82,9 +84,9 @@ function EffectStage({ id, paused }: { id: PreviewEffectId; paused: boolean }) {
       return (
         <div className="z-10 flex flex-wrap items-center justify-center gap-3 px-4">
           <MagneticButton type="button" variant="primary" strength={0.5}>
-            Pull <ArrowUpRight size={16} aria-hidden="true" />
+            Pull
           </MagneticButton>
-          <MagneticButton type="button" variant="outline-dark" strength={0.28}>
+          <MagneticButton type="button" variant="secondary" icon={<ArrowUpRight />} strength={0.28}>
             Glide
           </MagneticButton>
         </div>
@@ -95,6 +97,8 @@ function EffectStage({ id, paused }: { id: PreviewEffectId; paused: boolean }) {
       return <MarqueeDemo paused={paused} />;
     case 'metric-counter':
       return <CounterDemo />;
+    case 'curved-text':
+      return <div className="w-full max-w-xl px-3 text-[#31430E] sm:px-6"><CurvedText /></div>;
   }
 }
 
@@ -151,7 +155,7 @@ export default function AnimationsLabPage() {
                 <article
                   key={effect.id}
                   className={styles.effectCard}
-                  data-wide={effect.id === 'parallax-gallery' || effects.length === 1 || undefined}
+                  data-wide={effect.id === 'parallax-gallery' || (effect.id === 'curved-text' && filter === 'all') || effects.length === 1 || undefined}
                   aria-labelledby={effect.id + '-title'}
                 >
                   <div className={styles.stage} data-effect={effect.id}>
@@ -168,17 +172,18 @@ export default function AnimationsLabPage() {
                       </h3>
                       <p className="font-body-ui mt-2 text-sm leading-relaxed text-[#4d4e46]">{effect.description}</p>
                     </div>
-                    <button
-                      type="button"
+                    <Button
                       aria-haspopup="dialog"
                       aria-controls={previewId}
                       aria-label={'Open preview: ' + effect.title}
                       className={styles.previewButton}
                       onClick={() => setActivePreview(effect.id)}
+                      variant="secondary"
+                      size="sm"
+                      icon={<Maximize2 />}
                     >
-                      <Maximize2 size={15} aria-hidden="true" />
                       Open preview
-                    </button>
+                    </Button>
                   </div>
                 </article>
               ))}
@@ -189,9 +194,7 @@ export default function AnimationsLabPage() {
             <h2 id="lab-contact-title" className="font-section-heading max-w-[20ch] text-3xl leading-none font-extrabold tracking-[-0.04em] sm:text-5xl">
               Want an effect on your site?
             </h2>
-            <Link href="/#contact" className={styles.contactLink}>
-              Start a project <ArrowUpRight size={18} aria-hidden="true" />
-            </Link>
+            <ButtonLink href="/#contact">Start a project</ButtonLink>
           </section>
         </div>
 

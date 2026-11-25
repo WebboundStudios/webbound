@@ -15,7 +15,7 @@ export interface ProjectItem {
   id: string;
   title: string;
   shortTitle?: string;
-  focus: 'architecture' | 'interiors' | 'events';
+  focus: 'architecture' | 'interiors' | 'events' | 'hospitality';
   category: string;
   year: string;
   description: string;
@@ -30,9 +30,17 @@ export interface ProjectItem {
   link?: string;
   featured: boolean;
   tier?: string;
-  longDescription?: string;
-  challenge?: string;
-  solution?: string;
+  preview: {
+    overview: string;
+    challenge: string;
+    approach: string;
+  };
+  caseStudy: {
+    title: string;
+    seoTitle?: string;
+    description: string;
+    sections: { heading: string; paragraphs: string[] }[];
+  };
   role?: string;
   githubLink?: string;
 }

@@ -76,8 +76,7 @@
 }
 
 .iconButton,
-.action,
-.inquiry {
+.action {
   display: inline-flex;
   min-height: 2.75rem;
   align-items: center;
@@ -159,16 +158,6 @@
 
 .footer {
   padding-top: 0.5rem;
-}
-
-.inquiry {
-  border-color: var(--preview-accent);
-  background: var(--preview-accent);
-  color: #11130f;
-}
-
-.inquiry:hover {
-  background: #e2ff86;
 }
 
 .stage :is([tabindex='0'], input):focus-visible {

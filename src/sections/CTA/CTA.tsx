@@ -1,6 +1,5 @@
 import { ArrowUpRight, MapPin } from 'lucide-react';
 import { TextReveal } from '@/components/animations/TextReveal';
-import { TiltedMarquee } from '@/components/animations/TiltedMarquee';
 import { SITE_CONFIG } from '@/constants/data';
 import { ContactForm } from '@/sections/Contact/ContactForm';
 
@@ -12,8 +11,6 @@ export function CTA() {
       data-theme-bg="#F5F3EE"
       className="relative overflow-hidden bg-[#F5F3EE] px-6 pt-10 pb-8 text-[#0A0A0A] sm:pt-16 sm:pb-10 md:px-12 lg:px-20"
     >
-      <TiltedMarquee className="mb-9 sm:mb-12 lg:mb-16" />
-
       <div className="relative z-10 mx-auto grid max-w-2xl gap-8 lg:max-w-7xl lg:grid-cols-[minmax(0,4fr)_minmax(0,6fr)] lg:items-start lg:gap-12 xl:gap-20">
         <div className="lg:pt-5">
           <div id="contact-heading">

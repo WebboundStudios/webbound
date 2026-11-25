@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
+import { ButtonLink } from '@/components/ui/Button';
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -110,8 +110,8 @@ export function Projects() {
         <header className={styles.header}>
           <h2 id="selected-work-heading" className="font-hero-display">Selected work<span>.</span></h2>
           <div>
-            <p>Websites for architecture, interiors, and event studios.</p>
-            <Link href="/work" className={styles.archive}>All case studies <ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <p>Websites and apps for architecture, interiors, events, and hospitality.</p>
+            <ButtonLink href="/work" size="sm" className={styles.archive}>All case studies</ButtonLink>
           </div>
         </header>
 
@@ -153,7 +153,7 @@ export function Projects() {
                     {preview(-1)}
                     <ProjectFrame className={styles.mainFrame} project={project} sizes="(min-width: 1500px) 700px, (min-width: 900px) 47vw, 90vw">
                       <CaseStudyButton project={project} className={styles.imageButton}>
-                        <span className="sr-only">Open case study for {project.title}</span>
+                        <span className="sr-only">Preview {project.title}</span>
                       </CaseStudyButton>
                     </ProjectFrame>
                     {preview(1)}
@@ -165,9 +165,9 @@ export function Projects() {
                     </div>
                     <div className={styles.summary}>
                       <p>{project.description}</p>
-                      <CaseStudyButton project={project} className={styles.open}>
-                        Read case study<span className="sr-only"> for {project.title}</span><ArrowUpRight size={18} aria-hidden="true" />
-                      </CaseStudyButton>
+                      <ButtonLink href={`/work/${project.id}`} variant="secondary" icon={<ArrowUpRight />} size="sm" className={styles.open}>
+                        Read case study<span className="sr-only"> for {project.title}</span>
+                      </ButtonLink>
                     </div>
                   </div>
                 </article>

@@ -3,8 +3,9 @@
 import { useState, useEffect, useId, useRef, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { MagneticButton } from '@/components/animations/MagneticButton';
+import { ButtonAnchor } from '@/components/ui/Button';
 import { NAV_LINKS, SITE_CONFIG } from '@/constants/data';
-import { Menu, X, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import styles from './Navbar.module.css';
 
@@ -150,7 +151,7 @@ export function Navbar() {
             ref={triggerRef}
             type="button"
             onClick={openMenu}
-            className="flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-xs sm:text-sm font-body-ui font-medium transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 shrink-0"
+            className="flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 max-[360px]:px-2.5 sm:px-5 sm:py-2.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] text-white text-xs sm:text-sm font-body-ui font-medium transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-90 shrink-0"
             aria-haspopup="dialog"
             aria-controls={menuId}
             aria-expanded={menuOpen}
@@ -160,16 +161,14 @@ export function Navbar() {
           </button>
 
           {/* Center Brand Name */}
-          <span className="px-2 sm:px-5 text-white font-hero-display text-xs sm:text-[15px] font-bold tracking-[0.02em] select-none shrink-0 truncate">
+          <span className="min-w-0 truncate px-2 text-xs font-bold tracking-[0.02em] text-white select-none font-hero-display max-[360px]:px-1 sm:px-5 sm:text-[15px]">
             WEBBOUND<span className="text-[#C5F52A]">.</span>
           </span>
 
           {/* CTA Button */}
-          <a href={contactHref} className="shrink-0">
-            <MagneticButton variant="primary" size="sm" className="!px-3.5 !py-2 sm:!px-5 sm:!py-2.5 !text-[10px] sm:!text-xs whitespace-nowrap">
-              <span>Contact Us</span>
-            </MagneticButton>
-          </a>
+          <MagneticButton href={contactHref} size="sm" icon={<ArrowRight />} className="shrink-0 text-[10px] [--button-corner-cut:12px] max-[360px]:[--button-flow-px:1.25rem] max-[360px]:[--button-icon-inset:0.625rem] sm:text-xs">
+            Contact Us
+          </MagneticButton>
         </div>
       </nav>
 
@@ -221,9 +220,7 @@ export function Navbar() {
 
             <div className={styles.contact}>
               <a href={`mailto:${SITE_CONFIG.email}`} className={styles.email}>{SITE_CONFIG.email}</a>
-              <a href={contactHref} onClick={followMenuLink} className={styles.inquiry}>
-                Start a project <ArrowUpRight size={17} aria-hidden="true" />
-              </a>
+              <ButtonAnchor href={contactHref} onClick={followMenuLink}>Start a project</ButtonAnchor>
             </div>
           </div>
         </div>

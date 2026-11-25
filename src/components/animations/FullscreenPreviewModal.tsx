@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play, RotateCcw, X } from 'lucide-react';
+import { ButtonLink } from '@/components/ui/Button';
 import { TextRoll } from './TextRoll';
 import { MagneticButton } from './MagneticButton';
 import { InfiniteMarquee } from './InfiniteMarquee';
 import { CounterAnimation } from './CounterAnimation';
 import { ParallaxColumns } from './ParallaxColumns';
+import { CurvedText } from './CurvedText';
 import styles from './FullscreenPreviewModal.module.css';
 
 export const EFFECT_CATEGORIES = {
@@ -53,6 +54,13 @@ export const PREVIEW_EFFECTS = [
     library: 'GSAP',
     description: 'Watch a number count up as it enters view, or replay it anytime.',
   },
+  {
+    id: 'curved-text',
+    title: 'Curved text',
+    category: 'typography',
+    library: 'SVG',
+    description: 'Play the text as it follows a curved line, then adjust how sharply the line bends.',
+  },
 ] as const satisfies ReadonlyArray<{
   id: string;
   title: string;
@@ -69,6 +77,36 @@ const counters = [
   { end: 240, suffix: '', label: 'Quantity' },
   { end: 12, suffix: 's', label: 'Time' },
 ];
+
+function CurvedTextPreview() {
+  const [bend, setBend] = useState(72);
+  const [playing, setPlaying] = useState(false);
+  const Icon = playing ? Pause : Play;
+
+  return (
+    <div className="flex w-full max-w-3xl flex-col gap-5 sm:gap-7">
+      <div className="rounded-xl bg-[#e8edda] px-3 text-[#31430E] sm:px-6">
+        <CurvedText bend={bend} playing={playing} />
+      </div>
+      <div className="mx-auto flex w-full max-w-sm flex-wrap items-end gap-4">
+        <label className="flex min-w-0 flex-1 basis-32 flex-col text-sm font-semibold">
+          Curve depth
+          <input
+            type="range"
+            min={20}
+            max={96}
+            value={bend}
+            onChange={(event) => setBend(event.currentTarget.valueAsNumber)}
+            className="min-h-9 w-full accent-[#c5f52a]"
+          />
+        </label>
+        <button type="button" className={styles.action} onClick={() => setPlaying(!playing)}>
+          <Icon size={16} aria-hidden="true" /> {playing ? 'Pause' : 'Play'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 type PreviewProps = {
   id: string;
@@ -150,6 +188,8 @@ export function FullscreenPreviewModal({ id, effectId, onClose, onSelectEffect }
           </header>
 
           <div className={styles.stage} data-effect={effect.id}>
+            {effect.id === 'curved-text' && <CurvedTextPreview />}
+
             {effect.id === 'dual-text-roll' && (
               <div className="@container w-full max-w-5xl space-y-8 text-center">
                 <div className="overflow-hidden rounded-xl bg-[#c5f52a] px-3 py-10 text-[#11130f] sm:py-16">
@@ -177,8 +217,8 @@ export function FullscreenPreviewModal({ id, effectId, onClose, onSelectEffect }
               <div className="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <MagneticButton type="button" variant="primary" strength={0.4}>Primary pull</MagneticButton>
                 <MagneticButton type="button" variant="dark" strength={0.5}>Dark spring</MagneticButton>
-                <MagneticButton type="button" variant="outline-dark" strength={0.3}>Outline motion</MagneticButton>
-                <MagneticButton type="button" variant="secondary" strength={0.45}>Explore work</MagneticButton>
+                <MagneticButton type="button" variant="secondary" icon={<ArrowUpRight />} strength={0.3}>Outline motion</MagneticButton>
+                <MagneticButton type="button" variant="secondary" icon={<ArrowUpRight />} strength={0.45}>Explore work</MagneticButton>
                 <MagneticButton type="button" variant="primary" strength={0.6}>High elasticity</MagneticButton>
                 <MagneticButton type="button" variant="dark" strength={0.35}>Soft spring</MagneticButton>
               </div>
@@ -234,9 +274,7 @@ export function FullscreenPreviewModal({ id, effectId, onClose, onSelectEffect }
 
           <footer className={styles.footer}>
             <p className="text-sm text-[#bdc2b4]">Built with {effect.library}</p>
-            <Link href="/#contact" className={styles.inquiry} onClick={onClose}>
-              Request this effect <ArrowUpRight size={16} aria-hidden="true" />
-            </Link>
+            <ButtonLink href="/#contact" onClick={onClose}>Request this effect</ButtonLink>
           </footer>
         </div>
       )}

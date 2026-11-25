@@ -12,8 +12,6 @@
 }
 
 .backLink,
-.previewButton,
-.contactLink,
 .stageControl {
   display: inline-flex;
   align-items: center;
@@ -54,12 +52,6 @@
 
 .headingDot {
   color: #58710f;
-}
-
-.previewButton:hover {
-  border-color: var(--lab-ink);
-  background: var(--lab-ink);
-  color: #fff;
 }
 
 .gallery {
@@ -179,6 +171,10 @@
     #eaeddd;
 }
 
+.stage[data-effect='curved-text'] {
+  background: #e8edda;
+}
+
 .marqueeWord {
   display: block;
   flex-shrink: 0;
@@ -236,13 +232,9 @@
   font-weight: 700;
 }
 
-.previewButton,
-.contactLink {
+.previewButton {
   flex: none;
-  padding-inline: 1rem;
-  border: 1px solid var(--lab-line);
-  border-radius: 999px;
-  white-space: nowrap;
+  align-self: flex-start;
 }
 
 .contact {
@@ -256,16 +248,6 @@
   border-radius: 1.25rem;
   background: var(--lab-ink);
   color: #fbfcf5;
-}
-
-.contactLink {
-  min-height: 3rem;
-  background: var(--lab-accent);
-  color: var(--lab-ink);
-}
-
-.contactLink:hover {
-  background: #e2ff86;
 }
 
 @media (max-width: 41.99rem) {

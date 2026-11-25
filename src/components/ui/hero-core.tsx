@@ -22,7 +22,7 @@ const mobileCalloutTop = (index: number) => (82 - index * 16) + '%';
 const layers = [
   { title: 'Discovery & Strategy', details: 'Goals · Audience · Site plan', icon: Compass, side: 'right' },
   { title: 'Design & Motion', details: 'UI/UX · Prototypes · Animation', icon: PenTool, side: 'left' },
-  { title: 'Web Development', details: 'Next.js · CMS · Integrations', icon: CodeXml, side: 'right', main: true },
+  { title: 'Web Development', details: 'Pages · Galleries · Enquiry forms', icon: CodeXml, side: 'right', main: true },
   { title: 'Performance & QA', details: 'Speed · SEO · Device testing', icon: Gauge, side: 'left' },
   { title: 'Launch & Support', details: 'Deployment · Handover · Maintenance', icon: Rocket, side: 'right' },
 ];

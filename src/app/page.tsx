@@ -2,6 +2,7 @@ import React from 'react';
 import { CustomCursor } from '@/components/common/CustomCursor';
 import { Navbar } from '@/components/common/Navbar';
 import { Hero } from '@/sections/Hero/Hero';
+import { WebsiteBenefits } from '@/sections/WebsiteBenefits/WebsiteBenefits';
 import { About } from '@/sections/About/About';
 import { Services } from '@/sections/Services/Services';
 import { Projects } from '@/sections/Projects/Projects';
@@ -60,6 +61,7 @@ export default function Home() {
 
       {/* Section 1: Hero */}
       <Hero />
+      <WebsiteBenefits />
 
       {/* Section 2: Who We Are / About */}
       <About />

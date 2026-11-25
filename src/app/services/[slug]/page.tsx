@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { ButtonLink } from '@/components/ui/Button';
 import Image from 'next/image';
 import { CaseStudyButton } from '@/components/projects/CaseStudyButton';
 import { notFound } from 'next/navigation';
@@ -102,10 +102,8 @@ export default async function StudioServicePage({ params }: ServicePageProps) {
       </section>
 
       <div className="mt-10 max-w-[65ch] border-t border-black/15 pt-7">
-        <p className="mb-4 leading-relaxed text-[#4B5563]">We review the design and a live staging site together before launch. Your website includes one year of support after launch, including technical maintenance and small content updates.</p>
-        <Link href="/#contact" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#C5F52A] px-5 font-bold hover:bg-[#B6E32B]">
-          Get a quote for your website <ArrowUpRight size={17} aria-hidden="true" />
-        </Link>
+        <p className="mb-4 leading-relaxed text-[#4B5563]">We’ll go through the design and a working preview with you before launch. From the day we hand over your site, you get a year of maintenance and small content updates.</p>
+        <ButtonLink href="/#contact">Get a quote for your website</ButtonLink>
       </div>
     </StudioPage>
   );

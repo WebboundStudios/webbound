@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 interface NodeConfig {
   id: string;
@@ -498,15 +499,13 @@ export function Process() {
           </div>
 
           <div className="mt-6 flex justify-center lg:absolute lg:right-6 lg:bottom-6 lg:z-30 lg:mt-0">
-            <button
+            <Button
               onClick={resetLayout}
               data-cursor="Reset"
-              type="button"
-              className="group font-section-heading inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-black/12 bg-[#BAFF39] px-5 py-2.5 text-sm font-bold text-[#0A0A0A] transition-colors hover:bg-[#CDF963]"
+              icon={<RotateCcw />}
             >
-              <RotateCcw size={16} aria-hidden="true" className="transition-transform duration-300 motion-safe:group-hover:-rotate-30" />
               Reset layout
-            </button>
+            </Button>
           </div>
         </div>
       </div>

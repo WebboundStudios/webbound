@@ -2,12 +2,12 @@
 
 import { useId, useLayoutEffect, useRef } from 'react';
 import Link from 'next/link';
+import { ButtonLink } from '@/components/ui/Button';
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import type { ProjectItem } from '@/types';
 import { SERVICE_PAGES } from '@/constants/service-pages';
-import { ProjectStory } from './ProjectStory';
 import { ProjectFrame } from './ProjectFrame';
 import styles from './project-detail.module.css';
 
@@ -62,6 +62,11 @@ type ProjectDetailProps = {
 export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetailProps) {
   const titleId = useId();
   const service = SERVICE_PAGES.find(({ focus }) => focus === project.focus);
+  const previewSections = [
+    { heading: 'Overview', text: project.preview.overview },
+    { heading: 'The challenge', text: project.preview.challenge },
+    { heading: 'The approach', text: project.preview.approach },
+  ];
   const dialogRef = useRef<HTMLDialogElement>(null);
   const paneRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -169,7 +174,7 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
               ref={closeRef}
               type="button"
               onClick={close}
-              aria-label="Close case study"
+              aria-label="Close project preview"
               className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white hover:text-[#C5F52A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C5F52A]"
             >
               <ArrowLeft size={17} aria-hidden="true" /> Back
@@ -193,6 +198,9 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
             {project.title}
           </h2>
           <p className="font-body-ui mt-4 max-w-[62ch] leading-relaxed text-white/70">{project.description}</p>
+          <ButtonLink href={`/work/${project.id}`} onNavigate={onClose} className="mt-5">
+            Read full case study
+          </ButtonLink>
 
           <div className="mt-8 grid gap-7 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-10">
             <ProjectFrame project={project} detailRef={imageRef} sizes="(max-width: 1023px) calc(100vw - 48px), (max-width: 1439px) 60vw, 840px" />
@@ -204,9 +212,15 @@ export function ProjectDetail({ project, trigger, cover, onClose }: ProjectDetai
             </dl>
           </div>
 
-          <ProjectStory project={project} inDialog />
-          <p className="font-body-ui mt-8 leading-relaxed text-white/70">Have a similar project in mind? We’ll quote for what your website needs.</p>
-          <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+          <div className="mt-10 grid gap-6 border-t border-white/15 pt-7 md:grid-cols-3">
+            {previewSections.map(({ heading, text }) => (
+              <section key={heading}>
+                <h3 className="font-section-heading text-xl font-bold">{heading}</h3>
+                <p className="font-body-ui mt-2 max-w-[50ch] leading-relaxed text-white/70">{text}</p>
+              </section>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
             <Link href="/#contact" onNavigate={onClose} className="inline-flex min-h-11 items-center gap-2 font-semibold text-[#C5F52A] underline-offset-4 hover:underline">
               Get a project quote <ArrowUpRight size={16} aria-hidden="true" />
             </Link>

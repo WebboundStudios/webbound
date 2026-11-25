@@ -25,9 +25,10 @@ type PageMetadata = {
   title: string;
   description: string;
   image?: { url: string; alt: string };
+  type?: 'website' | 'article';
 };
 
-export function pageMetadata({ path, title, description, image = shareImage }: PageMetadata): Metadata {
+export function pageMetadata({ path, title, description, image = shareImage, type = 'website' }: PageMetadata): Metadata {
   const pageTitle = `${title} | ${SITE_CONFIG.name}`;
   const url = absoluteUrl(path);
 
@@ -36,7 +37,7 @@ export function pageMetadata({ path, title, description, image = shareImage }: P
     description,
     alternates: { canonical: url },
     openGraph: {
-      type: 'website',
+      type,
       siteName: SITE_CONFIG.name,
       locale: 'en_IN',
       url,

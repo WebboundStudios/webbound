@@ -16,19 +16,19 @@ const benefits = [
   {
     label: 'Aftercare',
     title: 'A year of support',
-    description: 'Every website includes a year of technical maintenance and small content updates.',
+    description: 'Every website includes a year of maintenance and small content updates from the day we hand it over.',
     details: [
       { label: 'Content updates', text: 'Copy edits, image swaps, and project uploads.' },
       { label: 'Technical care', text: 'Dependency updates and uptime monitoring.' },
     ],
   },
   {
-    label: 'Development',
-    title: 'Built for your content',
-    description: 'We design the layout around the work you need to show and build it as custom components.',
+    label: 'Running costs',
+    title: 'Affordable to keep online',
+    description: 'We look for free or low-cost hosting that fits your site and explain any ongoing costs before you approve the quote.',
     details: [
-      { label: 'Publishing', text: 'A CMS can let your team add projects and edit pages.' },
-      { label: 'Motion', text: 'Transitions designed around your galleries and navigation.' },
+      { label: 'Hosting', text: 'We use free hosting when it meets your site’s needs.' },
+      { label: 'Website address', text: 'Your domain is billed separately.' },
     ],
   },
   {

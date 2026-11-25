@@ -10,8 +10,8 @@ import { HeroCore } from '@/components/ui/hero-core';
 
 const heroHighlights = [
   { title: 'Design', description: 'Custom studio websites' },
-  { title: 'CMS', description: 'Update pages and projects on your own' },
-  { title: '1 year', description: 'Support after launch' },
+  { title: 'Galleries', description: 'Showcase your best work' },
+  { title: '1 year', description: 'Support from handover' },
 ];
 
 if (typeof window !== 'undefined') {
@@ -112,22 +112,15 @@ export const Hero: React.FC = () => {
               ref={subtextRef}
               className="font-body-ui text-sm sm:text-base md:text-lg text-[#4B5563] font-light leading-relaxed max-w-xl"
             >
-              We build portfolio websites with project galleries and a CMS you can update yourself, plus one year of support after launch.
+              We build portfolio websites that show your best work and make it easy for new clients to get in touch.
             </p>
 
             <div ref={ctaRef} className="pt-1">
               <div className="flex flex-col sm:flex-row items-start gap-4">
-                <a href="#contact">
-                  <MagneticButton variant="primary" size="md">
-                    <TextRoll center>START A PROJECT</TextRoll>
-                    <ArrowUpRight className="w-4 h-4 ml-1" />
-                  </MagneticButton>
-                </a>
-                <a href="#projects">
-                  <MagneticButton variant="outline" size="md">
-                    <TextRoll center>VIEW SELECTED WORK</TextRoll>
-                  </MagneticButton>
-                </a>
+                <MagneticButton href="#contact">Start a project</MagneticButton>
+                <MagneticButton href="#projects" variant="secondary" icon={<ArrowUpRight strokeWidth={2.5} />}>
+                  View selected work
+                </MagneticButton>
               </div>
 
             </div>

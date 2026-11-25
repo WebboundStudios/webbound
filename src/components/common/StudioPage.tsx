@@ -7,7 +7,7 @@ import { TextReveal } from '@/components/animations/TextReveal';
 
 type StudioPageProps = {
   title: string;
-  introduction: string;
+  introduction: ReactNode;
   breadcrumbs: { name: string; path: string }[];
   children: ReactNode;
   indexPage?: boolean;

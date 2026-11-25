@@ -1,19 +1,14 @@
 import type { ProjectItem } from '@/types';
 
-export function ProjectStory({ project, inDialog = false }: { project: ProjectItem; inDialog?: boolean }) {
-  const Heading = inDialog ? 'h3' : 'h2';
-  const sections = [
-    { title: 'Overview', text: project.longDescription ?? project.description },
-    { title: 'The challenge', text: project.challenge },
-    { title: 'The approach', text: project.solution },
-  ];
-
+export function ProjectStory({ sections }: { sections: ProjectItem['caseStudy']['sections'] }) {
   return (
-    <div className="mt-10 grid gap-7 border-t border-current/15 pt-7 md:grid-cols-3">
-      {sections.map(({ title, text }) => text && (
-        <section key={title}>
-          <Heading className="font-section-heading mb-2 text-xl font-bold">{title}</Heading>
-          <p className="font-body-ui leading-relaxed opacity-80">{text}</p>
+    <div className="grid gap-10 sm:gap-14">
+      {sections.map(({ heading, paragraphs }) => (
+        <section key={heading}>
+          <h2 className="font-section-heading text-2xl font-bold tracking-tight sm:text-3xl">{heading}</h2>
+          <div className="mt-4 space-y-4 text-base leading-relaxed text-[#4B5563] sm:text-lg">
+            {paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          </div>
         </section>
       ))}
     </div>

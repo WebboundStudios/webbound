@@ -1,15 +1,15 @@
 const studioDetails = [
   {
-    title: 'Custom builds',
-    description: 'Built around your content in Next.js, with a CMS so you can publish new projects and update pages yourself.',
+    title: 'Easy updates',
+    description: 'Sign in to add projects, change photos, and edit text whenever you need to.',
   },
   {
     title: 'Motion design',
     description: 'We use animation to guide visitors through galleries and make navigation between pages feel natural.',
   },
   {
-    title: 'After launch',
-    description: 'The first year includes technical maintenance, copy updates, and uptime monitoring.',
+    title: 'After handover',
+    description: 'The first year includes technical maintenance, text edits, and checks that your site stays online.',
   },
 ];
 

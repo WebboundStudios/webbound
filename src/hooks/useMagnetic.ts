@@ -8,7 +8,7 @@ export function useMagnetic<T extends HTMLElement = HTMLDivElement>(strength = 0
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       const { left, top, width, height } = el.getBoundingClientRect();

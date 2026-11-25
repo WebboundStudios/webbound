@@ -17,7 +17,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     focus: 'interiors',
     name: 'Interior design website design',
     title: 'Website Design for Interior Designers',
-    description: 'Websites for interior design studios in India with room galleries, lookbooks, a CMS, and enquiry forms tailored to your services.',
+    description: 'Websites for interior design studios in India with galleries you can update yourself and enquiry forms tailored to your services.',
     introduction: 'We build websites for interior designers and design-build studios in India. Show how your spaces come together, explain what you handle, and make it easy for homeowners to send a useful enquiry.',
     features: [
       {
@@ -29,14 +29,14 @@ export const SERVICE_PAGES: ServicePage[] = [
         text: 'Connect the right gallery to the relevant service and contact form. For a modular kitchen quote, for example, the form can ask for the site location, approximate dimensions, and timing. We choose the fields together so your studio can make a useful first reply.',
       },
       {
-        title: 'New projects without a rebuild',
-        text: 'A CMS lets you publish a finished home, update a service description, or change gallery photos on your own. We arrange the editing screens around your services and the way your team organises images.',
+        title: 'Update your portfolio yourself',
+        text: 'Sign in to publish a finished project, update a service description, or swap gallery photos. We show your team how to do it at handover so you can make those updates without calling a developer.',
       },
     ],
     questions: [
       {
         question: 'How much does an interior design website cost?',
-        answer: 'We quote for the pages, galleries, and editing tools your studio needs. If a single page with selected work and an enquiry form covers what you need to launch, that’s the scope we’ll price.',
+        answer: 'We quote for the pages, galleries, and editing tools your studio needs. We’ll look for free hosting where it fits and show you the cost of your website address and any paid tools before you approve the quote.',
       },
       {
         question: 'Do I need a separate page for every service?',
